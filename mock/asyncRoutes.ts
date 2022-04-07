@@ -5,9 +5,8 @@ const permissionRouter = {
   path: "/permission",
   redirect: "/permission/page/index",
   meta: {
-    title: "menus.permission",
+    title: "权限管理",
     icon: "lollipop",
-    i18n: true,
     rank: 7
   },
   children: [
@@ -15,16 +14,14 @@ const permissionRouter = {
       path: "/permission/page/index",
       name: "permissionPage",
       meta: {
-        title: "menus.permissionPage",
-        i18n: true
+        title: "页面权限",
       }
     },
     {
       path: "/permission/button/index",
       name: "permissionButton",
       meta: {
-        title: "menus.permissionButton",
-        i18n: true,
+        title: "按钮权限",
         authority: []
       }
     }

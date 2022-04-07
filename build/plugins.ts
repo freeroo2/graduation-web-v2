@@ -8,7 +8,6 @@ import WindiCSS from "vite-plugin-windicss";
 import { viteMockServe } from "vite-plugin-mock";
 import liveReload from "vite-plugin-live-reload";
 import styleImport from "vite-plugin-style-import";
-import VueI18n from "@intlify/vite-plugin-vue-i18n";
 import ElementPlus from "unplugin-element-plus/vite";
 import { visualizer } from "rollup-plugin-visualizer";
 import removeConsole from "vite-plugin-remove-console";
@@ -19,12 +18,6 @@ export function getPluginsList(command, VITE_LEGACY) {
   const lifecycle = process.env.npm_lifecycle_event;
   return [
     vue(),
-    // https://github.com/intlify/bundle-tools/tree/main/packages/vite-plugin-vue-i18n
-    VueI18n({
-      runtimeOnly: true,
-      compositionOnly: true,
-      include: [resolve("locales/**")]
-    }),
     // jsx、tsx语法支持
     vueJsx(),
     WindiCSS(),

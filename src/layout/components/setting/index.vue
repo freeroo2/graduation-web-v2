@@ -157,9 +157,8 @@ function onReset() {
       path: "/welcome",
       parentPath: "/",
       meta: {
-        title: "menus.hshome",
-        icon: "home-filled",
-        i18n: true
+        title: "首页",
+        icon: "home-filled"
       }
     }
   ]);

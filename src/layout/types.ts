@@ -4,8 +4,7 @@ export const routerArrays: Array<RouteConfigs> = [
     path: "/welcome",
     parentPath: "/",
     meta: {
-      title: "menus.hshome",
-      i18n: true,
+      title: "首页",
       icon: "home-filled"
     }
   }
@@ -13,7 +12,6 @@ export const routerArrays: Array<RouteConfigs> = [
 
 export type routeMetaType = {
   title?: string;
-  i18n?: boolean;
   icon?: string;
   showLink?: boolean;
   savedPosition?: boolean;
@@ -66,7 +64,6 @@ export type childrenType = {
   meta?: {
     icon?: string;
     title?: string;
-    i18n?: boolean;
     showParent?: boolean;
     extraIcon?: {
       svg?: boolean;

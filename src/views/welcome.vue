@@ -6,7 +6,6 @@ export default {
 
 <script setup lang="ts">
 import { reactive } from "vue";
-import { $t } from "/@/plugins/i18n";
 import { VxeGridProps } from "vxe-table";
 
 const gridOptions = reactive({
@@ -30,19 +29,19 @@ const gridOptions = reactive({
     buttons: [
       {
         code: "insert_actived",
-        name: $t("buttons.hsadd"),
+        name: "新增",
         status: "perfect",
         icon: "fa fa-plus"
       },
       {
         code: "mark_cancel",
-        name: $t("buttons.hsmark"),
+        name: "标记/取消",
         status: "perfect",
         icon: "fa fa-trash-o"
       },
       {
         code: "save",
-        name: $t("buttons.hssave"),
+        name: "保存",
         status: "perfect",
         icon: "fa fa-save"
       }
