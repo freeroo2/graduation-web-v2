@@ -2,6 +2,7 @@
 import homeRouter from "./home";
 import errorRouter from "./error";
 import remainingRouter from "./remaining";
+import noticeRouter from "./notice";
 import { RouteRecordRaw, RouteComponent } from "vue-router";
 
 import {

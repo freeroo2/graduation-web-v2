@@ -114,13 +114,15 @@ function resetRouter(): void {
 }
 
 // 初始化路由
-function initRouter(name: string) {
+function initRouter(id: number) {
+  //console.log("======" + id);
   return new Promise(resolve => {
-    getAsyncRoutes({ name }).then(({ info }) => {
-      if (info.length === 0) {
-        usePermissionStoreHook().changeSetting(info);
+    getAsyncRoutes({ id }).then(({ data }) => {
+      console.log(data);
+      if (data.length === 0) {
+        usePermissionStoreHook().changeSetting(data);
       } else {
-        formatFlatteningRoutes(addAsyncRoutes(info)).map(
+        formatFlatteningRoutes(addAsyncRoutes(data)).map(
           (v: RouteRecordRaw) => {
             // 防止重复添加路由
             if (
@@ -143,7 +145,7 @@ function initRouter(name: string) {
             resolve(router);
           }
         );
-        usePermissionStoreHook().changeSetting(info);
+        usePermissionStoreHook().changeSetting(data);
       }
       router.addRoute({
         path: "/:pathMatch(.*)",
@@ -229,17 +231,21 @@ function addAsyncRoutes(arrRoutes: Array<RouteRecordRaw>) {
   if (!arrRoutes || !arrRoutes.length) return;
   const modulesRoutesKeys = Object.keys(modulesRoutes);
   arrRoutes.forEach((v: RouteRecordRaw) => {
-    if (v.redirect) {
+    if (v.redirect != "") {
       v.component = Layout;
+      console.log("v.redirect != null");
     } else if (v.meta?.frameSrc) {
       v.component = IFrame;
     } else {
       const index = modulesRoutesKeys.findIndex(ev => ev.includes(v.path));
       v.component = modulesRoutes[modulesRoutesKeys[index]];
+      //console.log(v.component);
     }
     if (v.children) {
       addAsyncRoutes(v.children);
     }
+
+    console.log(v.component);
   });
   return arrRoutes;
 }

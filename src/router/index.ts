@@ -42,6 +42,11 @@ export const router: Router = createRouter({
 const whiteList = ["/login"];
 
 router.beforeEach((to: toRouteType, _from, next) => {
+  console.log(
+    "%c [ to ]-45",
+    "font-size:13px; background:pink; color:#bf2c9f;",
+    to
+  );
   if (to.meta?.keepAlive) {
     const newMatched = to.matched;
     handleAliveRoute(newMatched, "add");
@@ -73,7 +78,7 @@ router.beforeEach((to: toRouteType, _from, next) => {
     } else {
       // 刷新
       if (usePermissionStoreHook().wholeMenus.length === 0)
-        initRouter(name.username).then((router: Router) => {
+        initRouter(name.id).then((router: Router) => {
           if (!useMultiTagsStoreHook().getMultiTagsCache) {
             const handTag = (
               path: string,

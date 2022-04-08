@@ -36,6 +36,14 @@ export type setType = {
 };
 
 export type userType = {
+  id: number;
   token: string;
   name?: string;
+  nickName?: string;
+  cid?: number;
+  // age?: number;
+  // gender?: number;
+  // phone?: string;
+  // address?: string;
+  status?: number;
 };

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { reactive, ref } from "vue";
 import { useRouter } from "vue-router";
 import { initRouter } from "/@/router/utils";
 import { storageSession } from "/@/utils/storage";
@@ -7,19 +7,32 @@ import { addClass, removeClass } from "/@/utils/operate";
 import bg from "/@/assets/login/bg.png";
 import avatar from "/@/assets/login/avatar.svg?component";
 import illustration from "/@/assets/login/illustration.svg?component";
+import { useUserStoreHook } from "../store/modules/user";
 
 const router = useRouter();
 
 let user = ref("admin");
 let pwd = ref("123456");
+let data = reactive({
+  username: user.value,
+  password: pwd.value
+});
 
 const onLogin = (): void => {
-  storageSession.setItem("info", {
-    username: "admin",
-    accessToken: "eyJhbGciOiJIUzUxMiJ9.test"
-  });
-  initRouter("admin").then(() => {});
-  router.push("/");
+  // storageSession.setItem("info", {
+  //   username: "admin",
+  //   accessToken: "eyJhbGciOiJIUzUxMiJ9.test"
+  // });
+  useUserStoreHook()
+    .loginByUsername(data)
+    .then(() => {
+      console.log("登录成功");
+      initRouter(useUserStoreHook().id).then(() => {});
+      router.push("/");
+    })
+    .catch(() => {
+      console.log("登录失败");
+    });
 };
 
 function onUserFocus() {
