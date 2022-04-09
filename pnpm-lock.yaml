@@ -53,7 +53,6 @@ specifiers:
   path: ^0.12.7
   picocolors: ^1.0.0
   pinia: ^2.0.12
-  postcss: ^8.4.6
   postcss-html: ^1.3.0
   postcss-import: 14.0.0
   postcss-scss: ^4.0.3
@@ -64,7 +63,6 @@ specifiers:
   responsive-storage: ^1.0.11
   rgb-hex: ^4.0.0
   rimraf: 3.0.2
-  rollup: ^2.70.1
   rollup-plugin-visualizer: ^5.6.0
   sass: ^1.49.9
   stylelint: ^14.3.0
@@ -87,6 +85,7 @@ specifiers:
   vue-router: ^4.0.14
   vue-types: ^4.1.1
   vxe-table: ^4.2.2
+  wangeditor: ^4.7.13
   windicss: ^3.5.1
   xe-utils: ^3.5.4
 
@@ -146,7 +145,7 @@ devDependencies:
   '@vitejs/plugin-vue-jsx': 1.3.8
   '@vue/eslint-config-prettier': 7.0.0_eslint@8.11.0+prettier@2.6.0
   '@vue/eslint-config-typescript': 10.0.0_67e26bb50fed2173443e3fe1262a69b2
-  autoprefixer: 10.4.4_postcss@8.4.12
+  autoprefixer: 10.4.4
   cross-env: 7.0.3
   eslint: 8.11.0
   eslint-plugin-prettier: 4.0.0_eslint@8.11.0+prettier@2.6.0
@@ -154,15 +153,13 @@ devDependencies:
   husky: 7.0.2
   lint-staged: 11.1.2
   picocolors: 1.0.0
-  postcss: 8.4.12
   postcss-html: 1.3.0
-  postcss-import: 14.0.0_postcss@8.4.12
-  postcss-scss: 4.0.3_postcss@8.4.12
+  postcss-import: 14.0.0
+  postcss-scss: 4.0.3
   prettier: 2.6.0
   pretty-quick: 3.1.1_prettier@2.6.0
   rimraf: 3.0.2
-  rollup: 2.70.1
-  rollup-plugin-visualizer: 5.6.0_rollup@2.70.1
+  rollup-plugin-visualizer: 5.6.0
   sass: 1.49.9
   stylelint: 14.6.0
   stylelint-config-html: 1.0.0_f552817e5b8b1b7dca381d844218922e
@@ -171,15 +168,16 @@ devDependencies:
   stylelint-config-standard: 24.0.0_stylelint@14.6.0
   stylelint-order: 5.0.0_stylelint@14.6.0
   typescript: 4.6.3
-  unplugin-element-plus: 0.3.2_rollup@2.70.1+vite@2.9.0-beta.10
+  unplugin-element-plus: 0.3.2_vite@2.9.0-beta.10
   vite: 2.9.0-beta.10_sass@1.49.9
   vite-plugin-live-reload: 2.1.0
-  vite-plugin-mock: 2.9.6_9f12a304f5d96f739756818b56e7825f
+  vite-plugin-mock: 2.9.6_mockjs@1.1.0+vite@2.9.0-beta.10
   vite-plugin-remove-console: 0.0.7
   vite-plugin-style-import: 1.4.1_vite@2.9.0-beta.10
   vite-plugin-windicss: 1.8.3_vite@2.9.0-beta.10
   vite-svg-loader: 2.2.0
   vue-eslint-parser: 8.3.0_eslint@8.11.0
+  wangeditor: registry.npmmirror.com/wangeditor/4.7.13
   windicss: 3.5.1
 
 packages:
@@ -678,7 +676,7 @@ packages:
       lodash.get: 4.4.2
       make-error: 1.3.6
       ts-node: 9.1.1_typescript@4.6.3
-      tslib: 2.3.1
+      tslib: registry.npmmirror.com/tslib/2.3.1
     transitivePeerDependencies:
       - typescript
     dev: true
@@ -822,22 +820,21 @@ packages:
       string-hash: 1.1.3
     dev: true
 
-  /@rollup/plugin-node-resolve/13.1.3_rollup@2.70.1:
+  /@rollup/plugin-node-resolve/13.1.3:
     resolution: {integrity: sha512-BdxNk+LtmElRo5d06MGY4zoepyrXX1tkzX2hrnPEZ53k78GuOMWLqmJDGIIOPwVRIFZrLQOo+Yr6KtCuLIA0AQ==}
     engines: {node: '>= 10.0.0'}
     peerDependencies:
       rollup: ^2.42.0
     dependencies:
-      '@rollup/pluginutils': 3.1.0_rollup@2.70.1
+      '@rollup/pluginutils': 3.1.0
       '@types/resolve': 1.17.1
       builtin-modules: 3.2.0
       deepmerge: 4.2.2
       is-module: 1.0.0
       resolve: 1.22.0
-      rollup: 2.70.1
     dev: true
 
-  /@rollup/pluginutils/3.1.0_rollup@2.70.1:
+  /@rollup/pluginutils/3.1.0:
     resolution: {integrity: sha512-GksZ6pr6TpIjHm8h9lSQ8pi8BE9VeubNT0OMJ3B5uZJ8pz73NPiqOtCog/x2/QzM1ENChPKxMDhiQuRHsqc+lg==}
     engines: {node: '>= 8.0.0'}
     peerDependencies:
@@ -846,7 +843,6 @@ packages:
       '@types/estree': 0.0.39
       estree-walker: 1.0.1
       picomatch: 2.3.1
-      rollup: 2.70.1
     dev: true
 
   /@rollup/pluginutils/4.2.0:
@@ -1437,7 +1433,7 @@ packages:
     resolution: {integrity: sha512-Pj2IR7u8hmUEDOwB++su6baaRi+QvsgajuFB9j95foM1N2gy5HM4z60hfusIO0fBPG5uLAEl6yCJr1jNSVugEQ==}
     dev: false
 
-  /autoprefixer/10.4.4_postcss@8.4.12:
+  /autoprefixer/10.4.4:
     resolution: {integrity: sha512-Tm8JxsB286VweiZ5F0anmbyGiNI3v3wGv3mz9W+cxEDYB/6jbnj6GM9H9mK3wIL8ftgl+C07Lcwb8PG5PCCPzA==}
     engines: {node: ^10 || ^12 || >=14}
     hasBin: true
@@ -1449,7 +1445,6 @@ packages:
       fraction.js: 4.2.0
       normalize-range: 0.1.2
       picocolors: 1.0.0
-      postcss: 8.4.12
       postcss-value-parser: 4.2.0
     dev: true
 
@@ -1542,7 +1537,7 @@ packages:
     resolution: {integrity: sha512-gxGWBrTT1JuMx6R+o5PTXMmUnhnVzLQ9SNutD4YqKtI6ap897t3tKECYla6gCWEkplXnlNybEkZg9GEGxKFCgw==}
     dependencies:
       pascal-case: 3.1.2
-      tslib: 2.3.1
+      tslib: registry.npmmirror.com/tslib/2.3.1
     dev: true
 
   /camelcase-keys/6.2.2:
@@ -1581,7 +1576,7 @@ packages:
     resolution: {integrity: sha512-ds37W8CytHgwnhGGTi88pcPyR15qoNkOpYwmMMfnWqqWgESapLqvDx6huFjQ5vqWSn2Z06173XNA7LtMOeUh1A==}
     dependencies:
       no-case: 3.0.4
-      tslib: 2.3.1
+      tslib: registry.npmmirror.com/tslib/2.3.1
       upper-case-first: 2.0.2
     dev: true
 
@@ -1629,7 +1624,7 @@ packages:
       path-case: 3.0.4
       sentence-case: 3.0.4
       snake-case: 3.0.4
-      tslib: 2.3.1
+      tslib: registry.npmmirror.com/tslib/2.3.1
     dev: true
 
   /chokidar/3.5.3:
@@ -1777,7 +1772,7 @@ packages:
     resolution: {integrity: sha512-I2hSBi7Vvs7BEuJDr5dDHfzb/Ruj3FyvFyh7KLilAjNQw3Be+xgqUBA2W6scVEcL0hL1dwPRtIqEPVUCKkSsyQ==}
     dependencies:
       no-case: 3.0.4
-      tslib: 2.3.1
+      tslib: registry.npmmirror.com/tslib/2.3.1
       upper-case: 2.0.2
     dev: true
 
@@ -2100,7 +2095,7 @@ packages:
     resolution: {integrity: sha512-Kv5nKlh6yRrdrGvxeJ2e5y2eRUpkUosIW4A2AS38zwSz27zu7ufDwQPi5Jhs3XAlGNetl3bmnGhQsMtkKJnj3w==}
     dependencies:
       no-case: 3.0.4
-      tslib: 2.3.1
+      tslib: registry.npmmirror.com/tslib/2.3.1
     dev: true
 
   /dot-prop/5.3.0:
@@ -2568,13 +2563,13 @@ packages:
   /framesync/6.0.1:
     resolution: {integrity: sha512-fUY88kXvGiIItgNC7wcTOl0SNRCVXMKSWW2Yzfmn7EKNc+MpCzcz9DhdHcdjbrtN3c6R4H5dTY2jiCpPdysEjA==}
     dependencies:
-      tslib: 2.3.1
+      tslib: registry.npmmirror.com/tslib/2.3.1
     dev: false
 
   /framesync/6.1.0:
     resolution: {integrity: sha512-aBX+hdWAvwiJYeQlFLY2533VxeL6OEu71CAgV4GGKksrj6+dE6i7K86WSSiRBEARCoJn5bFqffhg4l07eA27tg==}
     dependencies:
-      tslib: 2.3.1
+      tslib: registry.npmmirror.com/tslib/2.3.1
     dev: false
 
   /fs-extra/10.0.1:
@@ -2762,7 +2757,7 @@ packages:
     resolution: {integrity: sha512-H/vuk5TEEVZwrR0lp2zed9OCo1uAILMlx0JEMgC26rzyJJ3N1v6XkwHHXJQdR2doSjcGPM6OKPYoJgf0plJ11Q==}
     dependencies:
       capital-case: 1.0.4
-      tslib: 2.3.1
+      tslib: registry.npmmirror.com/tslib/2.3.1
     dev: true
 
   /hey-listen/1.0.8:
@@ -3181,7 +3176,7 @@ packages:
   /lower-case/2.0.2:
     resolution: {integrity: sha512-7fm3l3NAF9WfN6W3JOmf5drwpVqX78JtoGJ3A6W0a6ZnldM41w2fV5D490psKFTpMds8TJse/eHLFFsNHHjHgg==}
     dependencies:
-      tslib: 2.3.1
+      tslib: registry.npmmirror.com/tslib/2.3.1
     dev: true
 
   /lru-cache/6.0.0:
@@ -3362,7 +3357,7 @@ packages:
     resolution: {integrity: sha512-fgAN3jGAh+RoxUGZHTSOLJIqUc2wmoBwGR4tbpNAKmmovFoWq0OdRkb0VkldReO2a2iBT/OEulG9XSUc10r3zg==}
     dependencies:
       lower-case: 2.0.2
-      tslib: 2.3.1
+      tslib: registry.npmmirror.com/tslib/2.3.1
     dev: true
 
   /node-releases/2.0.2:
@@ -3517,7 +3512,7 @@ packages:
     resolution: {integrity: sha512-RXlj7zCYokReqWpOPH9oYivUzLYZ5vAPIfEmCTNViosC78F8F0H9y7T7gG2M39ymgutxF5gcFEsyZQSph9Bp3A==}
     dependencies:
       dot-case: 3.0.4
-      tslib: 2.3.1
+      tslib: registry.npmmirror.com/tslib/2.3.1
     dev: true
 
   /parent-module/1.0.1:
@@ -3546,14 +3541,14 @@ packages:
     resolution: {integrity: sha512-uWlGT3YSnK9x3BQJaOdcZwrnV6hPpd8jFH1/ucpiLRPh/2zCVJKS19E4GvYHvaCcACn3foXZ0cLB9Wrx1KGe5g==}
     dependencies:
       no-case: 3.0.4
-      tslib: 2.3.1
+      tslib: registry.npmmirror.com/tslib/2.3.1
     dev: true
 
   /path-case/3.0.4:
     resolution: {integrity: sha512-qO4qCFjXqVTrcbPt/hQfhTQ+VhFsqNKOPtytgNKkKxSoEp3XPUQ8ObFuePylOIok5gjn69ry8XiULxCwot3Wfg==}
     dependencies:
       dot-case: 3.0.4
-      tslib: 2.3.1
+      tslib: registry.npmmirror.com/tslib/2.3.1
     dev: true
 
   /path-exists/4.0.0:
@@ -3634,7 +3629,7 @@ packages:
       framesync: 6.0.1
       hey-listen: 1.0.8
       style-value-types: 5.0.0
-      tslib: 2.3.1
+      tslib: registry.npmmirror.com/tslib/2.3.1
     dev: false
 
   /postcss-calc/8.2.4_postcss@8.4.12:
@@ -3715,13 +3710,12 @@ packages:
       postcss-safe-parser: 6.0.0_postcss@8.4.12
     dev: true
 
-  /postcss-import/14.0.0_postcss@8.4.12:
+  /postcss-import/14.0.0:
     resolution: {integrity: sha512-gFDDzXhqr9ELmnLHgCC3TbGfA6Dm/YMb/UN8/f7Uuq4fL7VTk2vOIj6hwINEwbokEmp123bLD7a5m+E+KIetRg==}
     engines: {node: '>=10.0.0'}
     peerDependencies:
       postcss: ^8.0.0
     dependencies:
-      postcss: 8.4.12
       postcss-value-parser: 4.2.0
       read-cache: 1.0.0
       resolve: 1.22.0
@@ -3935,13 +3929,11 @@ packages:
       postcss: 8.4.12
     dev: true
 
-  /postcss-scss/4.0.3_postcss@8.4.12:
+  /postcss-scss/4.0.3:
     resolution: {integrity: sha512-j4KxzWovfdHsyxwl1BxkUal/O4uirvHgdzMKS1aWJBAV0qh2qj5qAZqpeBfVUYGWv+4iK9Az7SPyZ4fyNju1uA==}
     engines: {node: '>=12.0'}
     peerDependencies:
       postcss: ^8.3.3
-    dependencies:
-      postcss: 8.4.12
     dev: true
 
   /postcss-selector-parser/6.0.9:
@@ -4205,7 +4197,7 @@ packages:
       glob: 7.2.0
     dev: true
 
-  /rollup-plugin-visualizer/5.6.0_rollup@2.70.1:
+  /rollup-plugin-visualizer/5.6.0:
     resolution: {integrity: sha512-CKcc8GTUZjC+LsMytU8ocRr/cGZIfMR7+mdy4YnlyetlmIl/dM8BMnOEpD4JPIGt+ZVW7Db9ZtSsbgyeBH3uTA==}
     engines: {node: '>=12'}
     hasBin: true
@@ -4214,7 +4206,6 @@ packages:
     dependencies:
       nanoid: 3.3.1
       open: 8.4.0
-      rollup: 2.70.1
       source-map: 0.7.3
       yargs: 17.3.1
     dev: true
@@ -4236,7 +4227,7 @@ packages:
   /rxjs/7.5.5:
     resolution: {integrity: sha512-sy+H0pQofO95VDmFLzyaw9xNJU4KTRSwQIGM6+iG3SypAtCiLDzpeG8sJrNCWn2Up9km+KhkvTdbkrdy+yzZdw==}
     dependencies:
-      tslib: 2.3.1
+      tslib: registry.npmmirror.com/tslib/2.3.1
     dev: true
 
   /safe-buffer/5.1.2:
@@ -4273,7 +4264,7 @@ packages:
     resolution: {integrity: sha512-8LS0JInaQMCRoQ7YUytAo/xUu5W2XnQxV2HI/6uM6U7CITS1RqPElr30V6uIqyMKM9lJGRVFy5/4CuzcixNYSg==}
     dependencies:
       no-case: 3.0.4
-      tslib: 2.3.1
+      tslib: registry.npmmirror.com/tslib/2.3.1
       upper-case-first: 2.0.2
     dev: true
 
@@ -4334,7 +4325,7 @@ packages:
     resolution: {integrity: sha512-LAOh4z89bGQvl9pFfNF8V146i7o7/CqFPbqzYgP+yYzDIDeS9HaNFtXABamRW+AQzEVODcvE79ljJ+8a9YSdMg==}
     dependencies:
       dot-case: 3.0.4
-      tslib: 2.3.1
+      tslib: registry.npmmirror.com/tslib/2.3.1
     dev: true
 
   /source-map-js/1.0.2:
@@ -4463,14 +4454,14 @@ packages:
     resolution: {integrity: sha512-08yq36Ikn4kx4YU6RD7jWEv27v4V+PUsOGa4n/as8Et3CuODMJQ00ENeAVXAeydX4Z2j1XHZF1K2sX4mGl18fA==}
     dependencies:
       hey-listen: 1.0.8
-      tslib: 2.3.1
+      tslib: registry.npmmirror.com/tslib/2.3.1
     dev: false
 
   /style-value-types/5.1.0:
     resolution: {integrity: sha512-DRIfBtjxQ4ztBZpexkFcI+UR7pODC5qLMf2Syt+bH98PAHHRH2tQnzxBuDQlqcAoYar6GzWnj8iAfqfwnEzCiQ==}
     dependencies:
       hey-listen: 1.0.8
-      tslib: 2.3.1
+      tslib: registry.npmmirror.com/tslib/2.3.1
     dev: false
 
   /stylehacks/5.1.0_postcss@8.4.12:
@@ -4698,20 +4689,13 @@ packages:
       yn: 3.1.1
     dev: true
 
-  /tslib/1.14.1:
-    resolution: {integrity: sha512-Xni35NKzjgMrwevysHTCArtLDpPvye8zV/0E4EyYn43P7/7qvQwPh9BGkHewbMulVntbigmcT7rdX3BNo9wRJg==}
-    dev: true
-
-  /tslib/2.3.1:
-    resolution: {integrity: sha512-77EbyPPpMz+FRFRuAFlWMtmgUWGe9UOG2Z25NqCwiIjRhOf5iKGuzSe5P2w1laq+FkRy4p+PCuVkJSGkzTEKVw==}
-
   /tsutils/3.21.0_typescript@4.6.3:
     resolution: {integrity: sha512-mHKK3iUXL+3UF6xL5k0PEhKRUBKPBCv/+RkEOpjRWxxx27KKRBmmA60A9pgOUvMi8GKhRMPEmjBRPzs2W7O1OA==}
     engines: {node: '>= 6'}
     peerDependencies:
       typescript: '>=2.8.0 || >= 3.2.0-dev || >= 3.3.0-dev || >= 3.4.0-dev || >= 3.5.0-dev || >= 3.6.0-dev || >= 3.6.0-beta || >= 3.7.0-dev || >= 3.7.0-beta'
     dependencies:
-      tslib: 1.14.1
+      tslib: registry.npmmirror.com/tslib/1.14.1
       typescript: 4.6.3
     dev: true
 
@@ -4763,14 +4747,14 @@ packages:
     engines: {node: '>= 0.8'}
     dev: true
 
-  /unplugin-element-plus/0.3.2_rollup@2.70.1+vite@2.9.0-beta.10:
+  /unplugin-element-plus/0.3.2_vite@2.9.0-beta.10:
     resolution: {integrity: sha512-/oPbLA1ByrZ3VvN3jrVtVZcGJ147+ccyrL1w9d8wNLTTMH+buxdtiMQQv9R7Muz22ocJvebXZzlRVlA/JeeVPA==}
     engines: {node: '>=12.20.0'}
     dependencies:
       '@rollup/pluginutils': 4.2.0
       es-module-lexer: 0.10.4
       magic-string: 0.26.1
-      unplugin: 0.3.3_rollup@2.70.1+vite@2.9.0-beta.10
+      unplugin: 0.3.3_vite@2.9.0-beta.10
     transitivePeerDependencies:
       - esbuild
       - rollup
@@ -4778,7 +4762,7 @@ packages:
       - webpack
     dev: true
 
-  /unplugin/0.3.3_rollup@2.70.1+vite@2.9.0-beta.10:
+  /unplugin/0.3.3_vite@2.9.0-beta.10:
     resolution: {integrity: sha512-WjZWpUqqcYPQ/efR00Zm2m1+J1LitwoZ4uhHV4VdZ+IpW0Nh/qnDYtVf+nLhozXdGxslMPecOshVR7NiWFl4gA==}
     peerDependencies:
       esbuild: '>=0.13'
@@ -4795,7 +4779,6 @@ packages:
       webpack:
         optional: true
     dependencies:
-      rollup: 2.70.1
       vite: 2.9.0-beta.10_sass@1.49.9
       webpack-virtual-modules: 0.4.3
     dev: true
@@ -4803,13 +4786,13 @@ packages:
   /upper-case-first/2.0.2:
     resolution: {integrity: sha512-514ppYHBaKwfJRK/pNC6c/OxfGa0obSnAl106u97Ed0I625Nin96KAjttZF6ZL3e1XLtphxnqrOi9iWgm+u+bg==}
     dependencies:
-      tslib: 2.3.1
+      tslib: registry.npmmirror.com/tslib/2.3.1
     dev: true
 
   /upper-case/2.0.2:
     resolution: {integrity: sha512-KgdgDGJt2TpuwBUIjgG6lzw2GWFRCW9Qkfkiv0DxqHHLYJHmtmdUIKcZd8rHgFSjopVTlw6ggzCm1b8MFQwikg==}
     dependencies:
-      tslib: 2.3.1
+      tslib: registry.npmmirror.com/tslib/2.3.1
     dev: true
 
   /uri-js/4.4.1:
@@ -4856,14 +4839,14 @@ packages:
       chokidar: 3.5.3
     dev: true
 
-  /vite-plugin-mock/2.9.6_9f12a304f5d96f739756818b56e7825f:
+  /vite-plugin-mock/2.9.6_mockjs@1.1.0+vite@2.9.0-beta.10:
     resolution: {integrity: sha512-/Rm59oPppe/ncbkSrUuAxIQihlI2YcBmnbR4ST1RA2VzM1C0tEQc1KlbQvnUGhXECAGTaQN2JyasiwXP6EtKgg==}
     engines: {node: '>=12.0.0'}
     peerDependencies:
       mockjs: '>=1.1.0'
       vite: '>=2.0.0'
     dependencies:
-      '@rollup/plugin-node-resolve': 13.1.3_rollup@2.70.1
+      '@rollup/plugin-node-resolve': 13.1.3
       '@types/mockjs': 1.0.6
       chalk: 4.1.2
       chokidar: 3.5.3
@@ -5109,6 +5092,25 @@ packages:
     engines: {node: '>=10'}
     dev: true
 
+  registry.npmmirror.com/@babel/runtime-corejs3/7.17.9:
+    resolution: {integrity: sha512-WxYHHUWF2uZ7Hp1K+D1xQgbgkGUfA+5UPOegEXGt2Y5SMog/rYCVaifLZDbw8UkNXozEqqrZTy6bglL7xTaCOw==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@babel/runtime-corejs3/-/runtime-corejs3-7.17.9.tgz}
+    name: '@babel/runtime-corejs3'
+    version: 7.17.9
+    engines: {node: '>=6.9.0'}
+    dependencies:
+      core-js-pure: registry.npmmirror.com/core-js-pure/3.21.1
+      regenerator-runtime: registry.npmmirror.com/regenerator-runtime/0.13.9
+    dev: true
+
+  registry.npmmirror.com/@babel/runtime/7.17.9:
+    resolution: {integrity: sha512-lSiBBvodq29uShpWGNbgFdKYNiFDo5/HIYsaCEY9ff4sb10x9jizo2+pRrSyF4jKZCXqgzuqBOQKbUm90gQwJg==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@babel/runtime/-/runtime-7.17.9.tgz}
+    name: '@babel/runtime'
+    version: 7.17.9
+    engines: {node: '>=6.9.0'}
+    dependencies:
+      regenerator-runtime: registry.npmmirror.com/regenerator-runtime/0.13.9
+    dev: true
+
   registry.npmmirror.com/acorn-jsx/5.3.2_acorn@8.7.0:
     resolution: {integrity: sha512-rq9s+JNhf0IChjtDXxllJ7g41oZk5SlXtp0LHwyA5cejwn7vKmKp4pPri6YEePv2PU65sAsegbXtIinmDFDXgQ==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/acorn-jsx/-/acorn-jsx-5.3.2.tgz}
     id: registry.npmmirror.com/acorn-jsx/5.3.2
@@ -5126,6 +5128,13 @@ packages:
     version: 8.7.0
     engines: {node: '>=0.4.0'}
     hasBin: true
+    dev: true
+
+  registry.npmmirror.com/core-js-pure/3.21.1:
+    resolution: {integrity: sha512-12VZfFIu+wyVbBebyHmRTuEE/tZrB4tJToWcwAMcsp3h4+sHR+fMJWbKpYiCRWlhFBq+KNyO8rIV9rTkeVmznQ==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/core-js-pure/-/core-js-pure-3.21.1.tgz}
+    name: core-js-pure
+    version: 3.21.1
+    requiresBuild: true
     dev: true
 
   registry.npmmirror.com/esbuild-android-64/0.14.28:
@@ -5416,6 +5425,12 @@ packages:
     version: 4.17.21
     dev: true
 
+  registry.npmmirror.com/regenerator-runtime/0.13.9:
+    resolution: {integrity: sha512-p3VT+cOEgxFsRRA9X4lkI1E+k2/CtnKtU4gcxyaCUreilL/vqI6CdZ3wxVUx3UOUg+gnUOQQcRI7BmSI656MYA==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/regenerator-runtime/-/regenerator-runtime-0.13.9.tgz}
+    name: regenerator-runtime
+    version: 0.13.9
+    dev: true
+
   registry.npmmirror.com/semver/5.7.1:
     resolution: {integrity: sha512-sauaDf/PZdVgrLTNYHRtpXa1iRiKcaebiKQ1BJdpQlWH2lCvexQdX55snPFyK7QzpudqbCI0qXFfOasHdyNDGQ==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/semver/-/semver-5.7.1.tgz}
     name: semver
@@ -5453,6 +5468,17 @@ packages:
     version: 0.6.1
     engines: {node: '>=0.10.0'}
 
+  registry.npmmirror.com/tslib/1.14.1:
+    resolution: {integrity: sha512-Xni35NKzjgMrwevysHTCArtLDpPvye8zV/0E4EyYn43P7/7qvQwPh9BGkHewbMulVntbigmcT7rdX3BNo9wRJg==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/tslib/-/tslib-1.14.1.tgz}
+    name: tslib
+    version: 1.14.1
+    dev: true
+
+  registry.npmmirror.com/tslib/2.3.1:
+    resolution: {integrity: sha512-77EbyPPpMz+FRFRuAFlWMtmgUWGe9UOG2Z25NqCwiIjRhOf5iKGuzSe5P2w1laq+FkRy4p+PCuVkJSGkzTEKVw==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/tslib/-/tslib-2.3.1.tgz}
+    name: tslib
+    version: 2.3.1
+
   registry.npmmirror.com/vxe-table/4.2.2_vue@3.2.31+xe-utils@3.5.4:
     resolution: {integrity: sha512-snt+HAKdDy4nmdhmRVf8j70dg7uTtITLbd+QlD1SV423dIjDZ3ERI5UNY3JwRyK+UDR0BJjF3uiTSEMkW/rFlQ==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/vxe-table/-/vxe-table-4.2.2.tgz}
     id: registry.npmmirror.com/vxe-table/4.2.2
@@ -5465,6 +5491,16 @@ packages:
       vue: 3.2.31
       xe-utils: registry.npmmirror.com/xe-utils/3.5.4
     dev: false
+
+  registry.npmmirror.com/wangeditor/4.7.13:
+    resolution: {integrity: sha512-kT0jQgTgPoe3tiYiHWbS3QV5yfklcvCXF28irqgU/rOCHKP5Bnv5z/h+ACQAdUhznsfYShpWWzzhs6PLFoPBHQ==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/wangeditor/-/wangeditor-4.7.13.tgz}
+    name: wangeditor
+    version: 4.7.13
+    dependencies:
+      '@babel/runtime': registry.npmmirror.com/@babel/runtime/7.17.9
+      '@babel/runtime-corejs3': registry.npmmirror.com/@babel/runtime-corejs3/7.17.9
+      tslib: registry.npmmirror.com/tslib/2.3.1
+    dev: true
 
   registry.npmmirror.com/xe-utils/3.5.4:
     resolution: {integrity: sha512-oH7VOgvHv34pn198dhKPVKnuEHV22Q06YpCTVnAS3JuutylmZj/rtJGvn0BxxWQ37w2LgCknoebLA4uIGXwFtw==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/xe-utils/-/xe-utils-3.5.4.tgz}

@@ -118,7 +118,6 @@ function initRouter(id: number) {
   //console.log("======" + id);
   return new Promise(resolve => {
     getAsyncRoutes({ id }).then(({ data }) => {
-      console.log(data);
       if (data.length === 0) {
         usePermissionStoreHook().changeSetting(data);
       } else {
@@ -233,19 +232,15 @@ function addAsyncRoutes(arrRoutes: Array<RouteRecordRaw>) {
   arrRoutes.forEach((v: RouteRecordRaw) => {
     if (v.redirect != "") {
       v.component = Layout;
-      console.log("v.redirect != null");
     } else if (v.meta?.frameSrc) {
       v.component = IFrame;
     } else {
       const index = modulesRoutesKeys.findIndex(ev => ev.includes(v.path));
       v.component = modulesRoutes[modulesRoutesKeys[index]];
-      //console.log(v.component);
     }
     if (v.children) {
       addAsyncRoutes(v.children);
     }
-
-    console.log(v.component);
   });
   return arrRoutes;
 }

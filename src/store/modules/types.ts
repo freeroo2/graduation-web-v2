@@ -47,3 +47,20 @@ export type userType = {
   // address?: string;
   status?: number;
 };
+
+export type detailType = {
+  id: number;
+  uid: number;
+  title?: string;
+  content?: string;
+  pubTime?: string;
+  nickName?: string;
+};
+
+export type noticeStoreType = {
+  currentPage: number;
+  total: number;
+  pageSize?: number;
+  detailData?: detailType;
+  pageData?: object;
+};

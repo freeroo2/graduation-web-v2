@@ -1,23 +1,32 @@
-// const Layout = () => import("/@/layout/index.vue");
-// const noticeRouter = {
-//   path: "/notice",
-//   name: "notice",
-//   redirect: "/notice/page",
-//   component: Layout,
-//   meta: {
-//     icon: "ubuntu-fill",
-//     title: "疫情通告",
-//     rank: 12
-//   },
-//   children: [
-//     {
-//       path: "/page",
-//       name: "noticePage",
-//       component: () => import("/@/views/notice/page.vue"),
-//       meta: {
-//         title: "通告信息"
-//       }
-//     }
-//   ]
-// };
-// export default noticeRouter;
+const Layout = () => import("/@/layout/index.vue");
+const noticeRouter = {
+  path: "/notice",
+  component: Layout,
+  redirect: "/notice/page",
+  meta: {
+    icon: "information-line",
+    title: "疫情通告",
+    rank: 20
+  },
+  children: [
+    {
+      path: "/notice/page",
+      name: "noticePage",
+      component: () => import("/@/views/notice/page.vue"),
+      meta: {
+        title: "疫情通告",
+        rank: 21
+      }
+    },
+    {
+      path: "/notice/detail/:id",
+      name: "noticeDetail",
+      component: () => import("/@/views/notice/detail.vue"),
+      meta: {
+        title: "通告详情",
+        showLink: false
+      }
+    }
+  ]
+};
+export default noticeRouter;
