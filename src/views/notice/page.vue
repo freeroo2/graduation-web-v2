@@ -6,7 +6,10 @@ import {
   VxeGridListeners,
   VxeTablePropTypes,
   VxeFormEvents,
-  VXETable
+  VXETable,
+  VxeFormPropTypes,
+  VxeGridInstance,
+  VxePagerEvents
 } from "vxe-table";
 import router from "/@/router";
 import { useNoticeStoreHook } from "/@/store/modules/notice";
@@ -19,7 +22,19 @@ export default defineComponent({
   },
   setup() {
     const showDetails = ref(false);
+    const xGrid = ref({} as VxeGridInstance);
+    const checkboxData = reactive({
+      selectRecords: ref([] as any[]),
+      isAllChecked: false,
+      isIndeterminate: false
+    });
+
     const noticeStore = useNoticeStoreHook();
+    const tablePage = reactive({
+      total: 0,
+      currentPage: 1,
+      pageSize: 10
+    });
     const gridOptions = reactive<VxeGridProps>({
       border: true,
       keepSource: true,
@@ -32,7 +47,7 @@ export default defineComponent({
       },
       pagerConfig: {
         perfect: true,
-        pageSize: noticeStore.pageSize
+        total: noticeStore.total
       },
       editConfig: {
         trigger: "click",
@@ -97,7 +112,11 @@ export default defineComponent({
           // 接收 Promise
           query: () => {
             return new Promise(resolve => {
-              noticeStore.GET_NOTICES().then(() => {
+              let page = reactive({
+                pageSize: tablePage.pageSize,
+                currentPage: tablePage.currentPage
+              });
+              noticeStore.GET_NOTICES(page).then(() => {
                 resolve({
                   result: noticeStore.pageData,
                   total: noticeStore.total
@@ -108,9 +127,22 @@ export default defineComponent({
           // body 对象： { removeRecords }
           delete: () => {
             return new Promise(resolve => {
-              setTimeout(() => {
-                resolve({});
-              }, 100);
+              console.log(
+                "%c [ xGrid.value.getCheckboxRecords() ]-126",
+                "font-size:13px; background:pink; color:#bf2c9f;",
+                //xGrid.value.getCheckboxRecords()
+                checkboxData.selectRecords
+              );
+              let deleteIds = [] as any[];
+              for (let i = 0; i < checkboxData.selectRecords.length; i++) {
+                deleteIds.push(checkboxData.selectRecords[i].id);
+              }
+              // let param = reactive({
+              //   ids: deleteIds
+              // });
+              noticeStore.DELETE_NOTICES({ ids: deleteIds }).then(() => {
+                resolve(xGrid.value.getRecordset().removeRecords);
+              });
             });
           },
           // body 对象： { insertRecords, updateRecords, removeRecords, pendingRecords }
@@ -162,8 +194,38 @@ export default defineComponent({
       formData: {
         title: "",
         content: ""
+      },
+      formRules: {
+        title: [
+          { required: true, message: "请输入标题", trigger: "blur" },
+          { min: 2, max: 20, message: "长度在 2 到 20 个字符", trigger: "blur" }
+        ],
+        content: [
+          { required: true, message: "请输入内容", trigger: "blur" },
+          {
+            min: 2,
+            max: 200,
+            message: "长度在 2 到 200 个字符",
+            trigger: "blur"
+          }
+        ]
       }
     });
+    const findList = () => {
+      let page = reactive({
+        pageSize: tablePage.pageSize,
+        currentPage: tablePage.currentPage
+      });
+      noticeStore.GET_NOTICES(page).then((res: any) => {
+        console.log(
+          "%c [ res ]-203",
+          "font-size:13px; background:pink; color:#bf2c9f;",
+          res
+        );
+        // 刷新表格
+        xGrid.value.commitProxy("query");
+      });
+    };
     const editDisabledEvent: VxeGridEvents.EditDisabled = () => {
       console.log("禁止编辑");
     };
@@ -195,19 +257,43 @@ export default defineComponent({
     const submitEvent = async () => {
       console.log("submit!");
       formDemo.loading = true;
-      setTimeout(() => {
+      await noticeStore.NOTICE_CREATE(formDemo.formData).then(() => {
+        findList();
         formDemo.loading = false;
         VXETable.modal.message({ content: "保存成功", status: "success" });
-      }, 1000);
-
-      formDemo.createFlag = false;
+        formDemo.createFlag = false;
+      });
     };
     const resetEvent: VxeFormEvents.Reset = () => {
       VXETable.modal.message({ content: "重置事件", status: "info" });
+      formDemo.formData.content = "";
+      formDemo.formData.title = "";
+    };
+    // 复选框触发
+    const checkboxChangeEvent = () => {
+      const $grid = xGrid.value;
+      checkboxData.isAllChecked = $grid.isAllCheckboxChecked();
+      checkboxData.isIndeterminate = $grid.isAllCheckboxIndeterminate();
+      checkboxData.selectRecords = $grid.getCheckboxRecords();
     };
     function getWangEditorValue(str: string) {
       formDemo.formData.content = str;
     }
+    // 分页插件翻页触发
+    const handlePageChange: VxePagerEvents.PageChange = ({
+      currentPage,
+      pageSize
+    }) => {
+      tablePage.currentPage = currentPage;
+      tablePage.pageSize = pageSize;
+      console.log(
+        "%c [ tablePage ]-258",
+        "font-size:13px; background:pink; color:#bf2c9f;",
+        tablePage
+      );
+      findList();
+    };
+
     return {
       showDetails,
       formDemo,
@@ -217,7 +303,12 @@ export default defineComponent({
       gridEvents,
       submitEvent,
       resetEvent,
-      getWangEditorValue
+      getWangEditorValue,
+      xGrid,
+      handlePageChange,
+      tablePage,
+      checkboxData,
+      checkboxChangeEvent
     };
   }
 });
@@ -233,9 +324,16 @@ export default defineComponent({
       </template>
       <vxe-grid
         v-bind="gridOptions"
+        ref="xGrid"
         show-overflow="ellipsis"
         v-on="gridEvents"
         :cell-class-name="cellClassName"
+        :total="tablePage.total"
+        v-model:current-page="tablePage.currentPage"
+        v-model:page-size="tablePage.pageSize"
+        @page-change="handlePageChange"
+        @checkbox-change="checkboxChangeEvent"
+        @checkbox-all="checkboxChangeEvent"
       >
         <template #title_edit="{ row }">
           <vxe-input v-model="row.title" />
@@ -243,6 +341,24 @@ export default defineComponent({
         <template #content_edit="{ row }">
           <vxe-input v-model="row.content" />
         </template>
+        <!-- <template #pager>
+          <vxe-pager
+            :layouts="[
+              'Sizes',
+              'PrevJump',
+              'PrevPage',
+              'Number',
+              'NextPage',
+              'NextJump',
+              'FullJump',
+              'Total'
+            ]"
+            v-model:current-page="tablePage.currentPage"
+            v-model:page-size="tablePage.pageSize"
+            :total="tablePage.total"
+            @page-change="handlePageChange"
+          />
+        </template> -->
       </vxe-grid>
     </el-card>
     <vxe-modal
@@ -264,6 +380,7 @@ export default defineComponent({
       <template #default>
         <vxe-form
           :data="formDemo.formData"
+          :rules="formDemo.formRules"
           @submit="submitEvent"
           @reset="resetEvent"
           title-width="80"

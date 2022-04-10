@@ -1,6 +1,12 @@
 import { defineStore } from "pinia";
 import { store } from "/@/store";
-import { getNoticeDetail, getNotices, NoticeEdit } from "/@/api/notice";
+import {
+  getNoticeDetail,
+  getNotices,
+  NoticeEdit,
+  NoticeCreate,
+  NoticesDelete
+} from "/@/api/notice";
 import { noticeStoreType } from "./types";
 export const useNoticeStore = defineStore({
   id: "pure-notice",
@@ -27,19 +33,24 @@ export const useNoticeStore = defineStore({
     SET_PAGE_DATA(pageData) {
       this.pageData = pageData;
     },
-    async GET_NOTICES() {
+    async GET_NOTICES(params) {
       return new Promise<void>((resolve, reject) => {
-        const params = {
-          currentPage: this.currentPage,
-          pageSize: this.pageSize
-        };
+        // const params = {
+        //   currentPage: param.currentPage,
+        //   pageSize: param.pageSize
+        // };
         getNotices(params)
           .then((res: any) => {
             if (res) {
               this.pageData = res?.data?.records;
               this.total = res?.data?.total;
             }
-            resolve();
+            // console.log(
+            //   "%c [ res ]-44",
+            //   "font-size:13px; background:pink; color:#bf2c9f;",
+            //   res
+            // );
+            resolve(res);
           })
           .catch(error => {
             reject(error);
@@ -71,6 +82,28 @@ export const useNoticeStore = defineStore({
     NOTICE_EDIT(data: object) {
       return new Promise<void>((resolve, reject) => {
         NoticeEdit(data)
+          .then(() => {
+            resolve();
+          })
+          .catch(error => {
+            reject(error);
+          });
+      });
+    },
+    NOTICE_CREATE(data: object) {
+      return new Promise<void>((resolve, reject) => {
+        NoticeCreate(data)
+          .then(() => {
+            resolve();
+          })
+          .catch(error => {
+            reject(error);
+          });
+      });
+    },
+    DELETE_NOTICES(param: object) {
+      return new Promise<void>((resolve, reject) => {
+        NoticesDelete(param)
           .then(() => {
             resolve();
           })

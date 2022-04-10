@@ -18,3 +18,11 @@ export const getNoticeDetail = (params: object): noticeType => {
 export const NoticeEdit = (data: object): noticeType => {
   return http.request("post", "/notice/edit", { data: data });
 };
+// 新建公告
+export const NoticeCreate = (data: object): noticeType => {
+  return http.request("post", "/notice/create", { data: data });
+};
+// 批量删除所选公告
+export const NoticesDelete = (params: object): noticeType => {
+  return http.request("get", "/notice/deleteList", { params: params });
+};

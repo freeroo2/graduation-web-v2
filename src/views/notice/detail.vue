@@ -1,23 +1,13 @@
 <script setup name="noticeDetail" lang="ts">
 import { onMounted, reactive, ref } from "vue";
 import { useNoticeStoreHook } from "/@/store/modules/notice";
-import { useRenderIcon } from "/@/components/ReIcon/src/hooks";
 import editor from "/@/components/ReEditor/Editor.vue";
 import { detailType } from "/@/store/modules/types";
 import { useRouter } from "vue-router";
-import { functionsIn } from "lodash-unified";
 import { ElMessage } from "element-plus";
 const router = useRouter();
 const noticeStore = useNoticeStoreHook();
 const editFlag = ref(false);
-// let data: detailType = reactive({
-//   id: null,
-//   uid: null,
-//   title: "",
-//   content: "",
-//   nickName: "",
-//   pubTime: ""
-// });
 const form = reactive({
   title: "",
   content: ""
