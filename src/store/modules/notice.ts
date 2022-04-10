@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import { store } from "/@/store";
-import { getNoticeDetail, getNotices } from "/@/api/notice";
+import { getNoticeDetail, getNotices, NoticeEdit } from "/@/api/notice";
 import { noticeStoreType } from "./types";
 export const useNoticeStore = defineStore({
   id: "pure-notice",
@@ -62,6 +62,17 @@ export const useNoticeStore = defineStore({
               );
             }
             resolve(res.data);
+          })
+          .catch(error => {
+            reject(error);
+          });
+      });
+    },
+    NOTICE_EDIT(data: object) {
+      return new Promise<void>((resolve, reject) => {
+        NoticeEdit(data)
+          .then(() => {
+            resolve();
           })
           .catch(error => {
             reject(error);

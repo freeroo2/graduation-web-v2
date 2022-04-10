@@ -14,3 +14,7 @@ export const getNotices = (params: object): noticeType => {
 export const getNoticeDetail = (params: object): noticeType => {
   return http.request("get", "/noticeDetail", { params: params });
 };
+// 编辑公告
+export const NoticeEdit = (data: object): noticeType => {
+  return http.request("post", "/notice/edit", { data: data });
+};

@@ -10,6 +10,8 @@ import {
   ElRow,
   ElDivider,
   ElDropdown,
+  ElForm,
+  ElFormItem,
   ElMenu,
   ElMenuItem,
   ElDropdownItem,
@@ -36,7 +38,10 @@ import {
   ElCard,
   // 指令
   ElLoading,
-  ElInfiniteScroll
+  ElInfiniteScroll,
+  ElResult,
+  ElSteps,
+  ElStep
 } from "element-plus";
 
 // Directives
@@ -55,6 +60,8 @@ const components = [
   ElDropdown,
   ElMenu,
   ElMenuItem,
+  ElForm,
+  ElFormItem,
   ElDropdownItem,
   ElDropdownMenu,
   ElIcon,
@@ -76,7 +83,10 @@ const components = [
   ElCollapse,
   ElCollapseItem,
   ElDialog,
-  ElCard
+  ElCard,
+  ElResult,
+  ElSteps,
+  ElStep
 ];
 
 export function useElementPlus(app: App) {

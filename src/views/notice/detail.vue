@@ -6,17 +6,18 @@ import editor from "/@/components/ReEditor/Editor.vue";
 import { detailType } from "/@/store/modules/types";
 import { useRouter } from "vue-router";
 import { functionsIn } from "lodash-unified";
+import { ElMessage } from "element-plus";
 const router = useRouter();
 const noticeStore = useNoticeStoreHook();
 const editFlag = ref(false);
-let data: detailType = reactive({
-  id: null,
-  uid: null,
-  title: "",
-  content: "",
-  nickName: "",
-  pubTime: ""
-});
+// let data: detailType = reactive({
+//   id: null,
+//   uid: null,
+//   title: "",
+//   content: "",
+//   nickName: "",
+//   pubTime: ""
+// });
 const form = reactive({
   title: "",
   content: ""
@@ -36,13 +37,21 @@ function fetchData() {
   });
 }
 function onSubmit() {
-  // noticeStore.updateNotice(form);
-  // dialogVisible.value = false;
   console.log(
     "%c [ form.content ]-50",
     "font-size:13px; background:pink; color:#bf2c9f;",
     form.content
   );
+  let data = reactive({
+    id: noticeStore.detailData.id,
+    title: form.title,
+    content: form.content
+  });
+  noticeStore.NOTICE_EDIT(data).then(() => {
+    ElMessage.success("修改成功");
+    editFlag.value = false;
+    fetchData();
+  });
 }
 function getWangEditorValue(str: string) {
   form.content = str;
@@ -59,19 +68,10 @@ function getWangEditorValue(str: string) {
 // });
 onMounted(() => {
   fetchData().then((res: detailType) => {
-    data.title = res.title;
-    data.content = res.content;
-    data.id = res.id;
-    data.uid = res.uid;
-    data.pubTime = res.pubTime;
-    data.nickName = res.nickName;
     form.content = res.content;
     form.title = res.title;
   });
 });
-// onBeforeUnmount((): void => {
-//   noticeStore.resetDetailData();
-// });
 </script>
 <template>
   <el-card>
@@ -97,7 +97,7 @@ onMounted(() => {
                 text-align: center;
               "
             >
-              {{ data.title }}
+              {{ noticeStore?.detailData?.title }}
             </h1>
             <el-divider style="width: 100%" />
           </el-col>
@@ -106,36 +106,47 @@ onMounted(() => {
       </div>
       <div class="div2">
         <span style="font-size: 14px; color: darkgray"
-          >发布人：{{ data.nickName }}</span
+          >发布人：{{ noticeStore?.detailData?.nickName }}</span
         >
         <br />
         <span style="font-size: 14px; color: darkgray"
-          >发布时间：{{ data.pubTime }}</span
+          >发布时间：{{ noticeStore?.detailData?.pubTime }}</span
         >
       </div>
 
       <div class="div3">
-        <div class="preview" v-html="data.content" />
+        <div class="preview" v-html="noticeStore?.detailData?.content" />
       </div>
-      <el-dialog v-model="editFlag" title="编辑公告">
-        <el-form :model="form">
-          <el-form-item label="标题" label-width="auto">
-            <el-input
-              v-model="form.title"
-              autocomplete="off"
-              style="width: auto"
-            />
-          </el-form-item>
-          <el-form-item label="内容" label-width="50%">
-            <editor
-              :contentHtml="form.content"
-              v-on:getWangEditorValue="getWangEditorValue"
-            />
-          </el-form-item>
+
+      <el-dialog
+        v-model="editFlag"
+        title="编辑公告"
+        :width="800"
+        center
+        draggable
+      >
+        <el-form :model="form" label-width="100px" label-position="left">
+          <div class="parent_2">
+            <div class="div2_1">
+              <el-form-item label="标题" label-width="100" style="width: 85%">
+                <el-input v-model="form.title" autocomplete="off" />
+              </el-form-item>
+            </div>
+            <div class="div2_2">
+              <el-form-item label="内容" label-width="100">
+                <editor
+                  :contentHtml="form.content"
+                  v-on:getWangEditorValue="getWangEditorValue"
+                />
+              </el-form-item>
+            </div>
+          </div>
         </el-form>
         <template #footer>
-          <span class="dialog-footer">
-            <el-button @click="editFlag = false">取 消</el-button>
+          <span class="dialog-footer" style="width: 100%; text-align: center">
+            <el-button @click="editFlag = false" align="items-center"
+              >取 消</el-button
+            >
             <el-button type="primary" @click="onSubmit()">保 存</el-button>
           </span>
         </template>
@@ -147,7 +158,7 @@ onMounted(() => {
 .parent {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
-  grid-template-rows: 1fr 0.3fr 3fr 5fr;
+  grid-template-rows: 1fr 0.5fr 3fr 5fr;
   grid-column-gap: 0px;
   grid-row-gap: 0px;
 }
@@ -162,5 +173,21 @@ onMounted(() => {
 }
 .preview {
   margin-top: 50px;
+}
+.parent_2 {
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-template-rows: 0.5fr 3fr;
+  grid-column-gap: 0px;
+  grid-row-gap: 0px;
+}
+
+.div2_1 {
+  grid-area: 1 / 1 / 2 / 2;
+  margin-left: 10%;
+}
+.div2_2 {
+  grid-area: 2 / 1 / 3 / 2;
+  margin-left: 10%;
 }
 </style>
