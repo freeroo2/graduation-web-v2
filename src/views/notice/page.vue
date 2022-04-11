@@ -61,6 +61,17 @@ export default defineComponent({
           return true;
         }
       },
+      formConfig: {
+        items: [
+          {
+            field: "title",
+            title: "标题",
+            itemRender: {},
+            slots: { default: "title_item" }
+          },
+          { itemRender: {}, slots: { default: "submit_item" } }
+        ]
+      },
       toolbarConfig: {
         custom: true,
         // slots: {
@@ -104,19 +115,22 @@ export default defineComponent({
         }
       },
       proxyConfig: {
+        form: true,
         props: {
           result: "result",
           total: "total"
         },
         ajax: {
           // 接收 Promise
-          query: () => {
+          query: ({ form }) => {
             return new Promise(resolve => {
-              let page = reactive({
+              let search = form.title === null ? "" : form.title;
+              let params = reactive({
                 pageSize: tablePage.pageSize,
-                currentPage: tablePage.currentPage
+                currentPage: tablePage.currentPage,
+                search: search
               });
-              noticeStore.GET_NOTICES(page).then(() => {
+              noticeStore.FIND_NOTICES(params).then(() => {
                 resolve({
                   result: noticeStore.pageData,
                   total: noticeStore.total
@@ -137,9 +151,6 @@ export default defineComponent({
               for (let i = 0; i < checkboxData.selectRecords.length; i++) {
                 deleteIds.push(checkboxData.selectRecords[i].id);
               }
-              // let param = reactive({
-              //   ids: deleteIds
-              // });
               noticeStore.DELETE_NOTICES({ ids: deleteIds }).then(() => {
                 resolve(xGrid.value.getRecordset().removeRecords);
               });
@@ -335,6 +346,16 @@ export default defineComponent({
         @checkbox-change="checkboxChangeEvent"
         @checkbox-all="checkboxChangeEvent"
       >
+        <template #title_item="{ data }">
+          <vxe-input
+            v-model="data.title"
+            type="text"
+            placeholder="请输入标题关键字"
+          />
+        </template>
+        <template #submit_item>
+          <vxe-button type="submit" status="primary" content="查询" />
+        </template>
         <template #title_edit="{ row }">
           <vxe-input v-model="row.title" />
         </template>

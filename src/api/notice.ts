@@ -26,3 +26,7 @@ export const NoticeCreate = (data: object): noticeType => {
 export const NoticesDelete = (params: object): noticeType => {
   return http.request("get", "/notice/deleteList", { params: params });
 };
+// 查找公告
+export const findNotices = (params: object): noticeType => {
+  return http.request("get", "/notice/find", { params: params });
+};

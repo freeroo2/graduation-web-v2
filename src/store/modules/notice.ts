@@ -5,7 +5,8 @@ import {
   getNotices,
   NoticeEdit,
   NoticeCreate,
-  NoticesDelete
+  NoticesDelete,
+  findNotices
 } from "/@/api/notice";
 import { noticeStoreType } from "./types";
 export const useNoticeStore = defineStore({
@@ -106,6 +107,26 @@ export const useNoticeStore = defineStore({
         NoticesDelete(param)
           .then(() => {
             resolve();
+          })
+          .catch(error => {
+            reject(error);
+          });
+      });
+    },
+    FIND_NOTICES(params: object) {
+      return new Promise<void>((resolve, reject) => {
+        findNotices(params)
+          .then((res: any) => {
+            if (res) {
+              this.pageData = res?.data?.records;
+              this.total = res?.data?.total;
+            }
+            console.log(
+              "%c [ res ]-44",
+              "font-size:13px; background:pink; color:#bf2c9f;",
+              res
+            );
+            resolve(res);
           })
           .catch(error => {
             reject(error);
