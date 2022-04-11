@@ -24,6 +24,7 @@ const noticeRouter = {
       component: () => import("/@/views/notice/detail.vue"),
       meta: {
         title: "通告详情",
+        rank: 22,
         showLink: false
       }
     }

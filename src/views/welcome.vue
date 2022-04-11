@@ -1,221 +1,255 @@
-<script lang="ts">
-export default {
-  name: "user"
+<script setup lang="ts">
+// import {
+// ReGithub,
+// ReInfinite,
+// RePie,
+// ReLine,
+// ReBar
+// } from "/@/components/ReCharts/index";
+import { ref, computed } from "vue";
+import avatars from "/@/assets/avatars2.jpg";
+
+const date: Date = new Date();
+let loading = ref<boolean>(true);
+
+setTimeout(() => {
+  loading.value = !loading.value;
+}, 800);
+
+let greetings = computed(() => {
+  if (date.getHours() >= 0 && date.getHours() < 12) {
+    return "上午好🌞！";
+  } else if (date.getHours() >= 12 && date.getHours() < 18) {
+    return "下午好😃！";
+  } else {
+    return "晚上好🌛！";
+  }
+});
+
+const openDepot = (): void => {
+  window.open("https://github.com/freeroo2/graduation-web-v2");
 };
 </script>
 
-<script setup lang="ts">
-import { reactive } from "vue";
-import { VxeGridProps } from "vxe-table";
-
-const gridOptions = reactive({
-  border: true,
-  resizable: true,
-  keepSource: true,
-  height: 578,
-  printConfig: {},
-  importConfig: {},
-  exportConfig: {},
-  pagerConfig: {
-    perfect: true,
-    pageSize: 15
-  },
-  editConfig: {
-    trigger: "click",
-    mode: "row",
-    showStatus: true
-  },
-  toolbarConfig: {
-    buttons: [
-      {
-        code: "insert_actived",
-        name: "新增",
-        status: "perfect",
-        icon: "fa fa-plus"
-      },
-      {
-        code: "mark_cancel",
-        name: "标记/取消",
-        status: "perfect",
-        icon: "fa fa-trash-o"
-      },
-      {
-        code: "save",
-        name: "保存",
-        status: "perfect",
-        icon: "fa fa-save"
-      }
-    ],
-    perfect: true,
-    refresh: {
-      icon: "fa fa-refresh",
-      iconLoading: "fa fa-spinner fa-spin"
-    },
-    import: {
-      icon: "fa fa-upload"
-    },
-    export: {
-      icon: "fa fa-download"
-    },
-    print: {
-      icon: "fa fa-print"
-    },
-    zoom: {
-      iconIn: "fa fa-arrows-alt",
-      iconOut: "fa fa-expand"
-    },
-    custom: {
-      icon: "fa fa-cog"
-    }
-  },
-  proxyConfig: {
-    props: {
-      result: "result",
-      total: "page.total"
-    },
-    ajax: {
-      // 接收 Promise
-      query: ({ page }) => {
-        return new Promise(resolve => {
-          setTimeout(() => {
-            const list = [
-              {
-                id: 10001,
-                name: "Test1",
-                nickname: "T1",
-                role: "Develop",
-                sex: "Man",
-                age: 28,
-                address: "Shenzhen"
-              },
-              {
-                id: 10002,
-                name: "Test2",
-                nickname: "T2",
-                role: "Test",
-                sex: "Women",
-                age: 22,
-                address: "Guangzhou"
-              },
-              {
-                id: 10003,
-                name: "Test3",
-                nickname: "T3",
-                role: "PM",
-                sex: "Man",
-                age: 32,
-                address: "Shanghai"
-              },
-              {
-                id: 10004,
-                name: "Test4",
-                nickname: "T4",
-                role: "Designer",
-                sex: "Women ",
-                age: 23,
-                address: "Shenzhen"
-              },
-              {
-                id: 10005,
-                name: "Test5",
-                nickname: "T5",
-                role: "Develop",
-                sex: "Women ",
-                age: 30,
-                address: "Shanghai"
-              },
-              {
-                id: 10006,
-                name: "Test6",
-                nickname: "T6",
-                role: "Designer",
-                sex: "Women ",
-                age: 21,
-                address: "Shenzhen"
-              },
-              {
-                id: 10007,
-                name: "Test7",
-                nickname: "T7",
-                role: "Test",
-                sex: "Man ",
-                age: 29,
-                address: "vxe-table 从入门到放弃"
-              },
-              {
-                id: 10008,
-                name: "Test8",
-                nickname: "T8",
-                role: "Develop",
-                sex: "Man ",
-                age: 35,
-                address: "Shenzhen"
-              },
-              {
-                id: 10009,
-                name: "Test9",
-                nickname: "T9",
-                role: "Develop",
-                sex: "Man ",
-                age: 35,
-                address: "Shenzhen"
-              },
-              {
-                id: 100010,
-                name: "Test10",
-                nickname: "T10",
-                role: "Develop",
-                sex: "Man ",
-                age: 35,
-                address: "Guangzhou"
-              }
-            ];
-            resolve({
-              page: {
-                total: list.length
-              },
-              result: list.slice(
-                (page.currentPage - 1) * page.pageSize,
-                page.currentPage * page.pageSize
-              )
-            });
-          }, 100);
-        });
-      },
-      // body 对象： { removeRecords }
-      delete: () => {
-        return new Promise(resolve => {
-          setTimeout(() => {
-            resolve({});
-          }, 100);
-        });
-      },
-      // body 对象： { insertRecords, updateRecords, removeRecords, pendingRecords }
-      save: () => {
-        return new Promise(resolve => {
-          setTimeout(() => {
-            resolve({});
-          }, 100);
-        });
-      }
-    }
-  },
-  columns: [
-    { type: "checkbox", width: 50 },
-    { type: "seq", width: 60 },
-    { field: "name", title: "Name", editRender: { name: "input" } },
-    { field: "nickname", title: "Nickname", editRender: { name: "input" } },
-    { field: "role", title: "Role", editRender: { name: "input" } },
-    {
-      field: "address",
-      title: "Address",
-      showOverflow: true,
-      editRender: { name: "input" }
-    }
-  ]
-} as VxeGridProps);
-</script>
-
 <template>
-  <vxe-grid v-bind="gridOptions" />
+  <div class="welcome">
+    <el-card class="top-content">
+      <div class="left-mark">
+        <img :src="avatars" title="直达仓库地址" @click="openDepot" />
+        <span>{{ greetings }}</span>
+      </div>
+    </el-card>
+
+    <!-- <el-row :gutter="24" style="margin: 20px">
+      <el-col
+        :xs="24"
+        :sm="24"
+        :md="12"
+        :lg="12"
+        :xl="12"
+        style="margin-bottom: 20px"
+        v-motion
+        :initial="{
+          opacity: 0,
+          y: 100
+        }"
+        :enter="{
+          opacity: 1,
+          y: 0,
+          transition: {
+            delay: 200
+          }
+        }"
+      > !--
+        <el-card style="height: 360px">
+          <template #header>
+            <span style="font-size: 16px; font-weight: 500">GitHub信息</span>
+          </template>
+          <el-skeleton animated :rows="7" :loading="loading">
+            <template #default>
+              <ReGithub />
+            </template>
+          </el-skeleton>
+        </el-card>
+      </el-col>
+
+      <el-col
+        :xs="24"
+        :sm="24"
+        :md="12"
+        :lg="12"
+        :xl="12"
+        style="margin-bottom: 20px"
+        v-motion
+        :initial="{
+          opacity: 0,
+          y: 100
+        }"
+        :enter="{
+          opacity: 1,
+          y: 0,
+          transition: {
+            delay: 200
+          }
+        }"
+      >
+        <el-card style="height: 360px">
+          <template #header>
+            <span style="font-size: 16px; font-weight: 500"
+              >GitHub滚动信息</span
+            >
+          </template>
+          <el-skeleton animated :rows="7" :loading="loading">
+            <template #default>
+              <ReInfinite />
+            </template>
+          </el-skeleton>
+        </el-card>
+      </el-col>
+
+      <el-col
+        :xs="24"
+        :sm="24"
+        :md="12"
+        :lg="8"
+        :xl="8"
+        style="margin-bottom: 20px"
+        v-motion
+        :initial="{
+          opacity: 0,
+          y: 100
+        }"
+        :enter="{
+          opacity: 1,
+          y: 0,
+          transition: {
+            delay: 400
+          }
+        }"
+      >
+        <el-card>
+          <template #header>
+            <span style="font-size: 16px; font-weight: 500"
+              >GitHub饼图信息</span
+            >
+          </template>
+          <el-skeleton animated :rows="7" :loading="loading">
+            <template #default>
+              <RePie />
+            </template>
+          </el-skeleton>
+        </el-card>
+      </el-col>
+
+      <el-col
+        :xs="24"
+        :sm="24"
+        :md="12"
+        :lg="8"
+        :xl="8"
+        style="margin-bottom: 20px"
+        v-motion
+        :initial="{
+          opacity: 0,
+          y: 100
+        }"
+        :enter="{
+          opacity: 1,
+          y: 0,
+          transition: {
+            delay: 400
+          }
+        }"
+      >
+        <el-card>
+          <template #header>
+            <span style="font-size: 16px; font-weight: 500"
+              >GitHub折线图信息</span
+            >
+          </template>
+          <el-skeleton animated :rows="7" :loading="loading">
+            <template #default>
+              <ReLine />
+            </template>
+          </el-skeleton>
+        </el-card>
+      </el-col>
+
+      <el-col
+        :xs="24"
+        :sm="24"
+        :md="24"
+        :lg="8"
+        :xl="8"
+        style="margin-bottom: 20px"
+        v-motion
+        :initial="{
+          opacity: 0,
+          y: 100
+        }"
+        :enter="{
+          opacity: 1,
+          y: 0,
+          transition: {
+            delay: 400
+          }
+        }"
+      >
+        <el-card>
+          <template #header>
+            <span style="font-size: 16px; font-weight: 500"
+              >GitHub柱状图信息</span
+            >
+          </template>
+          <el-skeleton animated :rows="7" :loading="loading">
+            <template #default>
+              <ReBar />
+            </template>
+          </el-skeleton>
+        </el-card>
+      </el-col>
+    </el-row> -->
+  </div>
 </template>
+
+<style module scoped>
+.size {
+  height: 335px;
+}
+</style>
+
+<style lang="scss" scoped>
+.main-content {
+  margin: 0 !important;
+}
+
+.welcome {
+  height: 100%;
+
+  .top-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 60px;
+    background: #fff;
+
+    .left-mark {
+      display: flex;
+      align-items: center;
+
+      img {
+        display: block;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        margin-right: 10px;
+        cursor: pointer;
+      }
+
+      span {
+        font-size: 14px;
+      }
+    }
+  }
+}
+</style>
