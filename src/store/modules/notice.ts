@@ -121,11 +121,11 @@ export const useNoticeStore = defineStore({
               this.pageData = res?.data?.records;
               this.total = res?.data?.total;
             }
-            console.log(
-              "%c [ res ]-44",
-              "font-size:13px; background:pink; color:#bf2c9f;",
-              res
-            );
+            // console.log(
+            //   "%c [ res ]-44",
+            //   "font-size:13px; background:pink; color:#bf2c9f;",
+            //   res
+            // );
             resolve(res);
           })
           .catch(error => {

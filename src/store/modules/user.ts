@@ -2,7 +2,15 @@ import { defineStore } from "pinia";
 import { store } from "/@/store";
 import { userType } from "./types";
 import { router } from "/@/router";
-import { getLogin, refreshToken } from "/@/api/user";
+import {
+  getLogin,
+  refreshToken,
+  findManagers,
+  createManager,
+  editManager,
+  userDelete,
+  managerCancle
+} from "/@/api/user";
 import { storageLocal, storageSession } from "/@/utils/storage";
 import { getToken, setToken, removeToken } from "/@/utils/auth";
 import { useMultiTagsStoreHook } from "/@/store/modules/multiTags";
@@ -48,7 +56,12 @@ export const useUserStore = defineStore({
     // gender,
     // phone,
     // address,
-    status
+    status,
+    currentPage: 1,
+    total: 10,
+    pageSize: 10,
+    detailData: null,
+    pageData: []
   }),
   actions: {
     SET_ID(id) {
@@ -88,6 +101,12 @@ export const useUserStore = defineStore({
           .then((backdata: paramsMapType) => {
             if (backdata) {
               const { data } = backdata;
+              console.log(
+                "%c [ data ]-91",
+                "font-size:13px; background:pink; color:#bf2c9f;",
+                data
+              );
+
               setToken(data);
               resolve();
             }
@@ -123,6 +142,70 @@ export const useUserStore = defineStore({
           setToken(data);
           return data;
         }
+      });
+    },
+    async FIND_MANAGERS(params: object) {
+      return new Promise<void>((resolve, reject) => {
+        findManagers(params)
+          .then((res: any) => {
+            if (res) {
+              this.pageData = res?.data?.records;
+              this.total = res?.data?.total;
+            }
+            // console.log(
+            //   "%c [ res ]-44",
+            //   "font-size:13px; background:pink; color:#bf2c9f;",
+            //   res
+            // );
+            resolve(res);
+          })
+          .catch(error => {
+            reject(error);
+          });
+      });
+    },
+    async MANAGER_CREATE(data: object) {
+      return new Promise<void>((resolve, reject) => {
+        createManager(data)
+          .then(() => {
+            resolve();
+          })
+          .catch(error => {
+            reject(error);
+          });
+      });
+    },
+    async MANAGER_EDIT(data: object) {
+      return new Promise<void>((resolve, reject) => {
+        editManager(data)
+          .then(() => {
+            resolve();
+          })
+          .catch(error => {
+            reject(error);
+          });
+      });
+    },
+    async DELETE_USER(param: object) {
+      return new Promise<void>((resolve, reject) => {
+        userDelete(param)
+          .then(() => {
+            resolve();
+          })
+          .catch(error => {
+            reject(error);
+          });
+      });
+    },
+    async MANAGER_CANCLE(param: object) {
+      return new Promise<void>((resolve, reject) => {
+        managerCancle(param)
+          .then(() => {
+            resolve();
+          })
+          .catch(error => {
+            reject(error);
+          });
       });
     }
   }

@@ -5,7 +5,7 @@ const resultRouter = {
   redirect: "/result/success",
   meta: {
     title: "结果",
-    rank: 23,
+    rank: 50,
     showLink: false
   },
   children: [
@@ -16,7 +16,7 @@ const resultRouter = {
       meta: {
         title: "成功",
         showLink: false,
-        rank: 24
+        rank: 51
       }
     },
     {
@@ -26,7 +26,7 @@ const resultRouter = {
       meta: {
         title: "失败",
         showLink: false,
-        rank: 25
+        rank: 52
       }
     }
   ]

@@ -7,7 +7,7 @@ const errorRouter = {
   meta: {
     icon: "information-line",
     title: "错误页面",
-    rank: 9
+    rank: 60
   },
   children: [
     {

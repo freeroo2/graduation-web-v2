@@ -126,4 +126,11 @@ declare global {
       [elem: string]: any;
     }
   }
+
+  // 后台返回全局Result类型声明
+  interface resultType extends Promise<any> {
+    code?: number;
+    msg?: string;
+    data?: object;
+  }
 }

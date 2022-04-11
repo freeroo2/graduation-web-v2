@@ -13,18 +13,19 @@ const router = useRouter();
 
 let user = ref("admin");
 let pwd = ref("123456");
-let data = reactive({
-  username: user.value,
-  password: pwd.value
-});
 
 const onLogin = (): void => {
   // storageSession.setItem("info", {
   //   username: "admin",
   //   accessToken: "eyJhbGciOiJIUzUxMiJ9.test"
   // });
+  let data = reactive({
+    username: user.value,
+    password: pwd.value
+  });
   useUserStoreHook()
     .loginByUsername(data)
+
     .then(() => {
       console.log("登录成功");
       initRouter(useUserStoreHook().id).then(() => {});
@@ -77,7 +78,7 @@ function onPwdBlur() {
             }
           }"
         >
-          Pure Admin
+          COVID-19 PREVENTION
         </h2>
         <div
           class="input-group user focus"

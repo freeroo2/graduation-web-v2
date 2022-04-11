@@ -46,9 +46,14 @@ export type userType = {
   // phone?: string;
   // address?: string;
   status?: number;
+  currentPage?: number;
+  total?: number;
+  pageSize?: number;
+  detailData?: userDetailType;
+  pageData?: object;
 };
 
-export type detailType = {
+export type noticeDetailType = {
   id: number;
   uid: number;
   title?: string;
@@ -56,11 +61,24 @@ export type detailType = {
   pubTime?: string;
   nickName?: string;
 };
+export type userDetailType = {
+  id: number;
+  username: string;
+  password: string;
+  nickName: string;
+  age: number;
+  gender: number;
+  phone: string;
+  court: string;
+  address: string;
+  curStatus: number;
+  cid: number;
+};
 
 export type noticeStoreType = {
   currentPage: number;
   total: number;
   pageSize?: number;
-  detailData?: detailType;
+  detailData?: noticeDetailType;
   pageData?: object;
 };

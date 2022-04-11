@@ -1,32 +1,26 @@
-import { detailType } from "../store/modules/types";
 import { http } from "../utils/http";
 
-interface noticeType extends Promise<any> {
-  code?: number;
-  msg?: string;
-  data?: object;
-}
 // 获取所有公告
-export const getNotices = (params: object): noticeType => {
+export const getNotices = (params: object): resultType => {
   return http.request("get", "/notices", { params: params });
 };
 // 获取公告详情
-export const getNoticeDetail = (params: object): noticeType => {
+export const getNoticeDetail = (params: object): resultType => {
   return http.request("get", "/noticeDetail", { params: params });
 };
 // 编辑公告
-export const NoticeEdit = (data: object): noticeType => {
+export const NoticeEdit = (data: object): resultType => {
   return http.request("post", "/notice/edit", { data: data });
 };
 // 新建公告
-export const NoticeCreate = (data: object): noticeType => {
+export const NoticeCreate = (data: object): resultType => {
   return http.request("post", "/notice/create", { data: data });
 };
 // 批量删除所选公告
-export const NoticesDelete = (params: object): noticeType => {
+export const NoticesDelete = (params: object): resultType => {
   return http.request("get", "/notice/deleteList", { params: params });
 };
 // 查找公告
-export const findNotices = (params: object): noticeType => {
+export const findNotices = (params: object): resultType => {
   return http.request("get", "/notice/find", { params: params });
 };

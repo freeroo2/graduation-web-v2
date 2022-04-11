@@ -141,12 +141,6 @@ export default defineComponent({
           // body 对象： { removeRecords }
           delete: () => {
             return new Promise(resolve => {
-              console.log(
-                "%c [ xGrid.value.getCheckboxRecords() ]-126",
-                "font-size:13px; background:pink; color:#bf2c9f;",
-                //xGrid.value.getCheckboxRecords()
-                checkboxData.selectRecords
-              );
               let deleteIds = [] as any[];
               for (let i = 0; i < checkboxData.selectRecords.length; i++) {
                 deleteIds.push(checkboxData.selectRecords[i].id);
@@ -228,11 +222,6 @@ export default defineComponent({
         currentPage: tablePage.currentPage
       });
       noticeStore.GET_NOTICES(page).then((res: any) => {
-        console.log(
-          "%c [ res ]-203",
-          "font-size:13px; background:pink; color:#bf2c9f;",
-          res
-        );
         // 刷新表格
         xGrid.value.commitProxy("query");
       });
@@ -255,11 +244,11 @@ export default defineComponent({
         }
       },
       toolbarButtonClick(button) {
-        console.log(
-          "%c [ button ]-175",
-          "font-size:13px; background:pink; color:#bf2c9f;",
-          button
-        );
+        // console.log(
+        //   "%c [ button ]-175",
+        //   "font-size:13px; background:pink; color:#bf2c9f;",
+        //   button
+        // );
         if (button.code === "my_add_button") {
           formDemo.createFlag = true;
         }
@@ -297,11 +286,6 @@ export default defineComponent({
     }) => {
       tablePage.currentPage = currentPage;
       tablePage.pageSize = pageSize;
-      console.log(
-        "%c [ tablePage ]-258",
-        "font-size:13px; background:pink; color:#bf2c9f;",
-        tablePage
-      );
       findList();
     };
 
@@ -345,6 +329,7 @@ export default defineComponent({
         @page-change="handlePageChange"
         @checkbox-change="checkboxChangeEvent"
         @checkbox-all="checkboxChangeEvent"
+        align="center"
       >
         <template #title_item="{ data }">
           <vxe-input

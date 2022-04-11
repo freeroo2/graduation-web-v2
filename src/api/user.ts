@@ -21,6 +21,27 @@ export const refreshToken = (data: object) => {
   return http.request("post", "/refreshToken", { data });
 };
 
-// export const searchVague = (data: object) => {
-//   return http.request("post", "/searchVague", { data });
-// };
+// 查找管理员
+export const findManagers = (params: object): resultType => {
+  return http.request("get", "/user/find", { params: params });
+};
+
+// 新建管理员
+export const createManager = (data: object): resultType => {
+  return http.request("post", "/user/createManager", { data: data });
+};
+
+// 编辑管理员
+export const editManager = (data: object): resultType => {
+  return http.request("post", "/user/editManager", { data: data });
+};
+
+// 删除用户
+export const userDelete = (params: object): resultType => {
+  return http.request("get", "/user/delete", { params: params });
+};
+
+// 取消管理员身份
+export const managerCancle = (params: object): resultType => {
+  return http.request("get", "/role/cancleManager", { params: params });
+};

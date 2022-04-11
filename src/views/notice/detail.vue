@@ -2,7 +2,7 @@
 import { onMounted, reactive, ref } from "vue";
 import { useNoticeStoreHook } from "/@/store/modules/notice";
 import editor from "/@/components/ReEditor/Editor.vue";
-import { detailType } from "/@/store/modules/types";
+import { noticeDetailType } from "/@/store/modules/types";
 import { useRouter } from "vue-router";
 import { ElMessage } from "element-plus";
 const router = useRouter();
@@ -57,7 +57,7 @@ function getWangEditorValue(str: string) {
 //   form.title = res.title;
 // });
 onMounted(() => {
-  fetchData().then((res: detailType) => {
+  fetchData().then((res: noticeDetailType) => {
     form.content = res.content;
     form.title = res.title;
   });
