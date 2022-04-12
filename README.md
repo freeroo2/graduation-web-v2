@@ -1,4 +1,4 @@
-<h1>vue-pure-admin精简版</h1>
+<h1>新冠防疫社区管理系统</h1>
 
 [![license](https://img.shields.io/github/license/xiaoxian521/vue-pure-admin.svg)](LICENSE)
 
