@@ -9,11 +9,15 @@ import {
   createManager,
   editManager,
   userDelete,
-  managerCancle
+  managerCancle,
+  userSearchByCid,
+  fetAllUsersWithSearch
 } from "/@/api/user";
 import { storageLocal, storageSession } from "/@/utils/storage";
 import { getToken, setToken, removeToken } from "/@/utils/auth";
 import { useMultiTagsStoreHook } from "/@/store/modules/multiTags";
+import { useRoleStoreHook } from "./role";
+import { number } from "vue-types";
 
 const data = getToken();
 let token = "";
@@ -152,11 +156,6 @@ export const useUserStore = defineStore({
               this.pageData = res?.data?.records;
               this.total = res?.data?.total;
             }
-            // console.log(
-            //   "%c [ res ]-44",
-            //   "font-size:13px; background:pink; color:#bf2c9f;",
-            //   res
-            // );
             resolve(res);
           })
           .catch(error => {
@@ -207,7 +206,56 @@ export const useUserStore = defineStore({
             reject(error);
           });
       });
+    },
+    // 获取当前管理员所在小区的所有用户，若为超管，则获取所有用户
+    async FIND_RESIDENTS(params: object) {
+      return new Promise<void>((resolve, reject) => {
+        useRoleStoreHook()
+          .GET_CUR_ROLE(storageSession.getItem("info")?.id)
+          .then(role => {
+            console.log(
+              "%c [ role ]-213",
+              "font-size:13px; background:pink; color:#bf2c9f;",
+              role
+            );
+            // 若为管理员，则获取当前管理员所在小区的所有用户
+            if (Number(role) === 1) {
+              const params2 = {
+                ...params,
+                cid: storageSession.getItem("info")?.cid
+              };
+              userSearchByCid(params2).then(res => {
+                if (res) {
+                  this.pageData = res?.data?.records;
+                  this.total = res?.data?.total;
+                }
+                resolve(res);
+              });
+            } else if (Number(role) === 2) {
+              // 若为超级管理员，则获取所有用户
+              fetAllUsersWithSearch(params).then(res => {
+                if (res) {
+                  this.pageData = res?.data?.records;
+                  this.total = res?.data?.total;
+                }
+                resolve(res);
+              });
+            }
+          });
+      });
     }
+    //   findResidents(params)
+    //     .then((res: any) => {
+    //       if (res) {
+    //         this.pageData = res?.data?.records;
+    //         this.total = res?.data?.total;
+    //       }
+    //       resolve(res);
+    //     })
+    //     .catch(error => {
+    //       reject(error);
+    //     });
+    // });
   }
 });
 

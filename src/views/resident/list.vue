@@ -34,11 +34,6 @@ export default defineComponent({
       { value: "1", label: "男" },
       { value: "2", label: "女" }
     ]);
-    const roleList = ref([
-      { value: "0", label: "用户" },
-      { value: "1", label: "管理员" },
-      { value: "2", label: "超级管理员" }
-    ]);
 
     const noticeStore = useNoticeStoreHook();
     const userStore = useUserStoreHook();
@@ -137,7 +132,7 @@ export default defineComponent({
                 currentPage: tablePage.currentPage,
                 search: search
               });
-              userStore.FIND_MANAGERS(params).then(() => {
+              userStore.FIND_RESIDENTS(params).then(() => {
                 resolve({
                   result: userStore.pageData,
                   total: userStore.total
@@ -166,11 +161,6 @@ export default defineComponent({
           width: 150
         },
         {
-          field: "role",
-          title: "角色",
-          slots: { default: "role_default" }
-        },
-        {
           field: "gender",
           title: "性别",
           width: 100,
@@ -195,26 +185,26 @@ export default defineComponent({
       loading: false,
       createFlag: false,
       formData: {
-        username: null,
-        password: null,
-        checkPassword: null,
-        nickName: null,
-        cid: null,
-        court: null,
-        age: null,
-        gender: null,
-        phone: null,
-        address: null
-        // username: "ttest",
-        // password: "123456",
-        // checkPassword: "123456",
-        // nickName: "null1",
-        // cid: 1,
-        // court: "null111",
-        // age: 10,
-        // gender: 1,
-        // phone: "12345678911",
-        // address: "null111"
+        // username: null,
+        // password: null,
+        // checkPassword: null,
+        // nickName: null,
+        // cid: null,
+        // court: null,
+        // age: null,
+        // gender: null,
+        // phone: null,
+        // address: null
+        username: "ttest",
+        password: "123456",
+        checkPassword: "123456",
+        nickName: "null1",
+        cid: 1,
+        court: "null111",
+        age: 10,
+        gender: 1,
+        phone: "12345678911",
+        address: "null111"
       },
       formItem: [
         {
@@ -471,16 +461,6 @@ export default defineComponent({
       }
       return "未知";
     };
-    // 角色格式化显示
-    const formatRole = (value: any) => {
-      if (value === 1) {
-        return "管理员";
-      }
-      if (value === 2) {
-        return "超级管理员";
-      }
-      return "用户";
-    };
     const editRowEvent = (row: any) => {
       const $grid = xGrid.value;
       if ($grid) {
@@ -553,11 +533,9 @@ export default defineComponent({
       checkboxData,
       sexList,
       formatSex,
-      formatRole,
       editRowEvent,
       saveRowEvent,
       removeRowEvent,
-      roleList,
       ruleFormRef,
       cancleManager
     };
@@ -570,7 +548,7 @@ export default defineComponent({
     <el-card>
       <template #header>
         <div class="card-header">
-          <span class="font-medium">通告信息 </span>
+          <span class="font-medium">居民信息 </span>
         </div>
       </template>
       <vxe-grid
@@ -583,7 +561,6 @@ export default defineComponent({
         v-model:current-page="tablePage.currentPage"
         v-model:page-size="tablePage.pageSize"
         @page-change="handlePageChange"
-        style="width: 85%; margin: 0 auto"
         align="center"
       >
         <template #name_item="{ data }">
@@ -661,9 +638,6 @@ export default defineComponent({
               :label="item.label"
             />
           </vxe-select>
-        </template>
-        <template #role_default="{ row }">
-          <span>{{ formatRole(row.role) }}</span>
         </template>
         <template #phone_edit="{ row }">
           <vxe-input

@@ -7,6 +7,7 @@ specifiers:
   '@iconify-icons/ep': ^1.2.4
   '@iconify-icons/fa': ^1.2.2
   '@iconify-icons/fa-solid': ^1.2.2
+  '@iconify-icons/prime': ^1.2.1
   '@iconify-icons/ri': ^1.2.1
   '@iconify/vue': ^3.2.0
   '@pureadmin/components': ^1.0.2
@@ -130,6 +131,7 @@ devDependencies:
   '@iconify-icons/ep': 1.2.4
   '@iconify-icons/fa': 1.2.2
   '@iconify-icons/fa-solid': 1.2.2
+  '@iconify-icons/prime': registry.npmmirror.com/@iconify-icons/prime/1.2.1
   '@iconify-icons/ri': 1.2.1
   '@iconify/vue': 3.2.0_vue@3.2.31
   '@pureadmin/theme': 0.0.1
@@ -5110,6 +5112,20 @@ packages:
     engines: {node: '>=6.9.0'}
     dependencies:
       regenerator-runtime: registry.npmmirror.com/regenerator-runtime/0.13.9
+    dev: true
+
+  registry.npmmirror.com/@iconify-icons/prime/1.2.1:
+    resolution: {integrity: sha512-DsjQCpo468P4KnR93AG2+M4/UpmdowSLxOPoj8wZc2gp2jAJOROqEfi+FX+w9wF2xNdoBLeg1ye972nHa3AhKw==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@iconify-icons/prime/-/prime-1.2.1.tgz}
+    name: '@iconify-icons/prime'
+    version: 1.2.1
+    dependencies:
+      '@iconify/types': registry.npmmirror.com/@iconify/types/1.1.0
+    dev: true
+
+  registry.npmmirror.com/@iconify/types/1.1.0:
+    resolution: {integrity: sha512-Jh0llaK2LRXQoYsorIH8maClebsnzTcve+7U3rQUSnC11X4jtPnFuyatqFLvMxZ8MLG8dB4zfHsbPfuvxluONw==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@iconify/types/-/types-1.1.0.tgz}
+    name: '@iconify/types'
+    version: 1.1.0
     dev: true
 
   registry.npmmirror.com/acorn-jsx/5.3.2_acorn@8.7.0:

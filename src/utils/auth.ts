@@ -60,7 +60,8 @@ export function setToken(data) {
   storageSession.setItem("info", {
     username: account_username,
     accessToken: accessToken,
-    id: account_id
+    id: account_id,
+    cid: account_cid
   });
 }
 

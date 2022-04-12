@@ -68,6 +68,7 @@ import closeCircleLine from "@iconify-icons/ri/close-circle-line";
 import arrowUpLine from "@iconify-icons/ri/arrow-up-line";
 import arrowDownLine from "@iconify-icons/ri/arrow-down-line";
 import bookmark2Line from "@iconify-icons/ri/bookmark-2-line";
+import h1 from "@iconify-icons/ri/h-1";
 addIcon("arrow-right-s-line", arrowRightSLine);
 addIcon("arrow-left-s-line", arrowLeftSLine);
 addIcon("logout-circle-r-line", logoutCircleRLine);
@@ -80,14 +81,20 @@ addIcon("close-circle-line", closeCircleLine);
 addIcon("arrow-up-line", arrowUpLine);
 addIcon("arrow-down-line", arrowDownLine);
 addIcon("bookmark-2-line", bookmark2Line);
-
+addIcon("h-1", h1);
 // Font Awesome 4
 import faUser from "@iconify-icons/fa/user";
 import faLock from "@iconify-icons/fa/lock";
 import faSignOut from "@iconify-icons/fa/sign-out";
+import faGroup from "@iconify-icons/fa/group";
 addIcon("fa-user", faUser);
 addIcon("fa-lock", faLock);
 addIcon("fa-sign-out", faSignOut);
+addIcon("fa-group", faGroup);
+
+// Prime Icon
+import usersIcon from "@iconify-icons/prime/users";
+addIcon("usersIcon", usersIcon);
 
 // Iconify Icon在Vue里离线使用（用于内网环境）https://docs.iconify.design/icon-components/vue/offline.html
 export default defineComponent({

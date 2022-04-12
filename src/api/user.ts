@@ -45,3 +45,12 @@ export const userDelete = (params: object): resultType => {
 export const managerCancle = (params: object): resultType => {
   return http.request("get", "/role/cancleManager", { params: params });
 };
+
+// 获取当前管理员所在小区的所有用户
+export const userSearchByCid = (params: object): resultType => {
+  return http.request("get", "/user/findByCidWithSearch", { params: params });
+};
+// 获取所有用户
+export const fetAllUsersWithSearch = (params: object): resultType => {
+  return http.request("get", "/users", { params: params });
+};
