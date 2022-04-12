@@ -33,7 +33,7 @@ export const createManager = (data: object): resultType => {
 
 // 编辑管理员
 export const editManager = (data: object): resultType => {
-  return http.request("post", "/user/editManager", { data: data });
+  return http.request("post", "/user/edit", { data: data });
 };
 
 // 删除用户
@@ -53,4 +53,9 @@ export const userSearchByCid = (params: object): resultType => {
 // 获取所有用户
 export const fetAllUsersWithSearch = (params: object): resultType => {
   return http.request("get", "/users", { params: params });
+};
+
+// 重置为默认密码
+export const resetKey = (params: object): resultType => {
+  return http.request("get", "/user/resetKey", { params: params });
 };

@@ -11,13 +11,13 @@ import {
   userDelete,
   managerCancle,
   userSearchByCid,
-  fetAllUsersWithSearch
+  fetAllUsersWithSearch,
+  resetKey
 } from "/@/api/user";
 import { storageLocal, storageSession } from "/@/utils/storage";
 import { getToken, setToken, removeToken } from "/@/utils/auth";
 import { useMultiTagsStoreHook } from "/@/store/modules/multiTags";
 import { useRoleStoreHook } from "./role";
-import { number } from "vue-types";
 
 const data = getToken();
 let token = "";
@@ -241,21 +241,23 @@ export const useUserStore = defineStore({
                 resolve(res);
               });
             }
+          })
+          .catch(error => {
+            reject(error);
+          });
+      });
+    },
+    async RESET_KEY(param: object) {
+      return new Promise<void>((resolve, reject) => {
+        resetKey(param)
+          .then(() => {
+            resolve();
+          })
+          .catch(error => {
+            reject(error);
           });
       });
     }
-    //   findResidents(params)
-    //     .then((res: any) => {
-    //       if (res) {
-    //         this.pageData = res?.data?.records;
-    //         this.total = res?.data?.total;
-    //       }
-    //       resolve(res);
-    //     })
-    //     .catch(error => {
-    //       reject(error);
-    //     });
-    // });
   }
 });
 

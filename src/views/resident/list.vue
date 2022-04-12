@@ -2,25 +2,17 @@
 import { defineComponent, reactive, ref } from "vue";
 import {
   VxeGridProps,
-  VxeGridEvents,
   VxeGridListeners,
   VxeTablePropTypes,
   VxeFormEvents,
   VXETable,
-  VxeFormPropTypes,
   VxeGridInstance,
   VxePagerEvents
 } from "vxe-table";
-import router from "/@/router";
 import { useNoticeStoreHook } from "/@/store/modules/notice";
 import { useUserStoreHook } from "/@/store/modules/user";
-import { storageSession } from "/@/utils/storage";
-import editor from "/@/components/ReEditor/Editor.vue";
 export default defineComponent({
   name: "noticePage",
-  components: {
-    editor
-  },
   setup() {
     const showDetails = ref(false);
     const xGrid = ref({} as VxeGridInstance);
@@ -168,11 +160,25 @@ export default defineComponent({
           slots: { default: "gender_default", edit: "gender_edit" }
         },
         {
+          field: "age",
+          title: "年龄",
+          width: 100,
+          editRender: {},
+          slots: { edit: "age_edit" }
+        },
+        {
           field: "phone",
           title: "电话",
           width: 150,
           editRender: {},
           slots: { edit: "phone_edit" }
+        },
+        {
+          field: "address",
+          title: "地址",
+          width: 200,
+          editRender: {},
+          slots: { edit: "address_edit" }
         },
         {
           title: "操作",
@@ -474,6 +480,11 @@ export default defineComponent({
         await $grid.clearActived();
         gridOptions.loading = true;
         userStore.MANAGER_EDIT(row).then(() => {
+          console.log(
+            "%c [ row ]-491",
+            "font-size:13px; background:pink; color:#bf2c9f;",
+            row
+          );
           gridOptions.loading = false;
           VXETable.modal.message({
             content: "保存成功！",
@@ -500,16 +511,16 @@ export default defineComponent({
         }
       }
     };
-    const cancleManager = async (row: any) => {
-      const type = await VXETable.modal.confirm("您确定要取消管理员身份?");
+    const resetKey = async (row: any) => {
+      const type = await VXETable.modal.confirm("您确定要重置其密码?");
       const $grid = xGrid.value;
       if ($grid) {
         if (type === "confirm") {
           await $grid.remove(row).then(() => {
             row.role = 0;
-            userStore.MANAGER_CANCLE({ id: row.id }).then(() => {
+            userStore.RESET_KEY({ id: row.id }).then(() => {
               VXETable.modal.message({
-                content: "取消成功！",
+                content: "重置成功！",
                 status: "success"
               });
               findList();
@@ -537,7 +548,7 @@ export default defineComponent({
       saveRowEvent,
       removeRowEvent,
       ruleFormRef,
-      cancleManager
+      resetKey
     };
   }
 });
@@ -570,6 +581,16 @@ export default defineComponent({
             placeholder="请输入姓名"
           />
         </template>
+        <template #age_edit="{ row }">
+          <vxe-input v-model="row.age" type="number" placeholder="请输入年龄" />
+        </template>
+        <template #address_edit="{ row }">
+          <vxe-input
+            v-model="row.address"
+            type="text"
+            placeholder="请输入地址"
+          />
+        </template>
         <template #submit_item>
           <vxe-button type="submit" status="primary" content="查询" />
         </template>
@@ -592,10 +613,10 @@ export default defineComponent({
             />
           </template>
           <vxe-button
-            icon="fa fa-gear"
-            title="取消管理员"
+            icon="fa fa-key"
+            title="重置密码"
             circle
-            @click="cancleManager(row)"
+            @click="resetKey(row)"
           />
           <vxe-button
             icon="fa fa-trash"
