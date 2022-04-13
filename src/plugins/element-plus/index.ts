@@ -39,6 +39,8 @@ import {
   ElTransfer,
   ElTable,
   ElTableColumn,
+  ElSelect,
+  ElOption,
   // 指令
   ElLoading,
   ElInfiniteScroll,
@@ -90,6 +92,8 @@ const components = [
   ElTransfer,
   ElTable,
   ElTableColumn,
+  ElSelect,
+  ElOption,
   ElResult,
   ElSteps,
   ElStep

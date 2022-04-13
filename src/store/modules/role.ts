@@ -13,6 +13,11 @@ export const useRoleStore = defineStore({
         const params = {
           id: id
         };
+        console.log(
+          "%c [ params ]-14",
+          "font-size:13px; background:pink; color:#bf2c9f;",
+          params
+        );
         getCurRole(params)
           .then((res: any) => {
             if (res) {

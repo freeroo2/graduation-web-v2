@@ -51,6 +51,7 @@ export type userType = {
   pageSize?: number;
   detailData?: userDetailType;
   pageData?: object;
+  residents: any[];
 };
 
 export type noticeDetailType = {

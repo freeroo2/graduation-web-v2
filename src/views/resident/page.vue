@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { reactive, ref } from "vue";
+import { onBeforeMount, onMounted, reactive, ref } from "vue";
 import { Tabs, TabPane } from "@pureadmin/components";
 import type { VNode, VNodeProps } from "vue";
 import { useUserStoreHook } from "/@/store/modules/user";
@@ -8,8 +8,7 @@ const callback = (val: string) => {
   console.log(val);
 };
 const tabClick = (tab: VNodeProps) => {
-  if (tab === 2) {
-    //calTableData();
+  if (tab === 3) {
     console.log(
       "%c [ tableData1 ]-28",
       "font-size:13px; background:pink; color:#bf2c9f;",
@@ -24,15 +23,39 @@ interface Option {
   disabled: boolean;
 }
 
+const userStore = useUserStoreHook();
 const data = ref([] as Option[]);
-const residents = ref([] as any[]);
 const rightValue = ref([] as any[]);
 const rightValue2 = ref([] as any[]);
 const tableData1 = ref([] as any[]);
 const tableData2 = ref([] as any[]);
 const showHeader = ref(false);
 const loading = ref(true);
+const options = reactive([]);
+const form = reactive({
+  id: null,
+  uid: null,
+  testResult: null,
+  testDate: null,
+  desc: null
+});
+const value = ref("");
 
+onBeforeMount(() => {
+  fetchResidents().then(() => {
+    loading.value = false;
+    generateData();
+    initRightValue();
+    initRightValue2();
+    initOptions();
+  });
+});
+onMounted(() => {});
+console.log(
+  "%c [ options ]-56",
+  "font-size:13px; background:pink; color:#bf2c9f;",
+  options
+);
 // 根据用户id删除数组中相应的数据
 function arrayDeleteById(arr: any[], id: number | string) {
   const index = arr.findIndex(item => item.id === Number(id));
@@ -47,67 +70,55 @@ function arrayDeleteById(arr: any[], id: number | string) {
 }
 
 async function fetchResidents() {
-  await useUserStoreHook()
-    .FIND_RESIDENTS_TO_ARRAY()
-    .then(res => {
-      residents.value = res;
-      console.log(residents.value);
-    });
+  await userStore.FIND_RESIDENTS_TO_ARRAY();
 }
 function generateData() {
-  fetchResidents().then(() => {
-    residents.value.forEach(item => {
-      // console.log(
-      //   "%c [ item ]-21",
-      //   "font-size:13px; background:pink; color:#bf2c9f;",
-      //   item
-      // );
-      data.value.push({
-        key: item?.id,
-        label: `${item?.address}---${item?.nickName}`,
-        disabled: false
-      });
+  userStore.residents.forEach(item => {
+    data.value.push({
+      key: item?.id,
+      label: `${item?.address}---${item?.nickName}`,
+      disabled: false
     });
   });
-  // console.log(
-  //   "%c [ data ]-65",
-  //   "font-size:13px; background:pink; color:#bf2c9f;",
-  //   data
-  // );
 }
 
 function initRightValue() {
   tableData1.value = [];
-  fetchResidents().then(() => {
-    for (let i = 0; i <= residents.value.length; i++) {
-      if (residents.value[i]?.quarantine === true) {
-        rightValue.value.push(residents.value[i]?.id);
-        const index = tableData1.value.indexOf(
-          item => item.id === residents.value[i]?.id
-        );
-        if (index <= -1) {
-          tableData1.value.push(residents.value[i]);
-        }
+  for (let i = 0; i <= userStore.residents.length; i++) {
+    if (userStore.residents[i]?.quarantine === true) {
+      rightValue.value.push(userStore.residents[i]?.id);
+      const index = tableData1.value.indexOf(
+        item => item.id === userStore.residents[i]?.id
+      );
+      if (index <= -1) {
+        tableData1.value.push(userStore.residents[i]);
       }
     }
-  });
+  }
 }
 function initRightValue2() {
   tableData2.value = [];
-  fetchResidents().then(() => {
-    for (let i = 0; i <= residents.value.length; i++) {
-      if (residents.value[i]?.contact === true) {
-        rightValue2.value.push(residents.value[i]?.id);
-        const index = tableData2.value.indexOf(
-          item => item.id === residents.value[i]?.id
-        );
-        if (index <= -1) {
-          tableData2.value.push(residents.value[i]);
-        }
+  for (let i = 0; i <= userStore.residents.length; i++) {
+    if (userStore.residents[i]?.contact === true) {
+      rightValue2.value.push(userStore.residents[i]?.id);
+      const index = tableData2.value.indexOf(
+        item => item.id === userStore.residents[i]?.id
+      );
+      if (index <= -1) {
+        tableData2.value.push(userStore.residents[i]);
       }
     }
+  }
+}
+function initOptions() {
+  userStore.residents.forEach(item => {
+    options.push({
+      $value: item?.id,
+      label: `${item?.address}---${item?.nickName}`
+    });
   });
 }
+
 const handleChange = (
   value: number | string,
   direction: "left" | "right",
@@ -119,36 +130,31 @@ const handleChange = (
     ids: movedKeys
   };
   if (direction === "left") {
-    useUserStoreHook()
-      .END_QUARANTINE(params)
-      .then(() => {
-        for (let i = 0; i < movedKeys.length; i++) {
-          arrayDeleteById(tableData1.value, movedKeys[i]);
-          console.log(
-            "%c 删除了[ movedKeys[i] ]-108",
-            "font-size:13px; background:pink; color:#bf2c9f;",
-            movedKeys[i]
-          );
-        }
-      });
+    userStore.END_QUARANTINE(params).then(() => {
+      for (let i = 0; i < movedKeys.length; i++) {
+        arrayDeleteById(tableData1.value, movedKeys[i]);
+        console.log(
+          "%c 删除了[ movedKeys[i] ]-108",
+          "font-size:13px; background:pink; color:#bf2c9f;",
+          movedKeys[i]
+        );
+      }
+      //fetchResidents();
+    });
   } else {
-    useUserStoreHook()
-      .BEGIN_QUARANTINE(params)
-      .then(() => {
-        fetchResidents().then(() => {
-          for (let i = 0; i < movedKeys.length; i++) {
-            const index = residents.value.findIndex(
-              item => item.id === movedKeys[i]
-            );
-            tableData1.value.push(residents.value[index]);
-            console.log(
-              "%c 添加了[ movedKeys[i] ]-108",
-              "font-size:13px; background:pink; color:#bf2c9f;",
-              movedKeys[i]
-            );
-          }
-        });
-      });
+    userStore.BEGIN_QUARANTINE(params).then(() => {
+      for (let i = 0; i < movedKeys.length; i++) {
+        const index = userStore.residents.findIndex(
+          item => item.id === movedKeys[i]
+        );
+        tableData1.value.push(userStore.residents[index]);
+        console.log(
+          "%c 添加了[ movedKeys[i] ]-108",
+          "font-size:13px; background:pink; color:#bf2c9f;",
+          movedKeys[i]
+        );
+      }
+    });
   }
 };
 const handleChange2 = (
@@ -162,7 +168,7 @@ const handleChange2 = (
     ids: movedKeys
   };
   if (direction === "left") {
-    useUserStoreHook().END_CONTACT(params);
+    userStore.END_CONTACT(params);
     for (let i = 0; i < movedKeys.length; i++) {
       arrayDeleteById(tableData2.value, movedKeys[i]);
       console.log(
@@ -172,28 +178,26 @@ const handleChange2 = (
       );
     }
   } else {
-    useUserStoreHook()
-      .BEGIN_CONTACT(params)
-      .then(() => {
-        fetchResidents().then(() => {
-          for (let i = 0; i < movedKeys.length; i++) {
-            const index = residents.value.findIndex(
-              item => item.id === movedKeys[i]
-            );
-            tableData2.value.push(residents.value[index]);
-            console.log(
-              "%c 添加了[ movedKeys[i] ]-108",
-              "font-size:13px; background:pink; color:#bf2c9f;",
-              movedKeys[i]
-            );
-          }
-        });
-      });
+    userStore.BEGIN_CONTACT(params).then(() => {
+      for (let i = 0; i < movedKeys.length; i++) {
+        const index = userStore.residents.findIndex(
+          item => item.id === movedKeys[i]
+        );
+        tableData2.value.push(userStore.residents[index]);
+        console.log(
+          "%c 添加了[ movedKeys[i] ]-108",
+          "font-size:13px; background:pink; color:#bf2c9f;",
+          movedKeys[i]
+        );
+      }
+    });
   }
 };
-generateData();
-initRightValue();
-initRightValue2();
+const onSubmit = () => {
+  console.log("submit!");
+};
+
+//function initOpt()
 </script>
 
 <template>
@@ -207,7 +211,142 @@ initRightValue2();
       @tabScroll="callback"
       @tabClick="tabClick"
     >
-      <TabPane :key="1" tab="信息填报">
+      <TabPane :key="1" tab="核酸与疫苗">
+        <el-row :gutter="24" style="margin: 20px">
+          <el-col
+            :xs="24"
+            :sm="24"
+            :md="12"
+            :lg="12"
+            :xl="12"
+            style="margin-bottom: 20px"
+            v-motion
+            :initial="{
+              opacity: 0,
+              y: 100
+            }"
+            :enter="{
+              opacity: 1,
+              y: 0,
+              transition: {
+                delay: 200
+              }
+            }"
+          >
+            <el-card style="height: auto; width: auto" shadow="hover">
+              <template #header>
+                <span style="font-size: 16px; font-weight: 500">核酸登记</span>
+                <el-select
+                  v-model="form.uid"
+                  placeholder="请选择居民"
+                  style="margin-left: 50%: width: auto"
+                  align="center"
+                  float="right"
+                >
+                  <el-option
+                    v-for="item in options"
+                    :key="item.$value"
+                    :label="item.label"
+                    :value="item.$value"
+                  />
+                </el-select>
+              </template>
+              <div style="text-align: center">
+                <el-form :model="form" label-width="120px">
+                  <el-form-item label="Activity name">
+                    <el-input v-model="form.name" />
+                  </el-form-item>
+                  <el-form-item label="Activity zone">
+                    <el-select
+                      v-model="form.region"
+                      placeholder="please select your zone"
+                    >
+                      <el-option label="Zone one" value="shanghai" />
+                      <el-option label="Zone two" value="beijing" />
+                    </el-select>
+                  </el-form-item>
+                  <el-form-item label="Activity time">
+                    <el-col :span="11">
+                      <el-date-picker
+                        v-model="form.date1"
+                        type="date"
+                        placeholder="Pick a date"
+                        style="width: 100%"
+                      />
+                    </el-col>
+                    <el-col :span="2" class="text-center">
+                      <span class="text-gray-500">-</span>
+                    </el-col>
+                    <el-col :span="11">
+                      <el-time-picker
+                        v-model="form.date2"
+                        placeholder="Pick a time"
+                        style="width: 100%"
+                      />
+                    </el-col>
+                  </el-form-item>
+                  <el-form-item label="Instant delivery">
+                    <el-switch v-model="form.delivery" />
+                  </el-form-item>
+                  <el-form-item label="Activity type">
+                    <el-checkbox-group v-model="form.type">
+                      <el-checkbox label="Online activities" name="type" />
+                      <el-checkbox label="Promotion activities" name="type" />
+                      <el-checkbox label="Offline activities" name="type" />
+                      <el-checkbox label="Simple brand exposure" name="type" />
+                    </el-checkbox-group>
+                  </el-form-item>
+                  <el-form-item label="Resources">
+                    <el-radio-group v-model="form.resource">
+                      <el-radio label="Sponsor" />
+                      <el-radio label="Venue" />
+                    </el-radio-group>
+                  </el-form-item>
+                  <el-form-item label="Activity form">
+                    <el-input v-model="form.desc" type="textarea" />
+                  </el-form-item>
+                  <el-form-item>
+                    <el-button type="primary" @click="onSubmit"
+                      >Create</el-button
+                    >
+                    <el-button>Cancel</el-button>
+                  </el-form-item>
+                </el-form>
+              </div>
+            </el-card>
+          </el-col>
+          <el-col
+            :xs="24"
+            :sm="24"
+            :md="12"
+            :lg="12"
+            :xl="12"
+            style="margin-bottom: 20px"
+            v-motion
+            :initial="{
+              opacity: 0,
+              y: 100
+            }"
+            :enter="{
+              opacity: 1,
+              y: 0,
+              transition: {
+                delay: 200
+              }
+            }"
+          >
+            <el-card style="height: auto; width: auto" shadow="hover">
+              <template #header>
+                <span style="font-size: 16px; font-weight: 500"
+                  >疫苗接种登记</span
+                >
+              </template>
+              <div style="text-align: center">1111</div>
+            </el-card>
+          </el-col>
+        </el-row>
+      </TabPane>
+      <TabPane :key="2" tab="隔离与密接">
         <el-row :gutter="24" style="margin: 20px">
           <el-col
             :xs="2"
@@ -333,7 +472,7 @@ initRightValue2();
                   @change="handleChange2"
                 >
                   <template #default="{ option }">
-                    <span>{{ option.key }} - {{ option.label }}</span>
+                    <span>{{ option.label }}</span>
                   </template>
                   <template #left-footer><span /></template>
                   <template #right-footer>
@@ -359,7 +498,8 @@ initRightValue2();
           />
         </el-row>
       </TabPane>
-      <TabPane :key="2" tab="信息统计"
+
+      <TabPane :key="3" tab="信息统计"
         ><el-row :gutter="24" style="margin: 20px">
           <el-col
             :xs="24"
@@ -453,14 +593,16 @@ initRightValue2();
     </Tabs>
   </el-card>
 </template>
-<style>
-.transfer-footer {
-  width: 100%;
-  height: auto;
-}
-
+<style lang="scss">
 .el-transfer-panel {
-  width: 250px !important;
-  height: 400px !important;
+  width: 300px !important;
+}
+.select_cid {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: 60px;
+  background: #fff;
+  width: 100%;
 }
 </style>

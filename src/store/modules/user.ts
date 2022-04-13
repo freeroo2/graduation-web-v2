@@ -71,7 +71,8 @@ export const useUserStore = defineStore({
     total: 10,
     pageSize: 10,
     detailData: null,
-    pageData: []
+    pageData: [],
+    residents: []
   }),
   actions: {
     SET_ID(id) {
@@ -116,10 +117,9 @@ export const useUserStore = defineStore({
                 "font-size:13px; background:pink; color:#bf2c9f;",
                 data
               );
-
               setToken(data);
-              resolve();
             }
+            resolve();
           })
           .catch(error => {
             reject(error);
@@ -265,11 +265,13 @@ export const useUserStore = defineStore({
             // 若为管理员，则获取当前管理员所在小区的所有用户
             if (Number(role) === 1) {
               findByCidToArray(params).then(res => {
+                this.residents = res?.data;
                 resolve(res?.data);
               });
             } else if (Number(role) === 2) {
               // 若为超级管理员，则获取所有用户
               findToArray(params).then(res => {
+                this.residents = res?.data;
                 resolve(res?.data);
               });
             }

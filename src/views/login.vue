@@ -25,7 +25,6 @@ const onLogin = (): void => {
   });
   useUserStoreHook()
     .loginByUsername(data)
-
     .then(() => {
       console.log("登录成功");
       initRouter(useUserStoreHook().id).then(() => {});

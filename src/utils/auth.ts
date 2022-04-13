@@ -1,4 +1,5 @@
 import Cookies from "js-cookie";
+import { useRoleStoreHook } from "../store/modules/role";
 import { useUserStoreHook } from "/@/store/modules/user";
 import { storageSession } from "/@/utils/storage";
 
@@ -49,6 +50,7 @@ export function setToken(data) {
   useUserStoreHook().SET_NICKNAME(account_nickName);
   useUserStoreHook().SET_CID(account_cid);
   useUserStoreHook().SET_STATUS(account_status);
+  useRoleStoreHook().GET_CUR_ROLE(account_id);
 
   expires > 0
     ? Cookies.set(TokenKey, dataString, {

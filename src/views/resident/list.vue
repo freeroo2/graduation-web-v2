@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, reactive, ref } from "vue";
+import { defineComponent, onBeforeMount, onMounted, reactive, ref } from "vue";
 import {
   VxeGridProps,
   VxeGridListeners,
@@ -10,13 +10,32 @@ import {
   VxePagerEvents
 } from "vxe-table";
 import { useNoticeStoreHook } from "/@/store/modules/notice";
+import { useRoleStoreHook } from "/@/store/modules/role";
 import { useUserStoreHook } from "/@/store/modules/user";
+import { storageSession } from "/@/utils/storage";
 export default defineComponent({
   name: "noticePage",
   setup() {
     const showDetails = ref(false);
     const xGrid = ref({} as VxeGridInstance);
     const ruleFormRef = ref(null);
+    const selectCourtVisible = ref(false);
+    const selectCourtDisable = ref(false);
+    onMounted(() => {
+      // 当前用户为管理员
+      if (Number(useRoleStoreHook().role) === 1) {
+        selectCourtDisable.value = true;
+        selectCourtVisible.value = false;
+      } else if (Number(useRoleStoreHook().role) === 2) {
+        selectCourtDisable.value = false;
+        selectCourtVisible.value = true;
+      }
+    });
+    console.log(
+      "%c [ selectCourtVisible.value ]-32",
+      "font-size:13px; background:pink; color:#bf2c9f;",
+      selectCourtVisible.value
+    );
     const checkboxData = reactive({
       selectRecords: ref([] as any[]),
       isAllChecked: false,
@@ -251,8 +270,21 @@ export default defineComponent({
             {
               field: "cid",
               title: "小区",
+              visible: selectCourtVisible.value,
               span: 24,
-              slots: { default: "myregion" }
+              itemRender: {
+                name: "$select",
+                optionProps: {
+                  options: [
+                    {
+                      label: "选择小区",
+                      value: 1
+                    }
+                  ]
+                },
+                defaultValue: storageSession.getItem("info").cid,
+                props: { placeholder: "请再次输入密码" }
+              }
             }
           ]
         },
@@ -694,9 +726,13 @@ export default defineComponent({
         ref="ruleFormRef"
         align="center"
       >
-        <template #myregion="{ data }">
-          <vxe-input v-model="data.cid" placeholder="自定义插槽模板" />
-        </template>
+        <!-- <template #myregion="{ data }">
+          <vxe-select
+            v-model="data.cid"
+            visible="selectCourtVisible.value"
+            placeholder="请选择小区"
+          />
+        </template> -->
       </vxe-form>
     </vxe-modal>
   </div>
