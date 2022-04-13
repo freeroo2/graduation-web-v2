@@ -12,7 +12,13 @@ import {
   managerCancle,
   userSearchByCid,
   fetAllUsersWithSearch,
-  resetKey
+  resetKey,
+  findToArray,
+  findByCidToArray,
+  beginQuarantine,
+  endQuarantine,
+  beginContact,
+  endContact
 } from "/@/api/user";
 import { storageLocal, storageSession } from "/@/utils/storage";
 import { getToken, setToken, removeToken } from "/@/utils/auth";
@@ -247,9 +253,83 @@ export const useUserStore = defineStore({
           });
       });
     },
+    // 获取当前管理员所在小区的所有用户，返回为一个列表，不分页，若为超管，则获取所有用户
+    async FIND_RESIDENTS_TO_ARRAY() {
+      return new Promise<any[]>((resolve, reject) => {
+        useRoleStoreHook()
+          .GET_CUR_ROLE(storageSession.getItem("info")?.id)
+          .then(role => {
+            const params = {
+              cid: storageSession.getItem("info")?.cid
+            };
+            // 若为管理员，则获取当前管理员所在小区的所有用户
+            if (Number(role) === 1) {
+              findByCidToArray(params).then(res => {
+                resolve(res?.data);
+              });
+            } else if (Number(role) === 2) {
+              // 若为超级管理员，则获取所有用户
+              findToArray(params).then(res => {
+                resolve(res?.data);
+              });
+            }
+          })
+          .catch(error => {
+            reject(error);
+          });
+      });
+    },
     async RESET_KEY(param: object) {
       return new Promise<void>((resolve, reject) => {
         resetKey(param)
+          .then(() => {
+            resolve();
+          })
+          .catch(error => {
+            reject(error);
+          });
+      });
+    },
+    // 设置参数中的用户为隔离状态
+    async BEGIN_QUARANTINE(param: object) {
+      return new Promise<void>((resolve, reject) => {
+        beginQuarantine(param)
+          .then(() => {
+            resolve();
+          })
+          .catch(error => {
+            reject(error);
+          });
+      });
+    },
+    // 设置参数中的用户为解除隔离状态
+    async END_QUARANTINE(param: object) {
+      return new Promise<void>((resolve, reject) => {
+        endQuarantine(param)
+          .then(() => {
+            resolve();
+          })
+          .catch(error => {
+            reject(error);
+          });
+      });
+    },
+    // 设置参数中的用户为密接
+    async BEGIN_CONTACT(param: object) {
+      return new Promise<void>((resolve, reject) => {
+        beginContact(param)
+          .then(() => {
+            resolve();
+          })
+          .catch(error => {
+            reject(error);
+          });
+      });
+    },
+    // 设置参数中的用户不再是密接
+    async END_CONTACT(param: object) {
+      return new Promise<void>((resolve, reject) => {
+        endContact(param)
           .then(() => {
             resolve();
           })

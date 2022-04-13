@@ -36,6 +36,9 @@ import {
   ElCollapseItem,
   ElDialog,
   ElCard,
+  ElTransfer,
+  ElTable,
+  ElTableColumn,
   // 指令
   ElLoading,
   ElInfiniteScroll,
@@ -84,6 +87,9 @@ const components = [
   ElCollapseItem,
   ElDialog,
   ElCard,
+  ElTransfer,
+  ElTable,
+  ElTableColumn,
   ElResult,
   ElSteps,
   ElStep

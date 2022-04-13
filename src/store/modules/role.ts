@@ -17,11 +17,6 @@ export const useRoleStore = defineStore({
           .then((res: any) => {
             if (res) {
               this.role = res?.data?.role;
-              console.log(
-                "%c [ res?.data ]-55",
-                "font-size:13px; background:pink; color:#bf2c9f;",
-                res?.data
-              );
             }
             resolve(res?.data?.role);
           })

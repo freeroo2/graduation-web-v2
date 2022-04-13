@@ -50,12 +50,43 @@ export const managerCancle = (params: object): resultType => {
 export const userSearchByCid = (params: object): resultType => {
   return http.request("get", "/user/findByCidWithSearch", { params: params });
 };
+
 // 获取所有用户
 export const fetAllUsersWithSearch = (params: object): resultType => {
   return http.request("get", "/users", { params: params });
 };
 
+// 用于超管获取所有用户，返回列表形式，不分页
+export const findToArray = (params: object): resultType => {
+  return http.request("get", "/user/findToArray", { params: params });
+};
+
+// 用于管理员查看所属小区所有用户，返回为列表，不分页
+export const findByCidToArray = (params: object): resultType => {
+  return http.request("get", "/user/findByCidToArray", { params: params });
+};
+
 // 重置为默认密码
 export const resetKey = (params: object): resultType => {
   return http.request("get", "/user/resetKey", { params: params });
+};
+
+// 将列表中的用户设为隔离
+export const beginQuarantine = (params: object): resultType => {
+  return http.request("get", "/user/beginQuarantine", { params: params });
+};
+
+// 将列表中的用户解除隔离
+export const endQuarantine = (params: object): resultType => {
+  return http.request("get", "/user/endQuarantine", { params: params });
+};
+
+// 将列表中的用户设为密接
+export const beginContact = (params: object): resultType => {
+  return http.request("get", "/user/beginContact", { params: params });
+};
+
+// 将列表中的用户解除密接
+export const endContact = (params: object): resultType => {
+  return http.request("get", "/user/endContact", { params: params });
 };
