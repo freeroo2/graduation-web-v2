@@ -3,6 +3,9 @@ import { onBeforeMount, onMounted, reactive, ref } from "vue";
 import { Tabs, TabPane } from "@pureadmin/components";
 import type { VNode, VNodeProps } from "vue";
 import { useUserStoreHook } from "/@/store/modules/user";
+import { ElMessage, FormInstance } from "element-plus";
+import { errorMessage, successMessage } from "/@/utils/message";
+import { useVaccineStoreHook } from "/@/store/modules/vaccine";
 const activeKey = ref(1);
 const callback = (val: string) => {
   console.log(val);
@@ -24,6 +27,7 @@ interface Option {
 }
 
 const userStore = useUserStoreHook();
+const vaccineStore = useVaccineStoreHook();
 const data = ref([] as Option[]);
 const rightValue = ref([] as any[]);
 const rightValue2 = ref([] as any[]);
@@ -32,14 +36,72 @@ const tableData2 = ref([] as any[]);
 const showHeader = ref(false);
 const loading = ref(true);
 const options = reactive([]);
+const ruleFormRef = ref<FormInstance>();
 const form = reactive({
   id: null,
   uid: null,
-  testResult: null,
-  testDate: null,
+  type: null,
+  result: null,
+  testTime: null,
+  resultTime: null,
   desc: null
 });
-const value = ref("");
+const rules = reactive({
+  uid: [{ required: true, message: "请选择居民", trigger: "change" }],
+  result: [
+    {
+      required: true,
+      message: "请选择结果",
+      trigger: "change"
+    }
+  ],
+  testTime: [
+    {
+      type: "date",
+      required: true,
+      message: "请选择采样时间",
+      trigger: "change"
+    }
+  ],
+  resultTime: [
+    {
+      type: "date",
+      required: true,
+      message: "请选择检测时间",
+      trigger: "change"
+    }
+  ],
+  type: [
+    {
+      required: true,
+      message: "请选择采样方式",
+      trigger: "change"
+    }
+  ]
+});
+
+const shortcuts = [
+  {
+    text: "今天",
+    value: new Date()
+  },
+  {
+    text: "昨天",
+    value: () => {
+      const date = new Date();
+      date.setTime(date.getTime() - 3600 * 1000 * 24);
+      return date;
+    }
+  },
+  {
+    text: "一周前",
+    value: () => {
+      const date = new Date();
+      date.setTime(date.getTime() - 3600 * 1000 * 24 * 7);
+      return date;
+    }
+  }
+];
 
 onBeforeMount(() => {
   fetchResidents().then(() => {
@@ -48,6 +110,7 @@ onBeforeMount(() => {
     initRightValue();
     initRightValue2();
     initOptions();
+    initVaccineTypes();
   });
 });
 onMounted(() => {});
@@ -193,11 +256,36 @@ const handleChange2 = (
     });
   }
 };
-const onSubmit = () => {
-  console.log("submit!");
+const submitForm = async (formEl: FormInstance | undefined) => {
+  if (!formEl) return;
+  await formEl.validate((valid, fields) => {
+    if (valid) {
+      console.log("submit!");
+      console.log(
+        "%c [ form ]-271",
+        "font-size:13px; background:pink; color:#bf2c9f;",
+        form
+      );
+      userStore.ADD_PCR(form).then(() => {
+        ruleFormRef.value.resetFields();
+        //TODO fetchPcrs();
+        successMessage("提交成功");
+      });
+    } else {
+      console.log("error submit!", fields);
+      errorMessage("提交失败");
+    }
+  });
 };
 
-//function initOpt()
+const resetForm = (formEl: FormInstance | undefined) => {
+  if (!formEl) return;
+  formEl.resetFields();
+};
+
+function initVaccineTypes() {
+  vaccineStore.GET_VACCINES();
+}
 </script>
 
 <template>
@@ -236,80 +324,85 @@ const onSubmit = () => {
             <el-card style="height: auto; width: auto" shadow="hover">
               <template #header>
                 <span style="font-size: 16px; font-weight: 500">核酸登记</span>
-                <el-select
-                  v-model="form.uid"
-                  placeholder="请选择居民"
-                  style="margin-left: 50%: width: auto"
-                  align="center"
-                  float="right"
-                >
-                  <el-option
-                    v-for="item in options"
-                    :key="item.$value"
-                    :label="item.label"
-                    :value="item.$value"
-                  />
-                </el-select>
               </template>
               <div style="text-align: center">
-                <el-form :model="form" label-width="120px">
-                  <el-form-item label="Activity name">
-                    <el-input v-model="form.name" />
-                  </el-form-item>
-                  <el-form-item label="Activity zone">
-                    <el-select
-                      v-model="form.region"
-                      placeholder="please select your zone"
+                <el-form
+                  ref="ruleFormRef"
+                  :model="form"
+                  :rules="rules"
+                  label-width="120px"
+                >
+                  <el-form-item label="选择居民" prop="uid"
+                    ><el-select
+                      v-model="form.uid"
+                      placeholder="请选择居民"
+                      align="center"
                     >
-                      <el-option label="Zone one" value="shanghai" />
-                      <el-option label="Zone two" value="beijing" />
-                    </el-select>
+                      <el-option
+                        v-for="item in options"
+                        :key="item.$value"
+                        :label="item.label"
+                        :value="item.$value"
+                      /> </el-select
+                  ></el-form-item>
+                  <el-form-item
+                    label="核酸检测结果"
+                    prop="result"
+                    style="width: 50%"
+                  >
+                    <el-radio v-model="form.result" label="false"
+                      >阴性</el-radio
+                    >
+                    <el-radio v-model="form.result" label="true">阳性</el-radio>
                   </el-form-item>
-                  <el-form-item label="Activity time">
-                    <el-col :span="11">
+                  <el-form-item label="采样方式" prop="type">
+                    <el-radio v-model="form.type" label="true"
+                      >口咽拭子</el-radio
+                    >
+                    <el-radio v-model="form.type" label="false"
+                      >鼻咽拭子</el-radio
+                    >
+                  </el-form-item>
+                  <el-form-item
+                    label="采样时间"
+                    prop="testTime"
+                    style="width: auto"
+                  >
+                    <div class="block">
                       <el-date-picker
-                        v-model="form.date1"
-                        type="date"
-                        placeholder="Pick a date"
-                        style="width: 100%"
+                        v-model="form.testTime"
+                        type="datetime"
+                        placeholder="请选择时间"
+                        :shortcuts="shortcuts"
+                        format="YYYY-MM-DD hh:mm:ss"
+                        value-format="YYYY-MM-DD hh:mm:ss"
                       />
-                    </el-col>
-                    <el-col :span="2" class="text-center">
-                      <span class="text-gray-500">-</span>
-                    </el-col>
-                    <el-col :span="11">
-                      <el-time-picker
-                        v-model="form.date2"
-                        placeholder="Pick a time"
-                        style="width: 100%"
+                    </div>
+                  </el-form-item>
+                  <el-form-item label="检测时间" prop="resultTime">
+                    <div class="block">
+                      <el-date-picker
+                        v-model="form.resultTime"
+                        type="datetime"
+                        placeholder="请选择时间"
+                        :shortcuts="shortcuts"
+                        format="YYYY-MM-DD hh:mm:ss"
+                        value-format="YYYY-MM-DD hh:mm:ss"
                       />
-                    </el-col>
+                    </div>
                   </el-form-item>
-                  <el-form-item label="Instant delivery">
-                    <el-switch v-model="form.delivery" />
-                  </el-form-item>
-                  <el-form-item label="Activity type">
-                    <el-checkbox-group v-model="form.type">
-                      <el-checkbox label="Online activities" name="type" />
-                      <el-checkbox label="Promotion activities" name="type" />
-                      <el-checkbox label="Offline activities" name="type" />
-                      <el-checkbox label="Simple brand exposure" name="type" />
-                    </el-checkbox-group>
-                  </el-form-item>
-                  <el-form-item label="Resources">
-                    <el-radio-group v-model="form.resource">
-                      <el-radio label="Sponsor" />
-                      <el-radio label="Venue" />
-                    </el-radio-group>
-                  </el-form-item>
-                  <el-form-item label="Activity form">
+                  <el-form-item label="备注">
                     <el-input v-model="form.desc" type="textarea" />
                   </el-form-item>
                   <el-form-item>
-                    <el-button type="primary" @click="onSubmit"
-                      >Create</el-button
-                    >
-                    <el-button>Cancel</el-button>
+                    <div style="margin-left: 20%">
+                      <el-button type="primary" @click="submitForm(ruleFormRef)"
+                        >创建</el-button
+                      >
+                      <el-button @click="resetForm(ruleFormRef)"
+                        >重置</el-button
+                      >
+                    </div>
                   </el-form-item>
                 </el-form>
               </div>
@@ -401,12 +494,6 @@ const onSubmit = () => {
                   <template #left-footer><span /></template>
                   <template #right-footer>
                     <span />
-                    <!-- <el-button
-                      class="transfer-footer"
-                      size="large"
-                      @click="handleSubmit()"
-                      >保存</el-button
-                    > -->
                   </template>
                 </el-transfer>
               </div>
@@ -477,12 +564,6 @@ const onSubmit = () => {
                   <template #left-footer><span /></template>
                   <template #right-footer>
                     <span />
-                    <!-- <el-button
-                      class="transfer-footer"
-                      size="large"
-                      @click="handleSubmit()"
-                      >保存</el-button
-                    > -->
                   </template>
                 </el-transfer>
               </div>

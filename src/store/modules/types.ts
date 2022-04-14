@@ -83,3 +83,7 @@ export type noticeStoreType = {
   detailData?: noticeDetailType;
   pageData?: object;
 };
+
+export type vaccineStoreType = {
+  vaccines: any[];
+};
