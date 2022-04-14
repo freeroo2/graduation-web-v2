@@ -339,18 +339,6 @@ export const useUserStore = defineStore({
             reject(error);
           });
       });
-    },
-    // 通过用户ID添加核酸记录
-    async ADD_PCR(param: object) {
-      return new Promise<void>((resolve, reject) => {
-        addPcr(param)
-          .then(() => {
-            resolve();
-          })
-          .catch(error => {
-            reject(error);
-          });
-      });
     }
   }
 });

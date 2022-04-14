@@ -13,9 +13,11 @@ import { useNoticeStoreHook } from "/@/store/modules/notice";
 import { useRoleStoreHook } from "/@/store/modules/role";
 import { useUserStoreHook } from "/@/store/modules/user";
 import { storageSession } from "/@/utils/storage";
+import resident2 from "/@/assets/resident2.png";
 export default defineComponent({
   name: "noticePage",
   setup() {
+    const residentImg = ref(resident2);
     const showDetails = ref(false);
     const xGrid = ref({} as VxeGridInstance);
     const ruleFormRef = ref(null);
@@ -580,7 +582,8 @@ export default defineComponent({
       saveRowEvent,
       removeRowEvent,
       ruleFormRef,
-      resetKey
+      resetKey,
+      residentImg
     };
   }
 });
@@ -594,112 +597,202 @@ export default defineComponent({
           <span class="font-medium">居民信息 </span>
         </div>
       </template>
-      <vxe-grid
-        v-bind="gridOptions"
-        ref="xGrid"
-        show-overflow="ellipsis"
-        v-on="gridEvents"
-        :cell-class-name="cellClassName"
-        :total="tablePage.total"
-        v-model:current-page="tablePage.currentPage"
-        v-model:page-size="tablePage.pageSize"
-        @page-change="handlePageChange"
-        align="center"
-      >
-        <template #name_item="{ data }">
-          <vxe-input
-            v-model="data.nickName"
-            type="text"
-            placeholder="请输入姓名"
-          />
-        </template>
-        <template #age_edit="{ row }">
-          <vxe-input v-model="row.age" type="number" placeholder="请输入年龄" />
-        </template>
-        <template #address_edit="{ row }">
-          <vxe-input
-            v-model="row.address"
-            type="text"
-            placeholder="请输入地址"
-          />
-        </template>
-        <template #submit_item>
-          <vxe-button type="submit" status="primary" content="查询" />
-        </template>
-        <template #operate="{ row }">
-          <template v-if="xGrid.isActiveByRow(row)">
-            <vxe-button
-              icon="fa fa-save"
-              status="primary"
-              title="保存"
-              circle
-              @click="saveRowEvent(row)"
-            />
-          </template>
-          <template v-else>
-            <vxe-button
-              icon="fa fa-edit"
-              title="编辑"
-              circle
-              @click="editRowEvent(row)"
-            />
-          </template>
-          <vxe-button
-            icon="fa fa-key"
-            title="重置密码"
-            circle
-            @click="resetKey(row)"
-          />
-          <vxe-button
-            icon="fa fa-trash"
-            title="删除"
-            circle
-            @click="removeRowEvent(row)"
-          />
-        </template>
-        <template #name_edit="{ row }">
-          <vxe-input v-model="row.nickName" />
-        </template>
-        <template #gender_default="{ row }">
-          <el-tag
-            :effect="
-              row.gender == 1 ? 'dark' : row.gender == 2 ? 'light' : 'light'
-            "
-            type="info"
-            :color="
-              row.gender == 1
-                ? '#6FB2D2'
-                : row.gender == 2
-                ? '#FFEEEE'
-                : '#DDDDDD'
-            "
-            round
-            size="large"
-            >{{ formatSex(row.gender) }}</el-tag
-          >
-        </template>
-        <template #gender_edit="{ row }">
-          <vxe-select
-            v-model="row.gender"
-            transfer
-            style="width: 50%; margin: 0 auto"
-          >
-            <vxe-option
-              v-for="item in sexList"
-              :key="item.value"
-              :value="item.value"
-              :label="item.label"
-            />
-          </vxe-select>
-        </template>
-        <template #phone_edit="{ row }">
-          <vxe-input
-            v-model="row.phone"
-            type="text"
-            placeholder="请输入电话号码"
-          />
-        </template>
-      </vxe-grid>
+      <el-row :gutter="24" style="margin: 20px">
+        <el-col
+          :xs="24"
+          :sm="24"
+          :md="12"
+          :lg="12"
+          :xl="12"
+          style="margin-bottom: 20px"
+          v-motion
+          :initial="{
+            opacity: 0,
+            y: 100
+          }"
+          :enter="{
+            opacity: 1,
+            y: 0,
+            transition: {
+              delay: 200
+            }
+          }"
+        >
+          <div style="margin-top: 50px">
+            <span>
+              面对复杂的疫情形势，把病毒阻挡在社区门外，守护好居民健康安全，解决好居民生活需求，是我们社区的一线防疫人员坚守岗位的共同信念。
+              <br /><br />
+              劝导居民戴口罩、勤洗手、不聚集，做好个人防护。测温、扫码、戴口罩等各项疫情防控工作落细到位。</span
+            >
+          </div>
+        </el-col>
+        <el-col
+          :xs="24"
+          :sm="24"
+          :md="12"
+          :lg="12"
+          :xl="12"
+          style="margin-bottom: 20px"
+          v-motion
+          :initial="{
+            opacity: 0,
+            y: 100
+          }"
+          :enter="{
+            opacity: 1,
+            y: 0,
+            transition: {
+              delay: 200
+            }
+          }"
+        >
+          <img :src="residentImg" class="IMG" /> </el-col
+      ></el-row>
+      <el-row :gutter="24" style="margin: 20px">
+        <el-col
+          :xs="24"
+          :sm="24"
+          :md="24"
+          :lg="24"
+          :xl="24"
+          style="margin-bottom: 20px"
+          v-motion
+          :initial="{
+            opacity: 0,
+            y: 100
+          }"
+          :enter="{
+            opacity: 1,
+            y: 0,
+            transition: {
+              delay: 200
+            }
+          }"
+          ><el-card style="height: auto; width: auto" shadow="hover">
+            <template #header>
+              <span style="font-size: 16px; font-weight: 500">居民列表</span>
+            </template>
+            <div style="text-align: center">
+              <vxe-grid
+                v-bind="gridOptions"
+                ref="xGrid"
+                show-overflow="ellipsis"
+                v-on="gridEvents"
+                :cell-class-name="cellClassName"
+                :total="tablePage.total"
+                v-model:current-page="tablePage.currentPage"
+                v-model:page-size="tablePage.pageSize"
+                @page-change="handlePageChange"
+                align="center"
+                height="800px"
+                max-height="800px"
+              >
+                <template #name_item="{ data }">
+                  <vxe-input
+                    v-model="data.nickName"
+                    type="text"
+                    placeholder="请输入姓名"
+                  />
+                </template>
+                <template #age_edit="{ row }">
+                  <vxe-input
+                    v-model="row.age"
+                    type="number"
+                    placeholder="请输入年龄"
+                  />
+                </template>
+                <template #address_edit="{ row }">
+                  <vxe-input
+                    v-model="row.address"
+                    type="text"
+                    placeholder="请输入地址"
+                  />
+                </template>
+                <template #submit_item>
+                  <vxe-button type="submit" status="primary" content="查询" />
+                </template>
+                <template #operate="{ row }">
+                  <template v-if="xGrid.isActiveByRow(row)">
+                    <vxe-button
+                      icon="fa fa-save"
+                      status="primary"
+                      title="保存"
+                      circle
+                      @click="saveRowEvent(row)"
+                    />
+                  </template>
+                  <template v-else>
+                    <vxe-button
+                      icon="fa fa-edit"
+                      title="编辑"
+                      circle
+                      @click="editRowEvent(row)"
+                    />
+                  </template>
+                  <vxe-button
+                    icon="fa fa-key"
+                    title="重置密码"
+                    circle
+                    @click="resetKey(row)"
+                  />
+                  <vxe-button
+                    icon="fa fa-trash"
+                    title="删除"
+                    circle
+                    @click="removeRowEvent(row)"
+                  />
+                </template>
+                <template #name_edit="{ row }">
+                  <vxe-input v-model="row.nickName" />
+                </template>
+                <template #gender_default="{ row }">
+                  <!-- <el-tag
+                    :effect="
+                      row.gender == 1
+                        ? 'dark'
+                        : row.gender == 2
+                        ? 'light'
+                        : 'light'
+                    "
+                    type="info"
+                    :color="
+                      row.gender == 1
+                        ? '#6FB2D2'
+                        : row.gender == 2
+                        ? '#FFEEEE'
+                        : '#DDDDDD'
+                    "
+                    round
+                    size="large"
+                    >{{ formatSex(row.gender) }}</el-tag
+                  > -->
+                  {{ formatSex(row.gender) }}
+                </template>
+                <template #gender_edit="{ row }">
+                  <vxe-select
+                    v-model="row.gender"
+                    transfer
+                    style="width: 50%; margin: 0 auto"
+                  >
+                    <vxe-option
+                      v-for="item in sexList"
+                      :key="item.value"
+                      :value="item.value"
+                      :label="item.label"
+                    />
+                  </vxe-select>
+                </template>
+                <template #phone_edit="{ row }">
+                  <vxe-input
+                    v-model="row.phone"
+                    type="text"
+                    placeholder="请输入电话号码"
+                  />
+                </template>
+              </vxe-grid>
+            </div>
+          </el-card> </el-col
+      ></el-row>
     </el-card>
     <vxe-modal
       v-model="formDemo.createFlag"
@@ -763,5 +856,12 @@ export default defineComponent({
 }
 .preview {
   margin-top: 50px;
+}
+.IMG {
+  width: 80%;
+  height: auto;
+  display: block;
+  margin: 0 10% 0 10;
+  margin-left: auto;
 }
 </style>

@@ -12,12 +12,14 @@ import {
 import { useNoticeStoreHook } from "/@/store/modules/notice";
 import { useUserStoreHook } from "/@/store/modules/user";
 import editor from "/@/components/ReEditor/Editor.vue";
+import manager1 from "/@/assets/manager1.png";
 export default defineComponent({
   name: "noticePage",
   components: {
     editor
   },
   setup() {
+    const managerImg = manager1;
     const showDetails = ref(false);
     const xGrid = ref({} as VxeGridInstance);
     const ruleFormRef = ref(null);
@@ -148,7 +150,8 @@ export default defineComponent({
         {
           field: "id",
           title: "ID",
-          width: 60
+          width: 60,
+          sortable: true
         },
         {
           field: "username",
@@ -159,7 +162,8 @@ export default defineComponent({
           title: "姓名",
           editRender: {},
           slots: { edit: "name_edit" },
-          width: 150
+          width: 150,
+          sortable: true
         },
         {
           field: "role",
@@ -555,7 +559,8 @@ export default defineComponent({
       removeRowEvent,
       roleList,
       ruleFormRef,
-      cancleManager
+      cancleManager,
+      managerImg
     };
   }
 });
@@ -566,109 +571,173 @@ export default defineComponent({
     <el-card>
       <template #header>
         <div class="card-header">
-          <span class="font-medium">通告信息 </span>
+          <span class="font-medium">系统管理员 </span>
         </div>
       </template>
-      <vxe-grid
-        v-bind="gridOptions"
-        ref="xGrid"
-        show-overflow="ellipsis"
-        v-on="gridEvents"
-        :cell-class-name="cellClassName"
-        :total="tablePage.total"
-        v-model:current-page="tablePage.currentPage"
-        v-model:page-size="tablePage.pageSize"
-        @page-change="handlePageChange"
-        style="width: 85%; margin: 0 auto"
-        align="center"
-      >
-        <template #name_item="{ data }">
-          <vxe-input
-            v-model="data.nickName"
-            type="text"
-            placeholder="请输入姓名"
-          />
-        </template>
-        <template #submit_item>
-          <vxe-button type="submit" status="primary" content="查询" />
-        </template>
-        <template #operate="{ row }">
-          <template v-if="xGrid.isActiveByRow(row)">
-            <vxe-button
-              icon="fa fa-save"
-              status="primary"
-              title="保存"
-              circle
-              @click="saveRowEvent(row)"
-            />
-          </template>
-          <template v-else>
-            <vxe-button
-              icon="fa fa-edit"
-              title="编辑"
-              circle
-              @click="editRowEvent(row)"
-            />
-          </template>
-          <vxe-button
-            icon="fa fa-gear"
-            title="取消管理员"
-            circle
-            @click="cancleManager(row)"
-          />
-          <vxe-button
-            icon="fa fa-trash"
-            title="删除"
-            circle
-            @click="removeRowEvent(row)"
-          />
-        </template>
-        <template #name_edit="{ row }">
-          <vxe-input v-model="row.nickName" />
-        </template>
-        <template #gender_default="{ row }">
-          <el-tag
-            :effect="
-              row.gender == 1 ? 'dark' : row.gender == 2 ? 'light' : 'light'
-            "
-            type="info"
-            :color="
-              row.gender == 1
-                ? '#6FB2D2'
-                : row.gender == 2
-                ? '#FFEEEE'
-                : '#DDDDDD'
-            "
-            round
-            size="large"
-            >{{ formatSex(row.gender) }}</el-tag
-          >
-        </template>
-        <template #gender_edit="{ row }">
-          <vxe-select
-            v-model="row.gender"
-            transfer
-            style="width: 50%; margin: 0 auto"
-          >
-            <vxe-option
-              v-for="item in sexList"
-              :key="item.value"
-              :value="item.value"
-              :label="item.label"
-            />
-          </vxe-select>
-        </template>
-        <template #role_default="{ row }">
-          <span>{{ formatRole(row.role) }}</span>
-        </template>
-        <template #phone_edit="{ row }">
-          <vxe-input
-            v-model="row.phone"
-            type="text"
-            placeholder="请输入电话号码"
-          />
-        </template>
-      </vxe-grid>
+      <el-row :gutter="24" style="margin: 20px">
+        <el-col
+          :xs="24"
+          :sm="24"
+          :md="12"
+          :lg="12"
+          :xl="12"
+          style="margin-bottom: 20px"
+          v-motion
+          :initial="{
+            opacity: 0,
+            y: 100
+          }"
+          :enter="{
+            opacity: 1,
+            y: 0,
+            transition: {
+              delay: 200
+            }
+          }"
+        >
+          <div style="margin-top: 50px">
+            此模块面向超级管理员，<br />
+            可以在此管理本社区下各个管理员的账号，以协助他们解决问题。
+            <br />
+          </div>
+        </el-col>
+        <el-col
+          :xs="24"
+          :sm="24"
+          :md="12"
+          :lg="12"
+          :xl="12"
+          style="margin-bottom: 20px"
+          v-motion
+          :initial="{
+            opacity: 0,
+            y: 100
+          }"
+          :enter="{
+            opacity: 1,
+            y: 0,
+            transition: {
+              delay: 200
+            }
+          }"
+        >
+          <img :src="managerImg" class="IMG2" /> </el-col
+      ></el-row>
+      <el-row :gutter="24" style="margin: 20px">
+        <el-col
+          :xs="24"
+          :sm="24"
+          :md="24"
+          :lg="24"
+          :xl="24"
+          style="margin-bottom: 20px"
+          v-motion
+          :initial="{
+            opacity: 0,
+            y: 100
+          }"
+          :enter="{
+            opacity: 1,
+            y: 0,
+            transition: {
+              delay: 200
+            }
+          }"
+          ><el-card style="height: auto; width: auto" shadow="hover">
+            <template #header>
+              <span style="font-size: 16px; font-weight: 500">居民列表</span>
+            </template>
+            <div style="text-align: center">
+              <vxe-grid
+                v-bind="gridOptions"
+                ref="xGrid"
+                show-overflow="ellipsis"
+                v-on="gridEvents"
+                :cell-class-name="cellClassName"
+                :total="tablePage.total"
+                v-model:current-page="tablePage.currentPage"
+                v-model:page-size="tablePage.pageSize"
+                @page-change="handlePageChange"
+                style="width: 85%; margin: 0 auto"
+                align="center"
+                height="800px"
+                max-height="800px"
+              >
+                <template #name_item="{ data }">
+                  <vxe-input
+                    v-model="data.nickName"
+                    type="text"
+                    placeholder="请输入姓名"
+                  />
+                </template>
+                <template #submit_item>
+                  <vxe-button type="submit" status="primary" content="查询" />
+                </template>
+                <template #operate="{ row }">
+                  <template v-if="xGrid.isActiveByRow(row)">
+                    <vxe-button
+                      icon="fa fa-save"
+                      status="primary"
+                      title="保存"
+                      circle
+                      @click="saveRowEvent(row)"
+                    />
+                  </template>
+                  <template v-else>
+                    <vxe-button
+                      icon="fa fa-edit"
+                      title="编辑"
+                      circle
+                      @click="editRowEvent(row)"
+                    />
+                  </template>
+                  <vxe-button
+                    icon="fa fa-gear"
+                    title="取消管理员"
+                    circle
+                    @click="cancleManager(row)"
+                  />
+                  <vxe-button
+                    icon="fa fa-trash"
+                    title="删除"
+                    circle
+                    @click="removeRowEvent(row)"
+                  />
+                </template>
+                <template #name_edit="{ row }">
+                  <vxe-input v-model="row.nickName" />
+                </template>
+                <template #gender_default="{ row }">
+                  {{ formatSex(row.gender) }}
+                </template>
+                <template #gender_edit="{ row }">
+                  <vxe-select
+                    v-model="row.gender"
+                    transfer
+                    style="width: 50%; margin: 0 auto"
+                  >
+                    <vxe-option
+                      v-for="item in sexList"
+                      :key="item.value"
+                      :value="item.value"
+                      :label="item.label"
+                    />
+                  </vxe-select>
+                </template>
+                <template #role_default="{ row }">
+                  <span>{{ formatRole(row.role) }}</span>
+                </template>
+                <template #phone_edit="{ row }">
+                  <vxe-input
+                    v-model="row.phone"
+                    type="text"
+                    placeholder="请输入电话号码"
+                  />
+                </template>
+              </vxe-grid>
+            </div>
+          </el-card> </el-col
+      ></el-row>
     </el-card>
     <vxe-modal
       v-model="formDemo.createFlag"
@@ -728,5 +797,11 @@ export default defineComponent({
 }
 .preview {
   margin-top: 50px;
+}
+.IMG2 {
+  width: 50%;
+  height: auto;
+  display: block;
+  margin-left: 35%;
 }
 </style>

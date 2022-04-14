@@ -189,7 +189,8 @@ export default defineComponent({
         {
           field: "pubTime",
           title: "发布时间",
-          width: 160
+          width: 160,
+          sortable: true
         }
       ]
     });

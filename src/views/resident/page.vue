@@ -3,9 +3,11 @@ import { onBeforeMount, onMounted, reactive, ref } from "vue";
 import { Tabs, TabPane } from "@pureadmin/components";
 import type { VNode, VNodeProps } from "vue";
 import { useUserStoreHook } from "/@/store/modules/user";
-import { ElMessage, FormInstance } from "element-plus";
+import { FormInstance } from "element-plus";
 import { errorMessage, successMessage } from "/@/utils/message";
 import { useVaccineStoreHook } from "/@/store/modules/vaccine";
+import pcr from "/@/assets/pcr.png";
+import vaccine2 from "/@/assets/vaccine2.png";
 const activeKey = ref(1);
 const callback = (val: string) => {
   console.log(val);
@@ -37,6 +39,7 @@ const showHeader = ref(false);
 const loading = ref(true);
 const options = reactive([]);
 const ruleFormRef = ref<FormInstance>();
+const ruleFormRef2 = ref<FormInstance>();
 const form = reactive({
   id: null,
   uid: null,
@@ -44,7 +47,7 @@ const form = reactive({
   result: null,
   testTime: null,
   resultTime: null,
-  desc: null
+  mydescription: null
 });
 const rules = reactive({
   uid: [{ required: true, message: "请选择居民", trigger: "change" }],
@@ -80,6 +83,37 @@ const rules = reactive({
   ]
 });
 
+const vaccineForm = reactive({
+  uid: null,
+  vid: null,
+  vaccineTime: null,
+  mydescription: null
+});
+const vaccineRules = reactive({
+  uid: [{ required: true, message: "请选择居民", trigger: "change" }],
+  vaccineTime: [
+    {
+      type: "date",
+      required: true,
+      message: "请选择接种日期",
+      trigger: "change"
+    }
+  ],
+  vid: [
+    {
+      required: true,
+      message: "请选择疫苗种类",
+      trigger: "change"
+    }
+  ],
+  mydescription: [
+    {
+      required: true,
+      message: "请输入备注信息",
+      trigger: "change"
+    }
+  ]
+});
 const shortcuts = [
   {
     text: "今天",
@@ -266,7 +300,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
         "font-size:13px; background:pink; color:#bf2c9f;",
         form
       );
-      userStore.ADD_PCR(form).then(() => {
+      vaccineStore.ADD_PCR(form).then(() => {
         ruleFormRef.value.resetFields();
         //TODO fetchPcrs();
         successMessage("提交成功");
@@ -277,6 +311,31 @@ const submitForm = async (formEl: FormInstance | undefined) => {
     }
   });
 };
+const submitForm2 = async (formEl: FormInstance | undefined) => {
+  if (!formEl) return;
+  await formEl.validate((valid, fields) => {
+    if (valid) {
+      console.log("submit!");
+      console.log(
+        "%c [ vaccineForm ]-320",
+        "font-size:13px; background:pink; color:#bf2c9f;",
+        vaccineForm
+      );
+      vaccineStore
+        .ADD_VACCINE_RECORD(vaccineForm)
+        .then(() => {
+          ruleFormRef2.value.resetFields();
+          //TODO fetchVaccineRecords();
+          successMessage("提交成功");
+        })
+        .catch(() => {
+          errorMessage("提交失败");
+        });
+    } else {
+      console.log("error submit!", fields);
+    }
+  });
+};
 
 const resetForm = (formEl: FormInstance | undefined) => {
   if (!formEl) return;
@@ -284,14 +343,20 @@ const resetForm = (formEl: FormInstance | undefined) => {
 };
 
 function initVaccineTypes() {
-  vaccineStore.GET_VACCINES();
+  vaccineStore.GET_VACCINES().then(() => {
+    console.log(
+      "%c [ vaccineStore.vaccines ]-335",
+      "font-size:13px; background:pink; color:#bf2c9f;",
+      vaccineStore.vaccines
+    );
+  });
 }
 </script>
 
 <template>
   <el-card style="height: auto">
     <template #header> 防疫信息统计 </template>
-    <span>由防疫工作人员负责统计填报居民防疫信息</span>
+    <span>由防疫工作人员负责统计填报居民防疫信息。</span>
     <Tabs
       v-model:activeKey="activeKey"
       tab-position="top"
@@ -301,12 +366,13 @@ function initVaccineTypes() {
     >
       <TabPane :key="1" tab="核酸与疫苗">
         <el-row :gutter="24" style="margin: 20px">
+          <el-col :xs="4" :sm="4" :md="4" :lg="4" :xl="4" />
           <el-col
             :xs="24"
             :sm="24"
-            :md="12"
-            :lg="12"
-            :xl="12"
+            :md="16"
+            :lg="16"
+            :xl="16"
             style="margin-bottom: 20px"
             v-motion
             :initial="{
@@ -332,70 +398,101 @@ function initVaccineTypes() {
                   :rules="rules"
                   label-width="120px"
                 >
-                  <el-form-item label="选择居民" prop="uid"
-                    ><el-select
-                      v-model="form.uid"
-                      placeholder="请选择居民"
-                      align="center"
-                    >
-                      <el-option
-                        v-for="item in options"
-                        :key="item.$value"
-                        :label="item.label"
-                        :value="item.$value"
-                      /> </el-select
-                  ></el-form-item>
+                  <el-row :gutter="24">
+                    <el-col :xs="16" :sm="16" :md="16" :lg="16" :xl="16">
+                      <el-form-item
+                        label="选择居民"
+                        prop="uid"
+                        class="form_item"
+                        ><el-select
+                          v-model="form.uid"
+                          placeholder="请选择居民"
+                          align="center"
+                        >
+                          <el-option
+                            v-for="item in options"
+                            :key="item.$value"
+                            :label="item.label"
+                            :value="item.$value"
+                          /> </el-select
+                      ></el-form-item>
+                      <el-form-item
+                        label="核酸检测结果"
+                        prop="result"
+                        style="width: 50%"
+                        class="form_item"
+                      >
+                        <el-radio v-model="form.result" label="false"
+                          >阴性</el-radio
+                        >
+                        <el-radio v-model="form.result" label="true"
+                          >阳性</el-radio
+                        >
+                      </el-form-item>
+                      <el-form-item
+                        label="采样方式"
+                        prop="type"
+                        class="form_item"
+                      >
+                        <el-radio v-model="form.type" label="true"
+                          >口咽拭子</el-radio
+                        >
+                        <el-radio v-model="form.type" label="false"
+                          >鼻咽拭子</el-radio
+                        >
+                      </el-form-item>
+                      <el-form-item
+                        label="采样时间"
+                        prop="testTime"
+                        style="width: auto"
+                        class="form_item"
+                      >
+                        <div class="block">
+                          <el-date-picker
+                            v-model="form.testTime"
+                            type="datetime"
+                            placeholder="请选择时间"
+                            :shortcuts="shortcuts"
+                            format="YYYY-MM-DD hh:mm:ss"
+                            value-format="YYYY-MM-DD hh:mm:ss"
+                          />
+                        </div>
+                      </el-form-item>
+                      <el-form-item
+                        label="检测时间"
+                        prop="resultTime"
+                        class="form_item"
+                      >
+                        <div class="block">
+                          <el-date-picker
+                            v-model="form.resultTime"
+                            type="datetime"
+                            placeholder="请选择时间"
+                            :shortcuts="shortcuts"
+                            format="YYYY-MM-DD hh:mm:ss"
+                            value-format="YYYY-MM-DD hh:mm:ss"
+                          />
+                        </div>
+                      </el-form-item>
+                    </el-col>
+                    <el-rol :xs="12" :sm="12" :md="12" :lg="12" :xl="12">
+                      <img :src="pcr" class="vaccineIMG" />
+                    </el-rol>
+                  </el-row>
                   <el-form-item
-                    label="核酸检测结果"
-                    prop="result"
-                    style="width: 50%"
+                    label="备注"
+                    class="form_item"
+                    prop="mydescription"
+                    style="width: 80%"
                   >
-                    <el-radio v-model="form.result" label="false"
-                      >阴性</el-radio
-                    >
-                    <el-radio v-model="form.result" label="true">阳性</el-radio>
-                  </el-form-item>
-                  <el-form-item label="采样方式" prop="type">
-                    <el-radio v-model="form.type" label="true"
-                      >口咽拭子</el-radio
-                    >
-                    <el-radio v-model="form.type" label="false"
-                      >鼻咽拭子</el-radio
-                    >
-                  </el-form-item>
-                  <el-form-item
-                    label="采样时间"
-                    prop="testTime"
-                    style="width: auto"
-                  >
-                    <div class="block">
-                      <el-date-picker
-                        v-model="form.testTime"
-                        type="datetime"
-                        placeholder="请选择时间"
-                        :shortcuts="shortcuts"
-                        format="YYYY-MM-DD hh:mm:ss"
-                        value-format="YYYY-MM-DD hh:mm:ss"
-                      />
-                    </div>
-                  </el-form-item>
-                  <el-form-item label="检测时间" prop="resultTime">
-                    <div class="block">
-                      <el-date-picker
-                        v-model="form.resultTime"
-                        type="datetime"
-                        placeholder="请选择时间"
-                        :shortcuts="shortcuts"
-                        format="YYYY-MM-DD hh:mm:ss"
-                        value-format="YYYY-MM-DD hh:mm:ss"
-                      />
-                    </div>
-                  </el-form-item>
-                  <el-form-item label="备注">
-                    <el-input v-model="form.desc" type="textarea" />
+                    <el-input
+                      v-model="form.mydescription"
+                      type="textarea"
+                      :autosize="{ minRows: 3, maxRows: 6 }"
+                    />
                   </el-form-item>
                   <el-form-item>
-                    <div style="margin-left: 20%">
+                    <div style="margin-left: 30%">
                       <el-button type="primary" @click="submitForm(ruleFormRef)"
                         >创建</el-button
                       >
@@ -408,12 +505,16 @@ function initVaccineTypes() {
               </div>
             </el-card>
           </el-col>
+          <el-col :xs="4" :sm="4" :md="4" :lg="4" :xl="4" />
+        </el-row>
+        <el-row :gutter="24" style="margin: 20px">
+          <el-col :xs="4" :sm="4" :md="4" :lg="4" :xl="4" />
           <el-col
             :xs="24"
             :sm="24"
-            :md="12"
-            :lg="12"
-            :xl="12"
+            :md="16"
+            :lg="16"
+            :xl="16"
             style="margin-bottom: 20px"
             v-motion
             :initial="{
@@ -434,9 +535,114 @@ function initVaccineTypes() {
                   >疫苗接种登记</span
                 >
               </template>
-              <div style="text-align: center">1111</div>
+              <div style="text-align: center">
+                <div style="text-align: center">
+                  <el-form
+                    ref="ruleFormRef2"
+                    :model="vaccineForm"
+                    :rules="vaccineRules"
+                    label-width="120px"
+                  >
+                    <!-- todo -->
+                    <el-row :gutter="24">
+                      <el-col :xs="16" :sm="16" :md="16" :lg="16" :xl="16">
+                        <el-form-item
+                          label="选择居民"
+                          prop="uid"
+                          class="form_item"
+                          ><el-select
+                            v-model="vaccineForm.uid"
+                            placeholder="请选择居民"
+                            align="center"
+                          >
+                            <el-option
+                              v-for="item in options"
+                              :key="item.$value"
+                              :label="item.label"
+                              :value="item.$value"
+                            /> </el-select
+                        ></el-form-item>
+                        <el-form-item
+                          label="疫苗种类"
+                          prop="vid"
+                          class="form_item"
+                        >
+                          <el-select
+                            v-model="vaccineForm.vid"
+                            clearable
+                            placeholder="请选择疫苗种类"
+                          >
+                            <el-option
+                              v-for="item in vaccineStore.vaccines"
+                              :key="item.id"
+                              :label="item.name"
+                              :value="item.id"
+                            />
+                          </el-select>
+                        </el-form-item>
+                        <el-form-item
+                          label="接种日期"
+                          prop="vaccineTime"
+                          style="width: auto"
+                          class="form_item"
+                        >
+                          <div class="block">
+                            <!-- <el-date-picker
+                          v-model="vaccineForm.vaccineTime"
+                          type="date"
+                          placeholder="请选择时间"
+                          format="YYYY-MM-DD"
+                          value-format="YYYY-MM-DD hh:mm:ss"
+                          :shortcuts="shortcuts"
+                        /> -->
+                            <el-date-picker
+                              v-model="vaccineForm.vaccineTime"
+                              type="datetime"
+                              placeholder="请选择时间"
+                              :shortcuts="shortcuts"
+                              format="YYYY-MM-DD"
+                              value-format="YYYY-MM-DD"
+                            />
+                          </div>
+                        </el-form-item>
+                      </el-col>
+                      <el-rol :xs="12" :sm="12" :md="12" :lg="12" :xl="12">
+                        <img :src="vaccine2" class="vaccineIMG" />
+                      </el-rol>
+                    </el-row>
+                    <el-row style="padding: 0%">
+                      <el-form-item
+                        label="备注"
+                        class="form_item"
+                        prop="mydescription"
+                        style="width: 80%"
+                      >
+                        <el-input
+                          v-model="vaccineForm.mydescription"
+                          type="textarea"
+                          :autosize="{ minRows: 3, maxRows: 6 }"
+                          placeholder="至少描述接种剂次和身体反映情况等"
+                        />
+                      </el-form-item>
+                    </el-row>
+                    <el-form-item>
+                      <div style="margin-left: 27%">
+                        <el-button
+                          type="primary"
+                          @click="submitForm2(ruleFormRef2)"
+                          >创建</el-button
+                        >
+                        <el-button @click="resetForm(ruleFormRef2)"
+                          >重置</el-button
+                        >
+                      </div>
+                    </el-form-item>
+                  </el-form>
+                </div>
+              </div>
             </el-card>
           </el-col>
+          <el-col :xs="4" :sm="4" :md="4" :lg="4" :xl="4" />
         </el-row>
       </TabPane>
       <TabPane :key="2" tab="隔离与密接">
@@ -669,8 +875,99 @@ function initVaccineTypes() {
             </el-card>
           </el-col>
         </el-row>
-        <el-row
-      /></TabPane>
+        <el-row :gutter="24" style="margin: 20px">
+          <el-col
+            :xs="24"
+            :sm="24"
+            :md="22"
+            :lg="22"
+            :xl="22"
+            style="margin-bottom: 20px"
+            v-motion
+            :initial="{
+              opacity: 0,
+              y: 100
+            }"
+            :enter="{
+              opacity: 1,
+              y: 0,
+              transition: {
+                delay: 200
+              }
+            }"
+            ><el-card style="height: auto; width: auto" shadow="hover">
+              <template #header>
+                <span style="font-size: 16px; font-weight: 500"
+                  >核酸记录表</span
+                >
+              </template>
+              <div style="text-align: center">
+                <el-table
+                  :data="tableData2"
+                  style="width: 100%; height: 400px"
+                  max-height="400"
+                  :show-header="showHeader"
+                  align="center"
+                  v-loading="loading"
+                >
+                  <el-table-column prop="address" label="地址" width="180" />
+                  <el-table-column prop="nickName" label="姓名" width="120" />
+                  <el-table-column
+                    prop="contactBeginTime"
+                    label="开始密接时间"
+                    width="180"
+                  />
+                </el-table>
+              </div>
+            </el-card> </el-col
+        ></el-row>
+        <el-row :gutter="24" style="margin: 20px">
+          <el-col
+            :xs="24"
+            :sm="24"
+            :md="22"
+            :lg="22"
+            :xl="22"
+            style="margin-bottom: 20px"
+            v-motion
+            :initial="{
+              opacity: 0,
+              y: 100
+            }"
+            :enter="{
+              opacity: 1,
+              y: 0,
+              transition: {
+                delay: 200
+              }
+            }"
+            ><el-card style="height: auto; width: auto" shadow="hover">
+              <template #header>
+                <span style="font-size: 16px; font-weight: 500"
+                  >疫苗接种表</span
+                >
+              </template>
+              <div style="text-align: center">
+                <el-table
+                  :data="tableData2"
+                  style="width: 100%; height: 400px"
+                  max-height="400"
+                  :show-header="showHeader"
+                  align="center"
+                  v-loading="loading"
+                >
+                  <el-table-column prop="address" label="地址" width="180" />
+                  <el-table-column prop="nickName" label="姓名" width="120" />
+                  <el-table-column
+                    prop="contactBeginTime"
+                    label="开始密接时间"
+                    width="180"
+                  />
+                </el-table>
+              </div>
+            </el-card> </el-col
+        ></el-row>
+      </TabPane>
     </Tabs>
   </el-card>
 </template>
@@ -685,5 +982,19 @@ function initVaccineTypes() {
   height: 60px;
   background: #fff;
   width: 100%;
+}
+.form_item .el-form-item__label {
+  font-size: 14px;
+  font-weight: bold;
+  //color: #4ea5ff;
+}
+.vaccineIMG {
+  width: 220px;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+  margin-left: auto;
+  margin-bottom: 10%;
+  float: right;
 }
 </style>
