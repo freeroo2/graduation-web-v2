@@ -7,7 +7,6 @@ import {
   VxeTablePropTypes,
   VxeFormEvents,
   VXETable,
-  VxeFormPropTypes,
   VxeGridInstance,
   VxePagerEvents
 } from "vxe-table";

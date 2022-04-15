@@ -8,6 +8,9 @@ import { errorMessage, successMessage } from "/@/utils/message";
 import { useVaccineStoreHook } from "/@/store/modules/vaccine";
 import pcr from "/@/assets/pcr.png";
 import vaccine2 from "/@/assets/vaccine2.png";
+import pcrList from "./pcrList.vue";
+import vaccineList from "./vaccineList.vue";
+import { usePcrStoreHook } from "/@/store/modules/pcr";
 const activeKey = ref(1);
 const callback = (val: string) => {
   console.log(val);
@@ -30,6 +33,7 @@ interface Option {
 
 const userStore = useUserStoreHook();
 const vaccineStore = useVaccineStoreHook();
+const pcrStore = usePcrStoreHook();
 const data = ref([] as Option[]);
 const rightValue = ref([] as any[]);
 const rightValue2 = ref([] as any[]);
@@ -47,7 +51,9 @@ const form = reactive({
   result: null,
   testTime: null,
   resultTime: null,
-  mydescription: null
+  mydescription: null,
+  nickName: null,
+  address: null
 });
 const rules = reactive({
   uid: [{ required: true, message: "请选择居民", trigger: "change" }],
@@ -300,7 +306,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
         "font-size:13px; background:pink; color:#bf2c9f;",
         form
       );
-      vaccineStore.ADD_PCR(form).then(() => {
+      pcrStore.PCR_CREATE(form).then(() => {
         ruleFormRef.value.resetFields();
         //TODO fetchPcrs();
         successMessage("提交成功");
@@ -350,6 +356,22 @@ function initVaccineTypes() {
       vaccineStore.vaccines
     );
   });
+}
+// 根据单选框所选的用户来给表单的nickName和address赋值
+function handleSelectChange(value) {
+  // 获取当前单选框所选项的下标idx
+  let idx = options.findIndex(item => {
+    return item.$value == value;
+  });
+  console.log(
+    "%c [ idx ]-359",
+    "font-size:13px; background:pink; color:#bf2c9f;",
+    idx
+  );
+  if (idx > -1) {
+    form.nickName = userStore.residents[idx].nickName;
+    form.address = userStore.residents[idx].address;
+  }
 }
 </script>
 
@@ -408,6 +430,7 @@ function initVaccineTypes() {
                           v-model="form.uid"
                           placeholder="请选择居民"
                           align="center"
+                          @change="handleSelectChange"
                         >
                           <el-option
                             v-for="item in options"
@@ -879,9 +902,9 @@ function initVaccineTypes() {
           <el-col
             :xs="24"
             :sm="24"
-            :md="22"
-            :lg="22"
-            :xl="22"
+            :md="24"
+            :lg="24"
+            :xl="24"
             style="margin-bottom: 20px"
             v-motion
             :initial="{
@@ -901,33 +924,16 @@ function initVaccineTypes() {
                   >核酸记录表</span
                 >
               </template>
-              <div style="text-align: center">
-                <el-table
-                  :data="tableData2"
-                  style="width: 100%; height: 400px"
-                  max-height="400"
-                  :show-header="showHeader"
-                  align="center"
-                  v-loading="loading"
-                >
-                  <el-table-column prop="address" label="地址" width="180" />
-                  <el-table-column prop="nickName" label="姓名" width="120" />
-                  <el-table-column
-                    prop="contactBeginTime"
-                    label="开始密接时间"
-                    width="180"
-                  />
-                </el-table>
-              </div>
+              <pcrList />
             </el-card> </el-col
         ></el-row>
         <el-row :gutter="24" style="margin: 20px">
           <el-col
             :xs="24"
             :sm="24"
-            :md="22"
-            :lg="22"
-            :xl="22"
+            :md="24"
+            :lg="24"
+            :xl="24"
             style="margin-bottom: 20px"
             v-motion
             :initial="{
@@ -947,24 +953,7 @@ function initVaccineTypes() {
                   >疫苗接种表</span
                 >
               </template>
-              <div style="text-align: center">
-                <el-table
-                  :data="tableData2"
-                  style="width: 100%; height: 400px"
-                  max-height="400"
-                  :show-header="showHeader"
-                  align="center"
-                  v-loading="loading"
-                >
-                  <el-table-column prop="address" label="地址" width="180" />
-                  <el-table-column prop="nickName" label="姓名" width="120" />
-                  <el-table-column
-                    prop="contactBeginTime"
-                    label="开始密接时间"
-                    width="180"
-                  />
-                </el-table>
-              </div>
+              <vaccineList />
             </el-card> </el-col
         ></el-row>
       </TabPane>

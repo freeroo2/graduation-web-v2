@@ -1,10 +1,20 @@
 import { defineStore } from "pinia";
 import { store } from "/@/store";
-import { addPcr, getVaccines, addVaccineRecord } from "/@/api/vaccine";
-import { vaccineStoreType } from "./types";
+import {
+  getVaccines,
+  addVaccineRecord,
+  editVaccineRecord,
+  deleteVaccineRecord,
+  findVaccineRecords
+} from "/@/api/vaccine";
 export const useVaccineStore = defineStore({
-  id: "pure-notice",
-  state: (): vaccineStoreType => ({
+  id: "pure-vaccine",
+  state: () => ({
+    currentPage: 1,
+    total: 10,
+    pageSize: 10,
+    detailData: null,
+    pageData: [],
     vaccines: []
   }),
   actions: {
@@ -28,12 +38,21 @@ export const useVaccineStore = defineStore({
           });
       });
     },
-    // 通过用户ID添加核酸记录
-    async ADD_PCR(param: object) {
+    // 查找用户姓名对应所有疫苗接种记录
+    async FIND_VACCINE_RECORDS(params: object) {
       return new Promise<void>((resolve, reject) => {
-        addPcr(param)
-          .then(() => {
-            resolve();
+        findVaccineRecords(params)
+          .then((res: any) => {
+            if (res) {
+              this.pageData = res?.data?.records;
+              this.total = res?.data?.total;
+            }
+            console.log(
+              "%c [ res ]-44",
+              "font-size:13px; background:pink; color:#bf2c9f;",
+              res
+            );
+            resolve(res);
           })
           .catch(error => {
             reject(error);
@@ -44,6 +63,30 @@ export const useVaccineStore = defineStore({
     async ADD_VACCINE_RECORD(param: object) {
       return new Promise<void>((resolve, reject) => {
         addVaccineRecord(param)
+          .then(() => {
+            resolve();
+          })
+          .catch(error => {
+            reject(error);
+          });
+      });
+    },
+    // 编辑疫苗接种记录
+    async EDIT_VACCINE_RECORD(data: object) {
+      return new Promise<void>((resolve, reject) => {
+        editVaccineRecord(data)
+          .then(() => {
+            resolve();
+          })
+          .catch(error => {
+            reject(error);
+          });
+      });
+    },
+    // 删除疫苗接种记录
+    async DELETE_VACCINE_RECORD(param: object) {
+      return new Promise<void>((resolve, reject) => {
+        deleteVaccineRecord(param)
           .then(() => {
             resolve();
           })

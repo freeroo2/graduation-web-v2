@@ -14,10 +14,7 @@ import { useUserStoreHook } from "/@/store/modules/user";
 import editor from "/@/components/ReEditor/Editor.vue";
 import manager1 from "/@/assets/manager1.png";
 export default defineComponent({
-  name: "noticePage",
-  components: {
-    editor
-  },
+  name: "managerList",
   setup() {
     const managerImg = manager1;
     const showDetails = ref(false);
@@ -716,12 +713,8 @@ export default defineComponent({
                     transfer
                     style="width: 50%; margin: 0 auto"
                   >
-                    <vxe-option
-                      v-for="item in sexList"
-                      :key="item.value"
-                      :value="item.value"
-                      :label="item.label"
-                    />
+                    <vxe-option :key="1" :value="1" label="男" />
+                    <vxe-option :key="2" :value="2" label="女" />
                   </vxe-select>
                 </template>
                 <template #role_default="{ row }">

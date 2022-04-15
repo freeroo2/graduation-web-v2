@@ -15,7 +15,7 @@ import { useUserStoreHook } from "/@/store/modules/user";
 import { storageSession } from "/@/utils/storage";
 import resident2 from "/@/assets/resident2.png";
 export default defineComponent({
-  name: "noticePage",
+  name: "residentList",
   setup() {
     const residentImg = ref(resident2);
     const showDetails = ref(false);
@@ -44,8 +44,8 @@ export default defineComponent({
       isIndeterminate: false
     });
     const sexList = ref([
-      { value: "1", label: "男" },
-      { value: "2", label: "女" }
+      { $value: 1, $label: "男" },
+      { $value: 2, $label: "女" }
     ]);
 
     const noticeStore = useNoticeStoreHook();
@@ -746,39 +746,18 @@ export default defineComponent({
                   <vxe-input v-model="row.nickName" />
                 </template>
                 <template #gender_default="{ row }">
-                  <!-- <el-tag
-                    :effect="
-                      row.gender == 1
-                        ? 'dark'
-                        : row.gender == 2
-                        ? 'light'
-                        : 'light'
-                    "
-                    type="info"
-                    :color="
-                      row.gender == 1
-                        ? '#6FB2D2'
-                        : row.gender == 2
-                        ? '#FFEEEE'
-                        : '#DDDDDD'
-                    "
-                    round
-                    size="large"
-                    >{{ formatSex(row.gender) }}</el-tag
-                  > -->
                   {{ formatSex(row.gender) }}
                 </template>
                 <template #gender_edit="{ row }">
                   <vxe-select
                     v-model="row.gender"
-                    transfer
-                    style="width: 50%; margin: 0 auto"
+                    style="width: 80%; margin: 0 auto"
                   >
                     <vxe-option
                       v-for="item in sexList"
-                      :key="item.value"
-                      :value="item.value"
-                      :label="item.label"
+                      :key="item.$value"
+                      :value="item.$value"
+                      :label="`${item.$label}`"
                     />
                   </vxe-select>
                 </template>
