@@ -357,29 +357,6 @@ export default defineComponent({
       <el-col
         :xs="24"
         :sm="24"
-        :md="12"
-        :lg="12"
-        :xl="12"
-        style="margin-bottom: 20px"
-        v-motion
-        :initial="{
-          opacity: 0,
-          y: 100
-        }"
-        :enter="{
-          opacity: 1,
-          y: 0,
-          transition: {
-            delay: 200
-          }
-        }"
-      >
-        <div>所有已登记的核酸记录如下<br /></div> </el-col
-    ></el-row>
-    <el-row :gutter="24" style="margin: 20px">
-      <el-col
-        :xs="24"
-        :sm="24"
         :md="24"
         :lg="24"
         :xl="24"

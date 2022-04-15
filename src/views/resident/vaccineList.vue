@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, reactive, ref } from "vue";
+import { defineComponent, onMounted, reactive, ref } from "vue";
 import {
   VxeGridProps,
   VxeGridListeners,
@@ -300,6 +300,9 @@ export default defineComponent({
         }
       }
     };
+    onMounted(() => {
+      vaccineStore.GET_VACCINES();
+    });
     return {
       showDetails,
       formDemo,
@@ -326,29 +329,6 @@ export default defineComponent({
 
 <template>
   <div>
-    <el-row :gutter="24" style="margin: 20px">
-      <el-col
-        :xs="24"
-        :sm="24"
-        :md="12"
-        :lg="12"
-        :xl="12"
-        style="margin-bottom: 20px"
-        v-motion
-        :initial="{
-          opacity: 0,
-          y: 100
-        }"
-        :enter="{
-          opacity: 1,
-          y: 0,
-          transition: {
-            delay: 200
-          }
-        }"
-      >
-        <div>所有已登记的核酸记录如下<br /></div> </el-col
-    ></el-row>
     <el-row :gutter="24" style="margin: 20px">
       <el-col
         :xs="24"
@@ -433,7 +413,8 @@ export default defineComponent({
               </template>
               <template #type_default="{ row }">
                 {{
-                  vaccineStore.vaccines.find(item => item.id === row.vid).name
+                  vaccineStore.vaccines.find(item => item.id === row.vid)
+                    ?.name
                 }}
               </template>
               <template #gender_default="{ row }">

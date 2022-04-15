@@ -8,8 +8,6 @@ import { errorMessage, successMessage } from "/@/utils/message";
 import { useVaccineStoreHook } from "/@/store/modules/vaccine";
 import pcr from "/@/assets/pcr.png";
 import vaccine2 from "/@/assets/vaccine2.png";
-import pcrList from "./pcrList.vue";
-import vaccineList from "./vaccineList.vue";
 import { usePcrStoreHook } from "/@/store/modules/pcr";
 const activeKey = ref(1);
 const callback = (val: string) => {
@@ -809,7 +807,7 @@ function handleSelectChange(value) {
         </el-row>
       </TabPane>
 
-      <TabPane :key="3" tab="信息统计"
+      <TabPane :key="3" tab="名单"
         ><el-row :gutter="24" style="margin: 20px">
           <el-col
             :xs="24"
@@ -898,64 +896,6 @@ function handleSelectChange(value) {
             </el-card>
           </el-col>
         </el-row>
-        <el-row :gutter="24" style="margin: 20px">
-          <el-col
-            :xs="24"
-            :sm="24"
-            :md="24"
-            :lg="24"
-            :xl="24"
-            style="margin-bottom: 20px"
-            v-motion
-            :initial="{
-              opacity: 0,
-              y: 100
-            }"
-            :enter="{
-              opacity: 1,
-              y: 0,
-              transition: {
-                delay: 200
-              }
-            }"
-            ><el-card style="height: auto; width: auto" shadow="hover">
-              <template #header>
-                <span style="font-size: 16px; font-weight: 500"
-                  >核酸记录表</span
-                >
-              </template>
-              <pcrList />
-            </el-card> </el-col
-        ></el-row>
-        <el-row :gutter="24" style="margin: 20px">
-          <el-col
-            :xs="24"
-            :sm="24"
-            :md="24"
-            :lg="24"
-            :xl="24"
-            style="margin-bottom: 20px"
-            v-motion
-            :initial="{
-              opacity: 0,
-              y: 100
-            }"
-            :enter="{
-              opacity: 1,
-              y: 0,
-              transition: {
-                delay: 200
-              }
-            }"
-            ><el-card style="height: auto; width: auto" shadow="hover">
-              <template #header>
-                <span style="font-size: 16px; font-weight: 500"
-                  >疫苗接种表</span
-                >
-              </template>
-              <vaccineList />
-            </el-card> </el-col
-        ></el-row>
       </TabPane>
     </Tabs>
   </el-card>
