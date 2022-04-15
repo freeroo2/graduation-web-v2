@@ -1,6 +1,16 @@
 import { h, defineComponent } from "vue";
 import { Icon as IconifyIcon, addIcon } from "@iconify/vue/dist/offline";
 
+// ant design
+import teamOutlined from "@iconify-icons/ant-design/team-outlined";
+import settingOutlined from "@iconify-icons/ant-design/setting-outlined";
+import sendOutlined from "@iconify-icons/ant-design/send-outlined";
+import soundOutlined from '@iconify-icons/ant-design/sound-outlined';
+addIcon("team-outlined", teamOutlined);
+addIcon("setting-outlined", settingOutlined);
+addIcon("send-outlined", sendOutlined);
+addIcon("sound-outlined", soundOutlined);
+
 // element-plus icon
 import Check from "@iconify-icons/ep/check";
 import Menu from "@iconify-icons/ep/menu";

@@ -4,7 +4,7 @@ const noticeRouter = {
   component: Layout,
   redirect: "/notice/page",
   meta: {
-    icon: "information-line",
+    icon: "sound-outlined",
     title: "疫情通告",
     rank: 20
   },

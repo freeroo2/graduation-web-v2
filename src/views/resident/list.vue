@@ -668,7 +668,7 @@ export default defineComponent({
               delay: 200
             }
           }"
-          ><el-card style="height: auto; width: auto" shadow="hover">
+          ><el-card style="height: auto; width: auto" shadow="never">
             <template #header>
               <span style="font-size: 16px; font-weight: 500">居民列表</span>
             </template>
