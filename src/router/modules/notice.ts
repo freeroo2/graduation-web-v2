@@ -6,7 +6,7 @@ const noticeRouter = {
   meta: {
     icon: "sound-outlined",
     title: "疫情通告",
-    rank: 20
+    rank: 22
   },
   children: [
     {
@@ -14,8 +14,8 @@ const noticeRouter = {
       name: "noticePage",
       component: () => import("/@/views/notice/page.vue"),
       meta: {
-        title: "疫情通告",
-        rank: 21
+        title: "通告",
+        rank: 23
       }
     },
     {
@@ -24,7 +24,7 @@ const noticeRouter = {
       component: () => import("/@/views/notice/detail.vue"),
       meta: {
         title: "通告详情",
-        rank: 22,
+        rank: 24,
         showLink: false
       }
     }

@@ -5,11 +5,15 @@ import { Icon as IconifyIcon, addIcon } from "@iconify/vue/dist/offline";
 import teamOutlined from "@iconify-icons/ant-design/team-outlined";
 import settingOutlined from "@iconify-icons/ant-design/setting-outlined";
 import sendOutlined from "@iconify-icons/ant-design/send-outlined";
-import soundOutlined from '@iconify-icons/ant-design/sound-outlined';
+import soundOutlined from "@iconify-icons/ant-design/sound-outlined";
+import frownOutlined from "@iconify-icons/ant-design/frown-outlined";
+import solutionOutlined from "@iconify-icons/ant-design/solution-outlined";
 addIcon("team-outlined", teamOutlined);
 addIcon("setting-outlined", settingOutlined);
 addIcon("send-outlined", sendOutlined);
 addIcon("sound-outlined", soundOutlined);
+addIcon("frown-outlined", frownOutlined);
+addIcon("solution-outlined", solutionOutlined);
 
 // element-plus icon
 import Check from "@iconify-icons/ep/check";
