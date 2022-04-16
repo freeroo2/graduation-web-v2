@@ -4,7 +4,7 @@ import Search from "../search/index.vue";
 import Notice from "../notice/index.vue";
 import { templateRef } from "@vueuse/core";
 import SidebarItem from "./sidebarItem.vue";
-import avatars from "/@/assets/avatars.jpg";
+import avatars2 from "/@/assets/avatars2.jpg";
 import screenfull from "../screenfull/index.vue";
 import { useRoute, useRouter } from "vue-router";
 import { deviceDetection } from "/@/utils/deviceDetection";
@@ -65,7 +65,7 @@ watch(
       <!-- 退出登陆 -->
       <el-dropdown trigger="click">
         <span class="el-dropdown-link">
-          <img :src="avatars" />
+          <img :src="avatars2" />
           <p>{{ usename }}</p>
         </span>
         <template #dropdown>

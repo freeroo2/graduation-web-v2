@@ -7,7 +7,7 @@
 // ReBar
 // } from "/@/components/ReCharts/index";
 import { ref, computed } from "vue";
-import avatars from "/@/assets/avatars2.jpg";
+import avatars2 from "/@/assets/avatars2.jpg";
 
 const date: Date = new Date();
 let loading = ref<boolean>(true);
@@ -35,7 +35,7 @@ const openDepot = (): void => {
   <div class="welcome">
     <el-card class="top-content">
       <div class="left-mark">
-        <img :src="avatars" title="直达仓库地址" @click="openDepot" />
+        <img :src="avatars2" title="直达仓库地址" @click="openDepot" />
         <span>{{ greetings }}</span>
       </div>
     </el-card>

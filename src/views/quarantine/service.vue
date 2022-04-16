@@ -5,7 +5,7 @@ import { useDailyStoreHook } from "/@/store/modules/daily";
 import { FormInstance } from "element-plus";
 import { formatDates } from "/@/utils/formatDate";
 import { errorMessage, successMessage } from "/@/utils/message";
-import daily1 from "/@/assets/daily1.png";
+import service1 from "/@/assets/service1.png";
 import SeamlessScroll from "/@/components/ReSeamlessScroll";
 import { templateRef } from "@vueuse/core";
 onBeforeMount(() => {
@@ -106,14 +106,15 @@ const resetForm = (formEl: FormInstance | undefined) => {
 <template>
   <div>
     <el-card style="height: auto"
-      ><template #header> 每日访查 </template>
-      <span>由防疫工作人员负责统计填报隔离居民每日健康信息。</span>
+      ><template #header> 隔离服务 </template>
+      <span>由防疫工作人员负责填报隔离居民服务记录。</span>
       <Tabs
         v-model:activeKey="activeKey"
         tab-position="top"
         :style="{ height: 'auto', margin: '20px' }"
-        ><TabPane :key="1" tab="每日访查">
+        ><TabPane :key="1" tab="隔离服务">
           <el-row :gutter="24" style="margin: 20px">
+            <el-col :xs="4" :sm="4" :md="4" :lg="4" :xl="4" />
             <el-col
               :xs="24"
               :sm="24"
@@ -137,7 +138,7 @@ const resetForm = (formEl: FormInstance | undefined) => {
               <el-card style="height: auto; width: auto" shadow="hover">
                 <template #header>
                   <span style="font-size: 16px; font-weight: 500"
-                    >访查登记</span
+                    >服务登记</span
                   >
                 </template>
                 <div style="text-align: center">
@@ -211,7 +212,7 @@ const resetForm = (formEl: FormInstance | undefined) => {
                         </el-form-item>
                       </el-col>
                       <el-rol :xs="12" :sm="12" :md="12" :lg="12" :xl="12">
-                        <img :src="daily1" class="IMG" />
+                        <img :src="service1" class="IMG" />
                       </el-rol>
                     </el-row>
                     <el-form-item
@@ -243,11 +244,11 @@ const resetForm = (formEl: FormInstance | undefined) => {
               </el-card>
             </el-col>
             <el-col
-              :xs="24"
-              :sm="24"
-              :md="8"
-              :lg="8"
-              :xl="8"
+              :xs="4"
+              :sm="4"
+              :md="4"
+              :lg="4"
+              :xl="4"
               style="margin-bottom: 20px"
               v-motion
               :initial="{
@@ -261,33 +262,7 @@ const resetForm = (formEl: FormInstance | undefined) => {
                   delay: 200
                 }
               }"
-            >
-              <el-space wrap>
-                <el-card class="box-card" shadow="hover">
-                  <template #header>
-                    <span>今日未访查</span>
-                  </template>
-                  <SeamlessScroll
-                    ref="scroll"
-                    :data="dailyStore.notChecked"
-                    :class-option="classOption"
-                    class="warp"
-                  >
-                    <ul class="item">
-                      <li
-                        v-for="(item, index) in dailyStore.notChecked"
-                        :key="index"
-                      >
-                        <span
-                          class="title"
-                          v-text="`${item.address} ${item.nickName}`"
-                        />
-                      </li>
-                    </ul>
-                  </SeamlessScroll>
-                </el-card>
-              </el-space>
-            </el-col>
+            />
           </el-row>
         </TabPane>
       </Tabs>

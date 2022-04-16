@@ -176,7 +176,7 @@ export default defineComponent({
             {
               field: "phone",
               title: "电话",
-              width: 100
+              width: 120
             },
             {
               field: "address",

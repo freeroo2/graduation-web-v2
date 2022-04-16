@@ -77,7 +77,7 @@ let defaultOption = computed(() => {
     //步长
     step: 1,
     //启动无缝滚动最小数据数
-    limitMoveNum: 5,
+    limitMoveNum: 3,
     //是否启用鼠标hover控制
     hoverStop: true,
     // bottom 往下 top 往上(默认) left 向左 right 向右

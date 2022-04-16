@@ -4,7 +4,7 @@ import { useRoute } from "vue-router";
 import Search from "./search/index.vue";
 import Notice from "./notice/index.vue";
 import mixNav from "./sidebar/mixNav.vue";
-import avatars from "/@/assets/avatars.jpg";
+import avatars2 from "/@/assets/avatars2.jpg";
 import Hamburger from "./sidebar/hamBurger.vue";
 import Breadcrumb from "./sidebar/breadCrumb.vue";
 import { deviceDetection } from "/@/utils/deviceDetection";
@@ -37,7 +37,7 @@ const { logout, onPanel, toggleSideBar, pureApp, usename } = useNav();
       <!-- 退出登陆 -->
       <el-dropdown trigger="click">
         <span class="el-dropdown-link">
-          <img :src="avatars" />
+          <img :src="avatars2" />
           <p>{{ usename }}</p>
         </span>
         <template #dropdown>
