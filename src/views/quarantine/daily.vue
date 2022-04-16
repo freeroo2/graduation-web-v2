@@ -8,6 +8,7 @@ import { errorMessage, successMessage } from "/@/utils/message";
 import daily1 from "/@/assets/daily1.png";
 import SeamlessScroll from "/@/components/ReSeamlessScroll";
 import { templateRef } from "@vueuse/core";
+import { useUserStoreHook } from "/@/store/modules/user";
 onBeforeMount(() => {
   fetchData();
 });
@@ -21,9 +22,11 @@ const options = reactive([]);
 
 const ruleFormRef = ref<FormInstance>();
 const dailyStore = useDailyStoreHook();
+const userStore = useUserStoreHook();
 const form = reactive({
   id: null,
   uid: null,
+  cid: null,
   temperature: null,
   recordTime: null,
   tired: null,
@@ -31,6 +34,22 @@ const form = reactive({
   headache: null,
   note: null
 });
+// 根据单选框所选的用户来给表单的nickName和address赋值
+function handleSelectChange(value) {
+  // 获取当前单选框所选项的下标idx
+  let idx = options.findIndex(item => {
+    return item.$value == value;
+  });
+  console.log(
+    "%c [ idx ]-359",
+    "font-size:13px; background:pink; color:#bf2c9f;",
+    dailyStore.notChecked[idx]
+  );
+  if (idx > -1) {
+    form.cid = dailyStore.notChecked[idx].cid;
+  }
+}
+
 var valiNumberPass1 = (rule, value, callback) => {
   //包含小数的数字
   let reg = /^[+-]?(0|([1-9]\d*))(\.\d+)?$/g;
@@ -157,6 +176,7 @@ const resetForm = (formEl: FormInstance | undefined) => {
                             v-model="form.uid"
                             placeholder="请选择居民"
                             align="center"
+                            @change="handleSelectChange"
                           >
                             <el-option
                               v-for="item in options"

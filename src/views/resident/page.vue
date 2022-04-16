@@ -45,6 +45,7 @@ const ruleFormRef2 = ref<FormInstance>();
 const form = reactive({
   id: null,
   uid: null,
+  cid: null,
   type: null,
   result: null,
   testTime: null,
@@ -174,6 +175,11 @@ async function fetchResidents() {
   await userStore.FIND_RESIDENTS_TO_ARRAY();
 }
 function generateData() {
+  console.log(
+    "%c [ userStore.residents ]-180",
+    "font-size:13px; background:pink; color:#bf2c9f;",
+    userStore.residents
+  );
   userStore.residents.forEach(item => {
     data.value.push({
       key: item?.id,
@@ -364,11 +370,12 @@ function handleSelectChange(value) {
   console.log(
     "%c [ idx ]-359",
     "font-size:13px; background:pink; color:#bf2c9f;",
-    idx
+    userStore.residents[idx]
   );
   if (idx > -1) {
     form.nickName = userStore.residents[idx].nickName;
     form.address = userStore.residents[idx].address;
+    form.cid = userStore.residents[idx].cid;
   }
 }
 </script>

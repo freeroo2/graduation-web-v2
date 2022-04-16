@@ -1,16 +1,16 @@
 import { defineStore } from "pinia";
 import { store } from "/@/store";
 import {
-  findPcrs,
-  createPcr,
-  editPcr,
-  pcrDelete,
-  findPcrsWithCid
-} from "/@/api/pcr";
+  findServices,
+  createService,
+  editService,
+  deleteService,
+  findServicesWithCid
+} from "/@/api/service";
 import { useRoleStoreHook } from "./role";
 import { storageSession } from "/@/utils/storage";
-export const usePcrStore = defineStore({
-  id: "pure-pcr",
+export const useServiceStore = defineStore({
+  id: "pure-service",
   state: () => ({
     currentPage: 1,
     total: 10,
@@ -19,8 +19,8 @@ export const usePcrStore = defineStore({
     pageData: []
   }),
   actions: {
-    // 查找用户姓名对应所有pcr检测记录
-    async FIND_PCRS(params: object) {
+    // 查找用户姓名对应所有隔离服务记录
+    async FIND_SERVICES(params: object) {
       return new Promise<void>((resolve, reject) => {
         useRoleStoreHook()
           .GET_CUR_ROLE(storageSession.getItem("info")?.id)
@@ -31,14 +31,14 @@ export const usePcrStore = defineStore({
                 ...params,
                 cid: storageSession.getItem("info")?.cid
               };
-              findPcrsWithCid(param).then(res => {
+              findServicesWithCid(param).then(res => {
                 this.pageData = res?.data?.records;
                 this.total = res?.data?.total;
                 resolve();
               });
             } else if (Number(role) === 2) {
               // 若为超级管理员，则获取所有用户
-              findPcrs(params).then(res => {
+              findServices(params).then(res => {
                 this.pageData = res?.data?.records;
                 this.total = res?.data?.total;
                 resolve();
@@ -50,10 +50,10 @@ export const usePcrStore = defineStore({
           });
       });
     },
-    // 添加pcr检测记录
-    async PCR_CREATE(data: object) {
+    // 添加隔离服务记录
+    async SERVICE_CREATE(data: object) {
       return new Promise<void>((resolve, reject) => {
-        createPcr(data)
+        createService(data)
           .then(() => {
             resolve();
           })
@@ -62,10 +62,10 @@ export const usePcrStore = defineStore({
           });
       });
     },
-    // 编辑pcr检测记录
-    async PCR_EDIT(data: object) {
+    // 编辑隔离服务记录
+    async SERVICE_EDIT(data: object) {
       return new Promise<void>((resolve, reject) => {
-        editPcr(data)
+        editService(data)
           .then(() => {
             resolve();
           })
@@ -74,10 +74,10 @@ export const usePcrStore = defineStore({
           });
       });
     },
-    // 删除pcr检测记录
-    async DELETE_PCR(param: object) {
+    // 删除隔离服务记录
+    async DELETE_SERVICE(param: object) {
       return new Promise<void>((resolve, reject) => {
-        pcrDelete(param)
+        deleteService(param)
           .then(() => {
             resolve();
           })
@@ -89,6 +89,6 @@ export const usePcrStore = defineStore({
   }
 });
 
-export function usePcrStoreHook() {
-  return usePcrStore(store);
+export function useServiceStoreHook() {
+  return useServiceStore(store);
 }

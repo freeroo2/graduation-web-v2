@@ -4,6 +4,11 @@ export const findPcrs = (params: object): resultType => {
   return http.request("get", "/pcr_test/find", { params: params });
 };
 
+// 查找用户姓名对应所有pcr检测记录 withcid
+export const findPcrsWithCid = (params: object): resultType => {
+  return http.request("get", "/pcr_test/findWithCid", { params: params });
+};
+
 // 添加pcr检测记录
 export const createPcr = (data: object): resultType => {
   return http.request("post", "/pcr_test/add", { data: data });

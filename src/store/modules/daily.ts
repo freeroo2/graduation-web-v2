@@ -6,7 +6,10 @@ import {
   findDailys,
   createDaily,
   editDaily,
-  dailyDelete
+  dailyDelete,
+  findDailysWithCid,
+  getAllQuarantine,
+  getAllQuarantineWithCid
 } from "/@/api/daily";
 import { useRoleStoreHook } from "./role";
 import { storageSession } from "/@/utils/storage";
@@ -18,24 +21,35 @@ export const useDailyStore = defineStore({
     pageSize: 10,
     detailData: null,
     pageData: [],
-    notChecked: []
+    notChecked: [],
+    allQuarantine: []
   }),
   actions: {
-    // 查找用户姓名对应所有pcr检测记录
+    // 查找用户姓名对应所有隔离检查记录
     async FIND_DAILYS(params: object) {
       return new Promise<void>((resolve, reject) => {
-        findDailys(params)
-          .then((res: any) => {
-            if (res) {
-              this.pageData = res?.data?.records;
-              this.total = res?.data?.total;
+        useRoleStoreHook()
+          .GET_CUR_ROLE(storageSession.getItem("info")?.id)
+          .then(role => {
+            // 若为管理员，则获取当前管理员所在小区的所有用户
+            if (Number(role) === 1) {
+              const param = {
+                ...params,
+                cid: storageSession.getItem("info")?.cid
+              };
+              findDailysWithCid(param).then(res => {
+                this.pageData = res?.data?.records;
+                this.total = res?.data?.total;
+                resolve();
+              });
+            } else if (Number(role) === 2) {
+              // 若为超级管理员，则获取所有用户
+              findDailys(params).then(res => {
+                this.pageData = res?.data?.records;
+                this.total = res?.data?.total;
+                resolve();
+              });
             }
-            console.log(
-              "%c [ res ]-44",
-              "font-size:13px; background:pink; color:#bf2c9f;",
-              res
-            );
-            resolve(res);
           })
           .catch(error => {
             reject(error);
@@ -97,6 +111,34 @@ export const useDailyStore = defineStore({
               // 若为超级管理员
               getNotCheckedToday().then(res => {
                 this.notChecked = res?.data;
+                resolve(res?.data);
+              });
+            }
+          })
+          .catch(error => {
+            reject(error);
+          });
+      });
+    },
+    // 获取当前管理员所在小区的所有隔离中的用户，返回为一个列表，不分页，若为超管，则获取所有小区的
+    async GET_ALL_QUARANTINE() {
+      return new Promise<any[]>((resolve, reject) => {
+        useRoleStoreHook()
+          .GET_CUR_ROLE(storageSession.getItem("info")?.id)
+          .then(role => {
+            const params = {
+              cid: storageSession.getItem("info")?.cid
+            };
+            // 若为管理员
+            if (Number(role) === 1) {
+              getAllQuarantineWithCid(params).then(res => {
+                this.allQuarantine = res?.data;
+                resolve(res?.data);
+              });
+            } else if (Number(role) === 2) {
+              // 若为超级管理员
+              getAllQuarantine().then(res => {
+                this.allQuarantine = res?.data;
                 resolve(res?.data);
               });
             }

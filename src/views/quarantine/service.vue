@@ -3,68 +3,112 @@ import { onBeforeMount, onMounted, reactive, ref } from "vue";
 import { Tabs, TabPane } from "@pureadmin/components";
 import { useDailyStoreHook } from "/@/store/modules/daily";
 import { FormInstance } from "element-plus";
-import { formatDates } from "/@/utils/formatDate";
 import { errorMessage, successMessage } from "/@/utils/message";
 import service1 from "/@/assets/service1.png";
-import SeamlessScroll from "/@/components/ReSeamlessScroll";
-import { templateRef } from "@vueuse/core";
+import { useServiceStoreHook } from "/@/store/modules/service";
 onBeforeMount(() => {
   fetchData();
 });
-// eslint-disable-next-line no-undef
-const scroll = templateRef<ElRef | null>("scroll", null);
-let classOption = reactive({
-  direction: "top"
-});
+
 const activeKey = ref(1);
 const options = reactive([]);
+const shortcuts = [
+  {
+    text: "今天",
+    value: new Date()
+  },
+  {
+    text: "昨天",
+    value: () => {
+      const date = new Date();
+      date.setTime(date.getTime() - 3600 * 1000 * 24);
+      return date;
+    }
+  },
+  {
+    text: "一周前",
+    value: () => {
+      const date = new Date();
+      date.setTime(date.getTime() - 3600 * 1000 * 24 * 7);
+      return date;
+    }
+  }
+];
 
 const ruleFormRef = ref<FormInstance>();
 const dailyStore = useDailyStoreHook();
+const serviceStore = useServiceStoreHook();
 const form = reactive({
   id: null,
   uid: null,
-  temperature: null,
-  recordTime: null,
-  tired: null,
-  diarrhea: null,
-  headache: null,
-  note: null
+  cid: null,
+  address: null,
+  nickName: null,
+  name: null,
+  phone: null,
+  content: null,
+  serviceTime: null
 });
-var valiNumberPass1 = (rule, value, callback) => {
-  //包含小数的数字
-  let reg = /^[+-]?(0|([1-9]\d*))(\.\d+)?$/g;
-  if (value === "") {
-    callback(new Error("请输入内容"));
-  } else if (!reg.test(value)) {
-    callback(new Error("请输入数字"));
-  } else {
-    callback();
-  }
-};
 const rules = reactive({
   uid: [{ required: true, message: "请选择居民", trigger: "change" }],
-  result: [
+  name: [
     {
       required: true,
-      message: "请选择结果",
+      message: "请输入姓名",
       trigger: "change"
     }
   ],
-  temperature: [
+  phone: [
     {
       required: true,
-      validator: valiNumberPass1,
+      message: "请输入电话号码",
+      trigger: "change"
+    },
+    {
+      min: 11,
+      max: 11,
+      message: "电话号码必须为11位"
+    }
+  ],
+  content: [
+    {
+      required: true,
+      message: "输入服务内容",
+      trigger: "change"
+    }
+  ],
+  serviceTime: [
+    {
+      type: "date",
+      required: true,
+      message: "请选择服务的时间",
       trigger: "change"
     }
   ]
 });
+// 根据单选框所选的用户来给表单的nickName和address赋值
+function handleSelectChange(value) {
+  // 获取当前单选框所选项的下标idx
+  let idx = options.findIndex(item => {
+    return item.$value == value;
+  });
+  console.log(
+    "%c [ idx ]-359",
+    "font-size:13px; background:pink; color:#bf2c9f;",
+    dailyStore.allQuarantine[idx]
+  );
+  if (idx > -1) {
+    form.cid = dailyStore.allQuarantine[idx].cid;
+    form.address = dailyStore.allQuarantine[idx].address;
+    form.nickName = dailyStore.allQuarantine[idx].nickName;
+  }
+}
 async function initNotChecked() {
-  await dailyStore.GET_NOT_CHECKED_TODAY();
+  await dailyStore.GET_ALL_QUARANTINE();
 }
 function initOptions() {
   options.splice(0, options.length);
-  dailyStore.notChecked.forEach(item => {
+  dailyStore.allQuarantine.forEach(item => {
     options.push({
       $value: item?.id,
       label: `${item?.address}---${item?.nickName}`
@@ -81,8 +125,7 @@ const submitForm = async (formEl: FormInstance | undefined) => {
   await formEl.validate((valid, fields) => {
     if (valid) {
       console.log("submit!");
-      form.recordTime = formatDates(new Date(), "yyyy-MM-dd");
-      dailyStore.DAILY_CREATE(form).then(() => {
+      serviceStore.SERVICE_CREATE(form).then(() => {
         ruleFormRef.value.resetFields();
         successMessage("提交成功");
         fetchData();
@@ -158,6 +201,7 @@ const resetForm = (formEl: FormInstance | undefined) => {
                             v-model="form.uid"
                             placeholder="请选择居民"
                             align="center"
+                            @change="handleSelectChange"
                           >
                             <el-option
                               v-for="item in options"
@@ -167,68 +211,64 @@ const resetForm = (formEl: FormInstance | undefined) => {
                             /> </el-select
                         ></el-form-item>
                         <el-form-item
-                          label="体温"
-                          prop="temperature"
-                          style="width: 73%"
+                          label="服务者姓名"
                           class="form_item"
+                          prop="name"
+                          style="width: 80%"
                         >
-                          <el-input v-model="form.temperature" />
+                          <el-input
+                            v-model="form.name"
+                            placeholder="请输入姓名"
+                          />
                         </el-form-item>
                         <el-form-item
-                          label="是否乏力"
-                          prop="tired"
+                          label="服务者电话"
                           class="form_item"
+                          prop="phone"
+                          style="width: 80%"
                         >
-                          <el-radio v-model="form.tired" label="false"
-                            >否</el-radio
-                          >
-                          <el-radio v-model="form.tired" label="true"
-                            >是</el-radio
-                          >
+                          <el-input
+                            v-model="form.phone"
+                            placeholder="请输入电话号码"
+                          />
                         </el-form-item>
                         <el-form-item
-                          label="是否头痛"
-                          prop="headache"
+                          label="服务时间"
+                          prop="serviceTime"
+                          style="width: auto"
                           class="form_item"
                         >
-                          <el-radio v-model="form.headache" label="false"
-                            >否</el-radio
-                          >
-                          <el-radio v-model="form.headache" label="true"
-                            >是</el-radio
-                          >
+                          <div class="block">
+                            <el-date-picker
+                              v-model="form.serviceTime"
+                              type="datetime"
+                              placeholder="请选择时间"
+                              :shortcuts="shortcuts"
+                              format="YYYY-MM-DD hh:mm:ss"
+                              value-format="YYYY-MM-DD hh:mm:ss"
+                            />
+                          </div>
                         </el-form-item>
                         <el-form-item
-                          label="是否腹泻"
-                          prop="diarrhea"
+                          label="服务内容"
                           class="form_item"
+                          prop="content"
+                          style="width: 80%"
                         >
-                          <el-radio v-model="form.diarrhea" label="false"
-                            >否</el-radio
-                          >
-                          <el-radio v-model="form.diarrhea" label="true"
-                            >是</el-radio
-                          >
+                          <el-input
+                            v-model="form.content"
+                            :autosize="{ minRows: 3, maxRows: 6 }"
+                            placeholder="请输入服务内容"
+                            type="textarea"
+                          />
                         </el-form-item>
                       </el-col>
                       <el-rol :xs="12" :sm="12" :md="12" :lg="12" :xl="12">
                         <img :src="service1" class="IMG" />
                       </el-rol>
                     </el-row>
-                    <el-form-item
-                      label="备注"
-                      class="form_item"
-                      prop="mydescription"
-                      style="width: 80%"
-                    >
-                      <el-input
-                        v-model="form.note"
-                        type="textarea"
-                        :autosize="{ minRows: 3, maxRows: 6 }"
-                      />
-                    </el-form-item>
                     <el-form-item>
-                      <div style="margin-left: 27%">
+                      <div style="margin-left: 30%">
                         <el-button
                           type="primary"
                           @click="submitForm(ruleFormRef)"
@@ -277,25 +317,5 @@ const resetForm = (formEl: FormInstance | undefined) => {
   margin-right: 10%;
   margin-bottom: 10%;
   float: right;
-}
-.warp {
-  height: 150px;
-  width: 300px;
-  margin: 0 auto;
-  overflow: hidden;
-  ul {
-    list-style: none;
-    padding: 0;
-    margin: 0 auto;
-
-    li,
-    a {
-      height: 30px;
-      line-height: 30px;
-      display: flex;
-      justify-content: center;
-      font-size: 15px;
-    }
-  }
 }
 </style>

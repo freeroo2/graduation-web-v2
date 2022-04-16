@@ -157,6 +157,11 @@ export default defineComponent({
           sortable: true
         },
         {
+          field: "cid",
+          title: "CID",
+          visible: false
+        },
+        {
           field: "nickName",
           title: "姓名",
           width: 80,

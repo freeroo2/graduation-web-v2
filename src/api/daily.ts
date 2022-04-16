@@ -12,9 +12,26 @@ export const getNotCheckedTodayWithCid = (params: object): resultType => {
   });
 };
 
+// 用于管理员获取当前管理员所在小区的所有隔离中的用户，返回为一个列表，不分页
+export const getAllQuarantineWithCid = (): resultType => {
+  return http.request("get", "/user/getAllQuarantineWithCid");
+};
+
+// 用于超管获取所有小区的所有隔离中的用户，返回为一个列表，不分页
+export const getAllQuarantine = (params: object): resultType => {
+  return http.request("get", "/user/getAllQuarantine", {
+    params: params
+  });
+};
+
 // 查找用户姓名对应所有隔离检查记录
 export const findDailys = (params: object): resultType => {
   return http.request("get", "/q-daily/find", { params: params });
+};
+
+// 查找用户姓名对应所有pcr检测记录 withcid
+export const findDailysWithCid = (params: object): resultType => {
+  return http.request("get", "/q-daily/findWithCid", { params: params });
 };
 
 // 添加隔离检查记录
