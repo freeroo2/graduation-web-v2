@@ -3,15 +3,14 @@ import { defineComponent, reactive, ref } from "vue";
 import {
   VxeGridProps,
   VxeGridListeners,
-  VxeFormEvents,
   VXETable,
   VxeGridInstance,
   VxePagerEvents
 } from "vxe-table";
 import manager1 from "/@/assets/manager1.png";
-import { usePcrStoreHook } from "/@/store/modules/pcr";
+import { useDailyStoreHook } from "/@/store/modules/daily";
 export default defineComponent({
-  name: "pcrList",
+  name: "dailyList",
   setup() {
     const managerImg = manager1;
     const showDetails = ref(false);
@@ -22,10 +21,7 @@ export default defineComponent({
       isAllChecked: false,
       isIndeterminate: false
     });
-    const sexList = ref([
-      { value: "1", label: "男" },
-      { value: "2", label: "女" }
-    ]);
+
     const shortcuts = [
       {
         text: "今天",
@@ -48,7 +44,7 @@ export default defineComponent({
         }
       }
     ];
-    const pcrStore = usePcrStoreHook();
+    const dailyStore = useDailyStoreHook();
     const tablePage = reactive({
       total: 0,
       currentPage: 1,
@@ -67,7 +63,7 @@ export default defineComponent({
       },
       pagerConfig: {
         perfect: true,
-        total: pcrStore.total
+        total: dailyStore.total
       },
       editConfig: {
         trigger: "click",
@@ -136,10 +132,15 @@ export default defineComponent({
                 currentPage: tablePage.currentPage,
                 search: search
               });
-              pcrStore.FIND_PCRS(params).then(() => {
+              dailyStore.FIND_DAILYS(params).then(() => {
+                console.log(
+                  "%c [ dailyStore.pageData ]-137",
+                  "font-size:13px; background:pink; color:#bf2c9f;",
+                  dailyStore.pageData
+                );
                 resolve({
-                  result: pcrStore.pageData,
-                  total: pcrStore.total
+                  result: dailyStore.pageData,
+                  total: dailyStore.total
                 });
               });
             });
@@ -155,11 +156,6 @@ export default defineComponent({
           sortable: true
         },
         {
-          field: "cid",
-          title: "CID",
-          visible: false
-        },
-        {
           field: "nickName",
           title: "姓名",
           width: 80,
@@ -172,43 +168,47 @@ export default defineComponent({
           sortable: true
         },
         {
-          field: "type",
-          title: "检测方式",
-          editRender: {},
-          slots: { default: "type_default", edit: "type_edit" },
-          width: 120,
-          sortable: true
-        },
-        {
-          field: "result",
-          title: "检测结果",
-          editRender: {},
-          slots: { default: "result_default", edit: "result_edit" },
+          field: "temperature",
+          title: "体温",
+          slots: { default: "temperature_default" },
           width: 100,
           sortable: true
         },
         {
-          field: "testTime",
-          title: "采样时间",
-          width: 200,
+          field: "tired",
+          title: "乏力",
           editRender: {},
-          slots: { edit: "testTime_edit" },
+          slots: { default: "tired_default", edit: "tired_edit" },
+          width: 80
+        },
+        {
+          field: "headache",
+          title: "头痛",
+          editRender: {},
+          slots: { default: "headache_default", edit: "headache_edit" },
+          width: 80
+        },
+        {
+          field: "diarrhea",
+          title: "腹泻",
+          editRender: {},
+          slots: { default: "diarrhea_default", edit: "diarrhea_edit" },
+          width: 80
+        },
+        {
+          field: "recordTime",
+          title: "访查日期",
+          width: 150,
+          editRender: {},
+          slots: { edit: "recordTime_edit" },
           sortable: true
         },
         {
-          field: "resultTime",
-          title: "检测时间",
-          width: 200,
-          editRender: {},
-          slots: { edit: "resultTime_edit" },
-          sortable: true
-        },
-        {
-          field: "mydescription",
+          field: "note",
           title: "备注",
           width: 200,
           editRender: {},
-          slots: { edit: "mydescription_edit" }
+          slots: { edit: "note_edit" }
         },
         {
           title: "操作",
@@ -220,29 +220,7 @@ export default defineComponent({
     });
     const formDemo = reactive({
       loading: false,
-      createFlag: false,
-      formData: {
-        username: null,
-        password: null,
-        checkPassword: null,
-        nickName: null,
-        cid: null,
-        court: null,
-        age: null,
-        gender: null,
-        phone: null,
-        address: null
-        // username: "ttest",
-        // password: "123456",
-        // checkPassword: "123456",
-        // nickName: "null1",
-        // cid: 1,
-        // court: "null111",
-        // age: 10,
-        // gender: 1,
-        // phone: "12345678911",
-        // address: "null111"
-      }
+      createFlag: false
     });
     const findList = () => {
       // 刷新表格
@@ -260,12 +238,6 @@ export default defineComponent({
         }
       }
     };
-    const resetEvent: VxeFormEvents.Reset = () => {
-      VXETable.modal.message({ content: "重置事件", status: "info" });
-      for (let key in formDemo.formData) {
-        formDemo.formData[key] = null;
-      }
-    };
     // 分页插件翻页触发
     const handlePageChange: VxePagerEvents.PageChange = ({
       currentPage,
@@ -278,17 +250,9 @@ export default defineComponent({
     // 性别格式化显示
     const formatType = (value: any) => {
       if (value === true) {
-        return "口咽拭子";
+        return "是";
       } else {
-        return "鼻咽拭子";
-      }
-    };
-    // 角色格式化显示
-    const formatResult = (value: any) => {
-      if (value === true) {
-        return "阳性";
-      } else {
-        return "阴性";
+        return "否";
       }
     };
     const editRowEvent = (row: any) => {
@@ -303,7 +267,7 @@ export default defineComponent({
       if ($grid) {
         await $grid.clearActived();
         gridOptions.loading = true;
-        pcrStore.PCR_EDIT(row).then(() => {
+        dailyStore.DAILY_EDIT(row).then(() => {
           gridOptions.loading = false;
           VXETable.modal.message({
             content: "保存成功！",
@@ -319,7 +283,7 @@ export default defineComponent({
       if ($grid) {
         if (type === "confirm") {
           await $grid.remove(row).then(() => {
-            pcrStore.DELETE_PCR({ id: row.id }).then(() => {
+            dailyStore.DELETE_DAILY({ id: row.id }).then(() => {
               VXETable.modal.message({
                 content: "删除成功！",
                 status: "success"
@@ -335,14 +299,11 @@ export default defineComponent({
       formDemo,
       gridOptions,
       gridEvents,
-      resetEvent,
       xGrid,
       handlePageChange,
       tablePage,
       checkboxData,
-      sexList,
       formatType,
-      formatResult,
       editRowEvent,
       saveRowEvent,
       removeRowEvent,
@@ -356,148 +317,149 @@ export default defineComponent({
 
 <template>
   <div>
-    <el-row :gutter="24" style="margin: 20px">
-      <el-col
-        :xs="24"
-        :sm="24"
-        :md="24"
-        :lg="24"
-        :xl="24"
-        style="margin-bottom: 20px"
-        v-motion
-        :initial="{
-          opacity: 0,
-          y: 100
-        }"
-        :enter="{
-          opacity: 1,
-          y: 0,
-          transition: {
-            delay: 200
-          }
-        }"
-        ><el-card style="height: auto; width: 100%" shadow="never">
-          <div style="text-align: center">
-            <vxe-grid
-              v-bind="gridOptions"
-              ref="xGrid"
-              show-overflow="ellipsis"
-              v-on="gridEvents"
-              :total="tablePage.total"
-              v-model:current-page="tablePage.currentPage"
-              v-model:page-size="tablePage.pageSize"
-              @page-change="handlePageChange"
-              class="mytable"
-              align="center"
-            >
-              <template #name_item="{ data }">
-                <vxe-input
-                  v-model="data.nickName"
-                  type="text"
-                  placeholder="请输入姓名"
-                />
-              </template>
-              <template #type_edit="{ row }">
-                <vxe-select
-                  v-model="row.type"
-                  :selected="row.type"
-                  style="width: 80px; margin: 0 auto"
-                >
-                  <vxe-option
-                    :key="true"
-                    :value="true"
-                    :label="`${formatType(true)}`"
-                  />
-                  <vxe-option
-                    :key="false"
-                    :value="false"
-                    :label="`${formatType(false)}`"
-                  />
-                </vxe-select>
-              </template>
-              <template #submit_item>
-                <vxe-button type="submit" status="primary" content="查询" />
-              </template>
-              <template #operate="{ row }">
-                <template v-if="xGrid.isActiveByRow(row)">
-                  <vxe-button
-                    icon="fa fa-save"
-                    status="primary"
-                    title="保存"
-                    circle
-                    @click="saveRowEvent(row)"
+    <el-card shadow="never">
+      <el-row :gutter="24" style="margin: 20px">
+        <el-col
+          :xs="24"
+          :sm="24"
+          :md="24"
+          :lg="24"
+          :xl="24"
+          style="margin-bottom: 20px"
+          v-motion
+          :initial="{
+            opacity: 0,
+            y: 100
+          }"
+          :enter="{
+            opacity: 1,
+            y: 0,
+            transition: {
+              delay: 200
+            }
+          }"
+          ><el-card style="height: auto; width: 100%" shadow="never">
+            <div style="text-align: center">
+              <vxe-grid
+                v-bind="gridOptions"
+                ref="xGrid"
+                show-overflow="ellipsis"
+                v-on="gridEvents"
+                :total="tablePage.total"
+                v-model:current-page="tablePage.currentPage"
+                v-model:page-size="tablePage.pageSize"
+                @page-change="handlePageChange"
+                class="mytable"
+                align="center"
+              >
+                <template #name_item="{ data }">
+                  <vxe-input
+                    v-model="data.nickName"
+                    type="text"
+                    placeholder="请输入姓名"
                   />
                 </template>
-                <template v-else>
+                <template #submit_item>
+                  <vxe-button type="submit" status="primary" content="查询" />
+                </template>
+                <template #operate="{ row }">
+                  <template v-if="xGrid.isActiveByRow(row)">
+                    <vxe-button
+                      icon="fa fa-save"
+                      status="primary"
+                      title="保存"
+                      circle
+                      @click="saveRowEvent(row)"
+                    />
+                  </template>
+                  <template v-else>
+                    <vxe-button
+                      icon="fa fa-edit"
+                      title="编辑"
+                      circle
+                      @click="editRowEvent(row)"
+                    />
+                  </template>
                   <vxe-button
-                    icon="fa fa-edit"
-                    title="编辑"
+                    icon="fa fa-trash"
+                    title="删除"
                     circle
-                    @click="editRowEvent(row)"
+                    @click="removeRowEvent(row)"
                   />
                 </template>
-                <vxe-button
-                  icon="fa fa-trash"
-                  title="删除"
-                  circle
-                  @click="removeRowEvent(row)"
-                />
-              </template>
-              <template #type_default="{ row }">
-                {{ formatType(row.type) }}
-              </template>
-              <template #result_default="{ row }">
-                <div
-                  :style="{
-                    color: `${row.result == true ? '#FF6B6B' : '#6BCB77'}`
-                  }"
-                >
-                  {{ formatResult(row.result) }}
-                </div>
-              </template>
-              <template #result_edit="{ row }">
-                <vxe-select
-                  v-model="row.result"
-                  transfer
-                  style="width: 60px; margin: 0 auto"
-                >
-                  <vxe-option :key="false" :value="false" label="阴性" />
-                  <vxe-option :key="true" :value="true" label="阳性" />
-                </vxe-select>
-              </template>
-              <template #mydescription_edit="{ row }">
-                <vxe-input
-                  v-model="row.mydescription"
-                  type="text"
-                  placeholder="请输入备注"
-                />
-              </template>
-              <template #testTime_edit="{ row }">
-                <el-date-picker
-                  v-model="row.testTime"
-                  type="datetime"
-                  placeholder="请选择时间"
-                  :shortcuts="shortcuts"
-                  format="YYYY-MM-DD hh:mm:ss"
-                  value-format="YYYY-MM-DD hh:mm:ss"
-                  style="width: auto; margin: 0 auto"
-                />
-              </template>
-              <template #resultTime_edit="{ row }">
-                <el-date-picker
-                  v-model="row.resultTime"
-                  type="datetime"
-                  placeholder="请选择时间"
-                  :shortcuts="shortcuts"
-                  format="YYYY-MM-DD hh:mm:ss"
-                  value-format="YYYY-MM-DD hh:mm:ss"
-                  style="width: auto; margin: 0 auto"
-                />
-              </template>
-            </vxe-grid>
-          </div>
-        </el-card> </el-col
-    ></el-row>
+                <template #tired_edit="{ row }">
+                  <vxe-select
+                    v-model="row.tired"
+                    transfer
+                    style="width: 60px; margin: 0 auto"
+                  >
+                    <vxe-option :key="false" :value="false" label="否" />
+                    <vxe-option :key="true" :value="true" label="是" />
+                  </vxe-select>
+                </template>
+                <template #headache_edit="{ row }">
+                  <vxe-select
+                    v-model="row.headache"
+                    transfer
+                    style="width: 60px; margin: 0 auto"
+                  >
+                    <vxe-option :key="false" :value="false" label="否" />
+                    <vxe-option :key="true" :value="true" label="是" />
+                  </vxe-select>
+                </template>
+                <template #diarrhea_edit="{ row }">
+                  <vxe-select
+                    v-model="row.diarrhea"
+                    transfer
+                    style="width: 60px; margin: 0 auto"
+                  >
+                    <vxe-option :key="false" :value="false" label="否" />
+                    <vxe-option :key="true" :value="true" label="是" />
+                  </vxe-select>
+                </template>
+                <template #temperature_default="{ row }">
+                  <div
+                    :style="{
+                      color: `${
+                        row.temperature >= 37.0 ? '#FF6B6B' : '#6BCB77'
+                      }`
+                    }"
+                  >
+                    {{ row.temperature }}
+                  </div>
+                </template>
+                <template #tired_default="{ row }">
+                  {{ formatType(row.tired) }}
+                </template>
+                <template #headache_default="{ row }">
+                  {{ formatType(row.headache) }}
+                </template>
+                <template #diarrhea_default="{ row }">
+                  {{ formatType(row.diarrhea) }}
+                </template>
+                <template #note_edit="{ row }">
+                  <vxe-input
+                    v-model="row.note"
+                    type="text"
+                    placeholder="请输入备注"
+                  />
+                </template>
+                <template #recordTime_edit="{ row }">
+                  <el-date-picker
+                    v-model="row.recordTime"
+                    type="datetime"
+                    placeholder="请选择时间"
+                    :shortcuts="shortcuts"
+                    format="YYYY-MM-DD"
+                    value-format="YYYY-MM-DD"
+                    style="width: auto; margin: 0 auto"
+                  />
+                </template>
+              </vxe-grid>
+            </div>
+          </el-card> </el-col
+      ></el-row>
+    </el-card>
   </div>
 </template>
 

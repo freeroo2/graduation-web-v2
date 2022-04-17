@@ -15,7 +15,7 @@ const noticeRouter = {
       component: () => import("/@/views/notice/page.vue"),
       meta: {
         title: "通告",
-        rank: 23
+        rank: 24
       }
     },
     {
@@ -24,7 +24,7 @@ const noticeRouter = {
       component: () => import("/@/views/notice/detail.vue"),
       meta: {
         title: "通告详情",
-        rank: 24,
+        rank: 25,
         showLink: false
       }
     }
