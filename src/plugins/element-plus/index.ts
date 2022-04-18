@@ -43,6 +43,7 @@ import {
   ElOption,
   ElDatePicker,
   ElSpace,
+  ElCascader,
   // 指令
   ElLoading,
   ElInfiniteScroll,
@@ -100,7 +101,8 @@ const components = [
   ElResult,
   ElSteps,
   ElStep,
-  ElSpace
+  ElSpace,
+  ElCascader
 ];
 
 export function useElementPlus(app: App) {

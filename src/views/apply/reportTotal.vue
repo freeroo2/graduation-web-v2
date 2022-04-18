@@ -11,9 +11,9 @@ const activeKey = ref(1);
         v-model:activeKey="activeKey"
         tab-position="top"
         :style="{ height: 'auto', margin: '20px' }"
-        ><TabPane :key="1" tab="访查记录表">
+        ><TabPane :key="1" tab="打卡记录表">
           <div style="margin-top: 30px; margin-bottom: 50px">
-            所有已登记的访查记录如下
+            所有已登记的健康打卡记录如下
           </div>
           <el-row :gutter="24" style="margin: 20px">
             <el-col

@@ -9,6 +9,7 @@ import {
 } from "vxe-table";
 import manager1 from "/@/assets/manager1.png";
 import { useDailyStoreHook } from "/@/store/modules/daily";
+import { useReportStoreHook } from "/@/store/modules/report";
 export default defineComponent({
   name: "reportList",
   setup() {
@@ -44,7 +45,7 @@ export default defineComponent({
         }
       }
     ];
-    const dailyStore = useDailyStoreHook();
+    const reportStore = useReportStoreHook();
     const tablePage = reactive({
       total: 0,
       currentPage: 1,
@@ -63,7 +64,7 @@ export default defineComponent({
       },
       pagerConfig: {
         perfect: true,
-        total: dailyStore.total
+        total: reportStore.total
       },
       editConfig: {
         trigger: "click",
@@ -132,15 +133,15 @@ export default defineComponent({
                 currentPage: tablePage.currentPage,
                 search: search
               });
-              dailyStore.FIND_DAILYS(params).then(() => {
+              reportStore.FIND_REPORTS(params).then(() => {
                 console.log(
                   "%c [ dailyStore.pageData ]-137",
                   "font-size:13px; background:pink; color:#bf2c9f;",
-                  dailyStore.pageData
+                  reportStore.pageData
                 );
                 resolve({
-                  result: dailyStore.pageData,
-                  total: dailyStore.total
+                  result: reportStore.pageData,
+                  total: reportStore.total
                 });
               });
             });
@@ -168,11 +169,40 @@ export default defineComponent({
           sortable: true
         },
         {
-          field: "temperature",
-          title: "体温",
-          slots: { default: "temperature_default" },
-          width: 100,
+          field: "contactFlag",
+          title: "密接",
+          editRender: {},
+          slots: { default: "contactFlag_default", edit: "contactFlag_edit" },
+          width: 80,
           sortable: true
+        },
+        {
+          field: "passbyFlag",
+          title: "途径中高风险",
+          editRender: {},
+          slots: { default: "passbyFlag_default", edit: "passbyFlag_edit" },
+          width: 80
+        },
+        {
+          field: "takeFlag",
+          title: "乘坐飞机火车",
+          editRender: {},
+          slots: { default: "takeFlag_default", edit: "takeFlag_edit" },
+          width: 80
+        },
+        {
+          field: "cough",
+          title: "咳嗽",
+          editRender: {},
+          slots: { default: "cough_default", edit: "cough_edit" },
+          width: 80
+        },
+        {
+          field: "fever",
+          title: "发烧",
+          editRender: {},
+          slots: { default: "fever_default", edit: "fever_edit" },
+          width: 80
         },
         {
           field: "tired",
@@ -182,25 +212,18 @@ export default defineComponent({
           width: 80
         },
         {
-          field: "headache",
-          title: "头痛",
+          field: "hardBreath",
+          title: "呼吸困难",
           editRender: {},
-          slots: { default: "headache_default", edit: "headache_edit" },
+          slots: { default: "hardBreath_default", edit: "hardBreath_edit" },
           width: 80
         },
         {
-          field: "diarrhea",
-          title: "腹泻",
-          editRender: {},
-          slots: { default: "diarrhea_default", edit: "diarrhea_edit" },
-          width: 80
-        },
-        {
-          field: "recordTime",
-          title: "访查日期",
+          field: "pubTime",
+          title: "上报时间",
           width: 150,
           editRender: {},
-          slots: { edit: "recordTime_edit" },
+          slots: { edit: "pubTime_edit" },
           sortable: true
         },
         {
@@ -267,7 +290,7 @@ export default defineComponent({
       if ($grid) {
         await $grid.clearActived();
         gridOptions.loading = true;
-        dailyStore.DAILY_EDIT(row).then(() => {
+        reportStore.REPORT_EDIT(row).then(() => {
           gridOptions.loading = false;
           VXETable.modal.message({
             content: "保存成功！",
@@ -283,7 +306,7 @@ export default defineComponent({
       if ($grid) {
         if (type === "confirm") {
           await $grid.remove(row).then(() => {
-            dailyStore.DELETE_DAILY({ id: row.id }).then(() => {
+            reportStore.REPORT_DELETE({ id: row.id }).then(() => {
               VXETable.modal.message({
                 content: "删除成功！",
                 status: "success"
@@ -417,25 +440,26 @@ export default defineComponent({
                     <vxe-option :key="true" :value="true" label="是" />
                   </vxe-select>
                 </template>
-                <template #temperature_default="{ row }">
-                  <div
-                    :style="{
-                      color: `${
-                        row.temperature >= 37.0 ? '#FF6B6B' : '#6BCB77'
-                      }`
-                    }"
-                  >
-                    {{ row.temperature }}
-                  </div>
+                <template #contactFlag_default="{ row }">
+                  {{ formatType(row.contactFlag) }}
+                </template>
+                <template #passbyFlag_default="{ row }">
+                  {{ formatType(row.passbyFlag) }}
+                </template>
+                <template #takeFlag_default="{ row }">
+                  {{ formatType(row.takeFlag) }}
+                </template>
+                <template #cough_default="{ row }">
+                  {{ formatType(row.cough) }}
+                </template>
+                <template #fever_default="{ row }">
+                  {{ formatType(row.fever) }}
                 </template>
                 <template #tired_default="{ row }">
                   {{ formatType(row.tired) }}
                 </template>
-                <template #headache_default="{ row }">
-                  {{ formatType(row.headache) }}
-                </template>
-                <template #diarrhea_default="{ row }">
-                  {{ formatType(row.diarrhea) }}
+                <template #hardBreath_default="{ row }">
+                  {{ formatType(row.hardBreath) }}
                 </template>
                 <template #note_edit="{ row }">
                   <vxe-input
@@ -444,7 +468,67 @@ export default defineComponent({
                     placeholder="请输入备注"
                   />
                 </template>
-                <template #recordTime_edit="{ row }">
+                <template #contactFlag_edit="{ row }">
+                  <vxe-select
+                    v-model="row.contactFlag"
+                    transfer
+                    style="width: 60px; margin: 0 auto"
+                  >
+                    <vxe-option :key="false" :value="false" label="否" />
+                    <vxe-option :key="true" :value="true" label="是" />
+                  </vxe-select>
+                </template>
+                <template #passbyFlag_edit="{ row }">
+                  <vxe-select
+                    v-model="row.passbyFlag"
+                    transfer
+                    style="width: 60px; margin: 0 auto"
+                  >
+                    <vxe-option :key="false" :value="false" label="否" />
+                    <vxe-option :key="true" :value="true" label="是" />
+                  </vxe-select>
+                </template>
+                <template #takeFlag_edit="{ row }">
+                  <vxe-select
+                    v-model="row.takeFlag"
+                    transfer
+                    style="width: 60px; margin: 0 auto"
+                  >
+                    <vxe-option :key="false" :value="false" label="否" />
+                    <vxe-option :key="true" :value="true" label="是" />
+                  </vxe-select>
+                </template>
+                <template #cough_edit="{ row }">
+                  <vxe-select
+                    v-model="row.cough"
+                    transfer
+                    style="width: 60px; margin: 0 auto"
+                  >
+                    <vxe-option :key="false" :value="false" label="否" />
+                    <vxe-option :key="true" :value="true" label="是" />
+                  </vxe-select>
+                </template>
+                <template #fever_edit="{ row }">
+                  <vxe-select
+                    v-model="row.fever"
+                    transfer
+                    style="width: 60px; margin: 0 auto"
+                  >
+                    <vxe-option :key="false" :value="false" label="否" />
+                    <vxe-option :key="true" :value="true" label="是" />
+                  </vxe-select>
+                </template>
+                <template #hardBreath_edit="{ row }">
+                  <vxe-select
+                    v-model="row.hardBreath"
+                    transfer
+                    style="width: 60px; margin: 0 auto"
+                  >
+                    <vxe-option :key="false" :value="false" label="否" />
+                    <vxe-option :key="true" :value="true" label="是" />
+                  </vxe-select>
+                </template>
+                <template #pubTime_edit="{ row }">
                   <el-date-picker
                     v-model="row.recordTime"
                     type="datetime"

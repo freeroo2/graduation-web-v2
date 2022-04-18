@@ -1,63 +1,59 @@
 <script lang="ts" setup>
 import { onBeforeMount, onMounted, reactive, ref } from "vue";
 import { Tabs, TabPane } from "@pureadmin/components";
-import { useDailyStoreHook } from "/@/store/modules/daily";
 import { FormInstance } from "element-plus";
 import { errorMessage, successMessage } from "/@/utils/message";
-import service1 from "/@/assets/service1.png";
-import { useServiceStoreHook } from "/@/store/modules/service";
+import back1 from "/@/assets/back1.png";
+import { EluiChinaAreaDht } from "elui-china-area-dht";
+import { useBackStoreHook } from "/@/store/modules/back";
+import { storageSession } from "/@/utils/storage";
 onBeforeMount(() => {
   fetchData();
 });
 
+const isChecked = ref(false);
 const activeKey = ref(1);
-const options = reactive([]);
 const shortcuts = [
   {
-    text: "今天",
-    value: new Date()
-  },
-  {
-    text: "昨天",
+    text: "明天",
     value: () => {
       const date = new Date();
-      date.setTime(date.getTime() - 3600 * 1000 * 24);
+      date.setTime(date.getTime() + 3600 * 1000 * 24);
       return date;
     }
   },
   {
-    text: "一周前",
+    text: "后天",
     value: () => {
       const date = new Date();
-      date.setTime(date.getTime() - 3600 * 1000 * 24 * 7);
+      date.setTime(date.getTime() + 3600 * 1000 * 24 * 2);
+      return date;
+    }
+  },
+  {
+    text: "一周后",
+    value: () => {
+      const date = new Date();
+      date.setTime(date.getTime() + 3600 * 1000 * 24 * 7);
       return date;
     }
   }
 ];
 
+const chinaData = new EluiChinaAreaDht.ChinaArea().chinaAreaflat;
 const ruleFormRef = ref<FormInstance>();
-const dailyStore = useDailyStoreHook();
-const serviceStore = useServiceStoreHook();
+const backStore = useBackStoreHook();
 const form = reactive({
-  id: null,
   uid: null,
-  cid: null,
-  address: null,
-  nickName: null,
-  name: null,
+  tfrom: null,
   phone: null,
-  content: null,
-  serviceTime: null
+  risk: null,
+  tmeans: "",
+  backTime: null,
+  tseq: ""
 });
 const rules = reactive({
-  uid: [{ required: true, message: "请选择居民", trigger: "change" }],
-  name: [
-    {
-      required: true,
-      message: "请输入姓名",
-      trigger: "change"
-    }
-  ],
+  tfrom: [{ required: true, message: "请选择出发地", trigger: "change" }],
   phone: [
     {
       required: true,
@@ -70,65 +66,49 @@ const rules = reactive({
       message: "电话号码必须为11位"
     }
   ],
-  content: [
+  risk: [
     {
       required: true,
-      message: "输入服务内容",
+      message: "请确认是否为中高风险地区",
       trigger: "change"
     }
   ],
-  serviceTime: [
+  tmeans: [
+    {
+      required: true,
+      message: "请提供交通方式",
+      trigger: "change"
+    }
+  ],
+  backTime: [
     {
       type: "date",
       required: true,
-      message: "请选择服务的时间",
+      message: "请选择返回的时间",
       trigger: "change"
     }
   ]
 });
-// 根据单选框所选的用户来给表单的nickName和address赋值
-function handleSelectChange(value) {
-  // 获取当前单选框所选项的下标idx
-  let idx = options.findIndex(item => {
-    return item.$value == value;
-  });
-  console.log(
-    "%c [ idx ]-359",
-    "font-size:13px; background:pink; color:#bf2c9f;",
-    dailyStore.allQuarantine[idx]
-  );
-  if (idx > -1) {
-    form.cid = dailyStore.allQuarantine[idx].cid;
-    form.address = dailyStore.allQuarantine[idx].address;
-    form.nickName = dailyStore.allQuarantine[idx].nickName;
-  }
-}
-async function initNotChecked() {
-  await dailyStore.GET_ALL_QUARANTINE();
-}
-function initOptions() {
-  options.splice(0, options.length);
-  dailyStore.allQuarantine.forEach(item => {
-    options.push({
-      $value: item?.id,
-      label: `${item?.address}---${item?.nickName}`
-    });
-  });
-}
 function fetchData() {
-  initNotChecked().then(() => {
-    initOptions();
-  });
+  // initNotChecked().then(() => {
+  //   initOptions();
+  // });
 }
 const submitForm = async (formEl: FormInstance | undefined) => {
   if (!formEl) return;
   await formEl.validate((valid, fields) => {
     if (valid) {
       console.log("submit!");
-      serviceStore.SERVICE_CREATE(form).then(() => {
+      console.log(
+        "%c [ form ]-104",
+        "font-size:13px; background:pink; color:#bf2c9f;",
+        form
+      );
+      form.uid = storageSession.getItem("info").id;
+      backStore.BACK_CREATE(form).then(() => {
         ruleFormRef.value.resetFields();
         successMessage("提交成功");
-        fetchData();
+        //fetchData();
         console.log(
           "%c [ form ]-271",
           "font-size:13px; background:pink; color:#bf2c9f;",
@@ -145,17 +125,25 @@ const resetForm = (formEl: FormInstance | undefined) => {
   if (!formEl) return;
   formEl.resetFields();
 };
+function onChange(e) {
+  const one = chinaData[e[0]];
+  const two = chinaData[e[1]];
+  const three = chinaData[e[2]];
+  console.log(one, two, three);
+  console.log(one.label + two.label + three.label);
+  form.tfrom = one.label + two.label + three.label;
+}
 </script>
 <template>
   <div>
     <el-card style="height: auto"
-      ><template #header> 隔离服务 </template>
-      <span>由防疫工作人员负责填报隔离居民服务记录。</span>
+      ><template #header> 返乡报备 </template>
+      <span>请您如实填写返乡报备表</span>
       <Tabs
         v-model:activeKey="activeKey"
         tab-position="top"
         :style="{ height: 'auto', margin: '20px' }"
-        ><TabPane :key="1" tab="隔离服务">
+        ><TabPane :key="1" tab="返乡报备">
           <el-row :gutter="24" style="margin: 20px">
             <el-col :xs="4" :sm="4" :md="4" :lg="4" :xl="4" />
             <el-col
@@ -178,110 +166,164 @@ const resetForm = (formEl: FormInstance | undefined) => {
                 }
               }"
             >
-              <el-card style="height: auto; width: auto" shadow="hover">
-                <template #header>
-                  <span style="font-size: 16px; font-weight: 500"
-                    >服务登记</span
-                  >
-                </template>
-                <div style="text-align: center">
-                  <el-form
-                    ref="ruleFormRef"
-                    :model="form"
-                    :rules="rules"
-                    label-width="120px"
-                  >
-                    <el-row :gutter="24">
-                      <el-col :xs="16" :sm="16" :md="16" :lg="16" :xl="16">
-                        <el-form-item
-                          label="选择居民"
-                          prop="uid"
-                          class="form_item"
-                          ><el-select
-                            v-model="form.uid"
-                            placeholder="请选择居民"
-                            align="center"
-                            @change="handleSelectChange"
+              <div style="margin-bottom: 48px">
+                <el-radio
+                  v-model="isChecked"
+                  :label="true"
+                  size="large"
+                  style="font-size: large; margin-left: 220px"
+                  >本人保证以下信息如实填写，否则后果自负</el-radio
+                >
+              </div>
+              <div v-show="isChecked">
+                <el-card
+                  style="height: auto; width: auto"
+                  shadow="hover"
+                  class="formCard"
+                >
+                  <template #header>
+                    <div>
+                      <img :src="back1" class="reportIMG" />
+                    </div>
+                  </template>
+                  <div style="text-align: center">
+                    <el-form
+                      ref="ruleFormRef"
+                      :model="form"
+                      :rules="rules"
+                      label-width="auto"
+                    >
+                      <el-row :gutter="24" style="margin-top: 50px">
+                        <el-col :xs="1" :sm="1" :md="1" :lg="1" :xl="1" />
+                        <el-col :xs="24" :sm="24" :md="24" :lg="22" :xl="22">
+                          <el-form-item
+                            label="出发地"
+                            prop="tFrom"
+                            class="form_item"
+                            ><elui-china-area-dht
+                              @change="onChange"
+                              size="default"
+                              class="elui-china-area-dht"
+                              placeholder="请选择当前所在地区"
+                          /></el-form-item>
+                        </el-col>
+                      </el-row>
+                      <el-row> <el-divider /></el-row>
+                      <el-row :gutter="24" style="margin-top: 30px">
+                        <el-col :xs="1" :sm="1" :md="1" :lg="1" :xl="1" />
+                        <el-col :xs="24" :sm="24" :md="24" :lg="20" :xl="20">
+                          <el-form-item
+                            label="是否为中高风险地区"
+                            class="form_item"
+                            prop="risk"
+                            style="width: 80%"
                           >
-                            <el-option
-                              v-for="item in options"
-                              :key="item.$value"
-                              :label="item.label"
-                              :value="item.$value"
-                            /> </el-select
-                        ></el-form-item>
-                        <el-form-item
-                          label="服务者姓名"
-                          class="form_item"
-                          prop="name"
-                          style="width: 80%"
-                        >
-                          <el-input
-                            v-model="form.name"
-                            placeholder="请输入姓名"
-                          />
-                        </el-form-item>
-                        <el-form-item
-                          label="服务者电话"
-                          class="form_item"
-                          prop="phone"
-                          style="width: 80%"
-                        >
-                          <el-input
-                            v-model="form.phone"
-                            placeholder="请输入电话号码"
-                          />
-                        </el-form-item>
-                        <el-form-item
-                          label="服务时间"
-                          prop="serviceTime"
-                          style="width: auto"
-                          class="form_item"
-                        >
-                          <div class="block">
-                            <el-date-picker
-                              v-model="form.serviceTime"
-                              type="datetime"
-                              placeholder="请选择时间"
-                              :shortcuts="shortcuts"
-                              format="YYYY-MM-DD hh:mm:ss"
-                              value-format="YYYY-MM-DD hh:mm:ss"
+                            <el-radio
+                              v-model="form.risk"
+                              :label="false"
+                              size="default"
+                              >否</el-radio
+                            >
+                            <el-radio
+                              v-model="form.risk"
+                              :label="true"
+                              size="default"
+                              >是</el-radio
+                            >
+                          </el-form-item>
+                        </el-col>
+                      </el-row>
+                      <el-row> <el-divider /></el-row>
+                      <el-row :gutter="24" style="margin-top: 30px">
+                        <el-col :xs="1" :sm="1" :md="1" :lg="1" :xl="1" />
+                        <el-col :xs="24" :sm="24" :md="24" :lg="20" :xl="20">
+                          <el-form-item
+                            label="联系电话"
+                            class="form_item"
+                            prop="phone"
+                            style="width: 80%"
+                          >
+                            <el-input
+                              v-model="form.phone"
+                              placeholder="请输入电话号码"
                             />
-                          </div>
-                        </el-form-item>
-                        <el-form-item
-                          label="服务内容"
-                          class="form_item"
-                          prop="content"
-                          style="width: 80%"
-                        >
-                          <el-input
-                            v-model="form.content"
-                            :autosize="{ minRows: 3, maxRows: 6 }"
-                            placeholder="请输入服务内容"
-                            type="textarea"
-                          />
-                        </el-form-item>
-                      </el-col>
-                      <el-rol :xs="12" :sm="12" :md="12" :lg="12" :xl="12">
-                        <img :src="service1" class="IMG" />
-                      </el-rol>
-                    </el-row>
-                    <el-form-item>
-                      <div style="margin-left: 30%">
-                        <el-button
-                          type="primary"
-                          @click="submitForm(ruleFormRef)"
-                          >创建</el-button
-                        >
-                        <el-button @click="resetForm(ruleFormRef)"
-                          >重置</el-button
-                        >
-                      </div>
-                    </el-form-item>
-                  </el-form>
-                </div>
-              </el-card>
+                          </el-form-item>
+                        </el-col>
+                      </el-row>
+                      <el-row> <el-divider /></el-row>
+                      <el-row :gutter="24" style="margin-top: 30px">
+                        <el-col :xs="1" :sm="1" :md="1" :lg="1" :xl="1" />
+                        <el-col :xs="24" :sm="24" :md="24" :lg="20" :xl="20">
+                          <el-form-item
+                            label="预计返回时间"
+                            prop="backTime"
+                            style="width: auto"
+                            class="form_item"
+                          >
+                            <div class="block">
+                              <el-date-picker
+                                v-model="form.backTime"
+                                type="datetime"
+                                placeholder="请选择时间"
+                                :shortcuts="shortcuts"
+                                format="YYYY-MM-DD"
+                                value-format="YYYY-MM-DD"
+                              />
+                            </div>
+                          </el-form-item>
+                        </el-col>
+                      </el-row>
+                      <el-row> <el-divider /></el-row>
+                      <el-row :gutter="24" style="margin-top: 30px">
+                        <el-col :xs="1" :sm="1" :md="1" :lg="1" :xl="1" />
+                        <el-col :xs="24" :sm="24" :md="24" :lg="20" :xl="20">
+                          <el-form-item
+                            label="交通方式"
+                            class="form_item"
+                            prop="tmeans"
+                            style="width: 80%"
+                          >
+                            <el-input
+                              v-model="form.tmeans"
+                              placeholder="请输入交通方式"
+                            />
+                          </el-form-item>
+                        </el-col>
+                      </el-row>
+                      <el-row> <el-divider /></el-row>
+                      <el-row :gutter="24" style="margin-top: 30px">
+                        <el-col :xs="1" :sm="1" :md="1" :lg="1" :xl="1" />
+                        <el-col :xs="24" :sm="24" :md="24" :lg="20" :xl="20">
+                          <el-form-item
+                            label="航班号/列车号(若有)"
+                            class="form_item"
+                            prop="tseq"
+                            style="width: 80%"
+                          >
+                            <el-input
+                              v-model="form.tseq"
+                              placeholder="若有请输入航班号/列车号"
+                            />
+                          </el-form-item>
+                        </el-col>
+                      </el-row>
+                      <el-row> <el-divider /></el-row>
+                      <el-form-item>
+                        <div style="margin-left: 25%; margin-top: 30px">
+                          <el-button
+                            type="primary"
+                            @click="submitForm(ruleFormRef)"
+                            >提交</el-button
+                          >
+                          <el-button @click="resetForm(ruleFormRef)"
+                            >重置</el-button
+                          >
+                        </div>
+                      </el-form-item>
+                    </el-form>
+                  </div>
+                </el-card>
+              </div>
             </el-col>
             <el-col
               :xs="4"
@@ -317,5 +359,11 @@ const resetForm = (formEl: FormInstance | undefined) => {
   margin-right: 10%;
   margin-bottom: 10%;
   float: right;
+}
+.formCard :deep() .el-card__header {
+  padding: 0;
+}
+.formCard :deep() .el-card__body {
+  padding: 0;
 }
 </style>

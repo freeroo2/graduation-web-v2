@@ -7,13 +7,10 @@ import {
   VxeGridInstance,
   VxePagerEvents
 } from "vxe-table";
-import manager1 from "/@/assets/manager1.png";
-import { useDailyStoreHook } from "/@/store/modules/daily";
-import { useServiceStoreHook } from "/@/store/modules/service";
+import { useBackStoreHook } from "/@/store/modules/back";
 export default defineComponent({
   name: "serviceList",
   setup() {
-    const managerImg = manager1;
     const showDetails = ref(false);
     const xGrid = ref({} as VxeGridInstance);
     const ruleFormRef = ref(null);
@@ -45,7 +42,7 @@ export default defineComponent({
         }
       }
     ];
-    const serviceStore = useServiceStoreHook();
+    const backStore = useBackStoreHook();
     const tablePage = reactive({
       total: 0,
       currentPage: 1,
@@ -64,7 +61,7 @@ export default defineComponent({
       },
       pagerConfig: {
         perfect: true,
-        total: serviceStore.total
+        total: backStore.total
       },
       editConfig: {
         trigger: "click",
@@ -123,15 +120,15 @@ export default defineComponent({
                 currentPage: tablePage.currentPage,
                 search: search
               });
-              serviceStore.FIND_SERVICES(params).then(() => {
+              backStore.FIND_BACKS(params).then(() => {
                 console.log(
                   "%c [ dailyStore.pageData ]-137",
                   "font-size:13px; background:pink; color:#bf2c9f;",
-                  serviceStore.pageData
+                  backStore.pageData
                 );
                 resolve({
-                  result: serviceStore.pageData,
-                  total: serviceStore.total
+                  result: backStore.pageData,
+                  total: backStore.total
                 });
               });
             });
@@ -159,33 +156,47 @@ export default defineComponent({
           sortable: true
         },
         {
-          field: "content",
-          title: "服务内容",
+          field: "tfrom",
+          title: "当前所在地",
           editRender: {},
-          slots: { edit: "content_edit" },
+          slots: { edit: "tfrom_edit" },
           width: 200,
           sortable: true
         },
         {
-          field: "name",
-          title: "服务人姓名",
-          editRender: {},
-          slots: { edit: "name_edit" },
-          width: 100
-        },
-        {
           field: "phone",
-          title: "服务人电话",
+          title: "联系电话",
           editRender: {},
           slots: { edit: "phone_edit" },
           width: 120
         },
         {
-          field: "serviceTime",
+          field: "risk",
+          title: "是否为中高风险",
+          editRender: {},
+          slots: { default: "risk_default", edit: "risk_edit" },
+          width: 120
+        },
+        {
+          field: "tmeans",
+          title: "交通方式",
+          editRender: {},
+          slots: { edit: "tmeans_edit" },
+          width: 120
+        },
+        {
+          field: "tseq",
+          title: "航班/车次",
+          editRender: {},
+          slots: { edit: "tseq_edit" },
+          width: 120
+        },
+        {
+          field: "backTime",
           title: "服务时间",
           width: 150,
           editRender: {},
-          slots: { edit: "serviceTime_edit" },
+          slots: { edit: "backTime_edit" },
           sortable: true
         },
         {
@@ -245,7 +256,7 @@ export default defineComponent({
       if ($grid) {
         await $grid.clearActived();
         gridOptions.loading = true;
-        serviceStore.SERVICE_EDIT(row).then(() => {
+        backStore.BACK_EDIT(row).then(() => {
           gridOptions.loading = false;
           VXETable.modal.message({
             content: "保存成功！",
@@ -261,7 +272,7 @@ export default defineComponent({
       if ($grid) {
         if (type === "confirm") {
           await $grid.remove(row).then(() => {
-            serviceStore.DELETE_SERVICE({ id: row.id }).then(() => {
+            backStore.BACK_DELETE({ id: row.id }).then(() => {
               VXETable.modal.message({
                 content: "删除成功！",
                 status: "success"
@@ -286,7 +297,6 @@ export default defineComponent({
       saveRowEvent,
       removeRowEvent,
       ruleFormRef,
-      managerImg,
       shortcuts
     };
   }
@@ -337,6 +347,64 @@ export default defineComponent({
                     placeholder="请输入姓名"
                   />
                 </template>
+                <template #risk_default="{ row }">
+                  {{ formatType(row.risk) }}
+                </template>
+                <template #tfrom_edit="{ row }">
+                  <vxe-input
+                    v-model="row.tfrom"
+                    type="text"
+                    placeholder="请输入所在地"
+                  />
+                </template>
+                <template #note_edit="{ row }">
+                  <vxe-input
+                    v-model="row.note"
+                    type="text"
+                    placeholder="请输入备注"
+                  />
+                </template>
+                <template #phone_edit="{ row }">
+                  <vxe-input
+                    v-model="row.phone"
+                    type="text"
+                    placeholder="请输入电话"
+                  />
+                </template>
+                <template #risk_edit="{ row }">
+                  <vxe-select
+                    v-model="row.risk"
+                    transfer
+                    style="width: 60px; margin: 0 auto"
+                  >
+                    <vxe-option :key="false" :value="false" label="否" />
+                    <vxe-option :key="true" :value="true" label="是" />
+                  </vxe-select>
+                </template>
+                <template #tmeans_edit="{ row }">
+                  <vxe-input
+                    v-model="row.tmeans"
+                    type="text"
+                    placeholder="请输入交通方式"
+                  /> </template
+                ><template #tseq_edit="{ row }">
+                  <vxe-input
+                    v-model="row.tseq"
+                    type="text"
+                    placeholder="请输入航班/车次"
+                  />
+                </template>
+                <template #backTime_edit="{ row }">
+                  <el-date-picker
+                    v-model="row.backTime"
+                    type="datetime"
+                    placeholder="请选择时间"
+                    :shortcuts="shortcuts"
+                    format="YYYY-MM-DD"
+                    value-format="YYYY-MM-DD"
+                    style="width: auto; margin: 0 auto"
+                  />
+                </template>
                 <template #submit_item>
                   <vxe-button type="submit" status="primary" content="查询" />
                 </template>
@@ -365,36 +433,11 @@ export default defineComponent({
                     @click="removeRowEvent(row)"
                   />
                 </template>
-                <template #content_edit="{ row }">
-                  <vxe-input
-                    v-model="row.content"
-                    type="text"
-                    placeholder="请输入服务内容"
-                  />
-                </template>
                 <template #name_edit="{ row }">
                   <vxe-input
                     v-model="row.name"
                     type="text"
                     placeholder="请输入姓名"
-                  />
-                </template>
-                <template #phone_edit="{ row }">
-                  <vxe-input
-                    v-model="row.phone"
-                    type="text"
-                    placeholder="请输入电话"
-                  />
-                </template>
-                <template #serviceTime_edit="{ row }">
-                  <el-date-picker
-                    v-model="row.serviceTime"
-                    type="datetime"
-                    placeholder="请选择时间"
-                    :shortcuts="shortcuts"
-                    format="YYYY-MM-DD hh:mm:ss"
-                    value-format="YYYY-MM-DD hh:mm:ss"
-                    style="width: auto; margin: 0 auto"
                   />
                 </template>
               </vxe-grid>

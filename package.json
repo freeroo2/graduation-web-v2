@@ -85,6 +85,7 @@
     "autoprefixer": "^10.4.2",
     "cross-env": "7.0.3",
     "echarts": "^5.3.2",
+    "elui-china-area-dht": "^2.0.0",
     "eslint": "^8.8.0",
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-vue": "^8.4.1",

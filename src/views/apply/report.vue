@@ -419,117 +419,121 @@ const resetForm = (formEl: FormInstance | undefined) => {
               }"
             />
           </el-row>
-          <el-row :gutter="24" style="margin: 20px">
-            <el-col
-              :xs="24"
-              :sm="24"
-              :md="12"
-              :lg="12"
-              :xl="12"
-              style="margin-bottom: 20px"
-              v-motion
-              :initial="{
-                opacity: 0,
-                y: 100
-              }"
-              :enter="{
-                opacity: 1,
-                y: 0,
-                transition: {
-                  delay: 200
-                }
-              }"
-            >
-              <el-card shadow="never" style="height: 500px">
-                <template #header>
-                  <div style="font-size: 16px; color: green; margin: 0 auto">
-                    您今日已经填写过健康情况
-                  </div>
-                </template>
-                <div
-                  v-show="isChecked"
-                  style="width: 50%; height: auto; margin: 10% auto"
-                >
-                  <img :src="done" class="doneIMG" />
-                </div>
-              </el-card>
-            </el-col>
-            <el-col
-              :xs="24"
-              :sm="24"
-              :md="12"
-              :lg="12"
-              :xl="12"
-              style="margin-bottom: 20px"
-              v-motion
-              :initial="{
-                opacity: 0,
-                y: 100
-              }"
-              :enter="{
-                opacity: 1,
-                y: 0,
-                transition: {
-                  delay: 200
-                }
-              }"
-              ><el-card shadow="hover" style="height: 500px">
-                <template #header
-                  ><div style="font-size: 16px">我的打卡记录</div>
-                </template>
-                <el-scrollbar height="400px">
+          <div v-show="isChecked">
+            <el-row :gutter="24" style="margin: 20px">
+              <el-col
+                :xs="24"
+                :sm="24"
+                :md="12"
+                :lg="12"
+                :xl="12"
+                style="margin-bottom: 20px"
+                v-motion
+                :initial="{
+                  opacity: 0,
+                  y: 100
+                }"
+                :enter="{
+                  opacity: 1,
+                  y: 0,
+                  transition: {
+                    delay: 200
+                  }
+                }"
+              >
+                <el-card shadow="never" style="height: 500px">
+                  <template #header>
+                    <div style="font-size: 16px; color: green; margin: 0 auto">
+                      您今日已经填写过健康情况
+                    </div>
+                  </template>
                   <div
-                    v-for="item in reportStore.myChecks"
-                    :key="item.id"
-                    class="mychecks_item"
+                    v-show="isChecked"
+                    style="width: 50%; height: auto; margin: 10% auto"
                   >
-                    <el-row :gutter="24">
-                      <el-col
-                        :xs="10"
-                        :sm="10"
-                        :md="10"
-                        :lg="10"
-                        :xl="10"
-                        v-motion
-                        :initial="{
-                          opacity: 0,
-                          y: 100
-                        }"
-                        :enter="{
-                          opacity: 1,
-                          y: 0,
-                          transition: {
-                            delay: 200
-                          }
-                        }"
-                        >已打卡：是</el-col
-                      >
-                      <el-col
-                        :xs="14"
-                        :sm="14"
-                        :md="14"
-                        :lg="14"
-                        :xl="14"
-                        v-motion
-                        :initial="{
-                          opacity: 0,
-                          y: 100
-                        }"
-                        :enter="{
-                          opacity: 1,
-                          y: 0,
-                          transition: {
-                            delay: 200
-                          }
-                        }"
-                        >{{ item.pubTime }}</el-col
-                      >
-                    </el-row>
+                    <img :src="done" class="doneIMG" />
                   </div>
-                </el-scrollbar>
-              </el-card>
-            </el-col>
-          </el-row>
+                </el-card>
+              </el-col>
+              <el-col
+                :xs="24"
+                :sm="24"
+                :md="12"
+                :lg="12"
+                :xl="12"
+                style="margin-bottom: 20px"
+                v-motion
+                :initial="{
+                  opacity: 0,
+                  y: 100
+                }"
+                :enter="{
+                  opacity: 1,
+                  y: 0,
+                  transition: {
+                    delay: 200
+                  }
+                }"
+                ><el-card shadow="hover" style="height: 500px">
+                  <template #header
+                    ><div style="font-size: 16px">我的打卡记录</div>
+                  </template>
+                  <el-scrollbar height="400px">
+                    <div
+                      v-for="item in reportStore.myChecks"
+                      :key="item.id"
+                      class="mychecks_item"
+                    >
+                      <el-row :gutter="100">
+                        <el-col
+                          :xs="24"
+                          :sm="24"
+                          :md="24"
+                          :lg="24"
+                          :xl="24"
+                          style="margin-left: 24px"
+                          v-motion
+                          :initial="{
+                            opacity: 0,
+                            y: 100
+                          }"
+                          :enter="{
+                            opacity: 1,
+                            y: 0,
+                            transition: {
+                              delay: 200
+                            }
+                          }"
+                          ><div>已打卡：是</div></el-col
+                        >
+                        <el-col
+                          :xs="14"
+                          :sm="14"
+                          :md="14"
+                          :lg="14"
+                          :xl="14"
+                          style="margin-left: 24px"
+                          v-motion
+                          :initial="{
+                            opacity: 0,
+                            y: 100
+                          }"
+                          :enter="{
+                            opacity: 1,
+                            y: 0,
+                            transition: {
+                              delay: 200
+                            }
+                          }"
+                          >{{ item.pubTime }}</el-col
+                        >
+                      </el-row>
+                    </div>
+                  </el-scrollbar>
+                </el-card>
+              </el-col>
+            </el-row>
+          </div>
         </TabPane>
       </Tabs>
     </el-card>
@@ -548,11 +552,9 @@ const resetForm = (formEl: FormInstance | undefined) => {
 }
 .mychecks_item {
   display: flex;
-  justify-content: center;
-  align-items: center;
   height: 50px;
+  width: 100%;
   margin: 10px;
-  text-align: center;
   border-radius: 4px;
   background: var(--el-color-primary-light-9);
   color: var(--el-color-primary);
