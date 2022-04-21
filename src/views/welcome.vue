@@ -1,11 +1,11 @@
 <script setup lang="ts">
-// import {
-// ReGithub,
-// ReInfinite,
-// RePie,
-// ReLine,
-// ReBar
-// } from "/@/components/ReCharts/index";
+import {
+  ReGithub,
+  ReInfinite,
+  RePie,
+  ReLine,
+  ReBar
+} from "/@/components/ReCharts/index";
 import { ref, computed } from "vue";
 import avatars2 from "/@/assets/avatars2.jpg";
 
@@ -40,7 +40,7 @@ const openDepot = (): void => {
       </div>
     </el-card>
 
-    <!-- <el-row :gutter="24" style="margin: 20px">
+    <el-row :gutter="24" style="margin: 20px">
       <el-col
         :xs="24"
         :sm="24"
@@ -60,7 +60,7 @@ const openDepot = (): void => {
             delay: 200
           }
         }"
-      > !--
+      >
         <el-card style="height: 360px">
           <template #header>
             <span style="font-size: 16px; font-weight: 500">GitHub信息</span>
@@ -208,7 +208,7 @@ const openDepot = (): void => {
           </el-skeleton>
         </el-card>
       </el-col>
-    </el-row> -->
+    </el-row>
   </div>
 </template>
 

@@ -8,11 +8,27 @@ import bg from "/@/assets/login/bg.png";
 import avatar from "/@/assets/login/avatar.svg?component";
 import illustration from "/@/assets/login/illustration.svg?component";
 import { useUserStoreHook } from "../store/modules/user";
+import { useRoleStoreHook } from "../store/modules/role";
 
 const router = useRouter();
 
 let user = ref("admin");
 let pwd = ref("123456");
+
+function getCurRole(id: number) {
+  useRoleStoreHook()
+    .GET_CUR_ROLE(id)
+    .then(res => {
+      console.log(
+        "%c [ res ]-23",
+        "font-size:13px; background:pink; color:#bf2c9f;",
+        res
+      );
+      storageSession.setItem("role", {
+        role: res
+      });
+    });
+}
 
 const onLogin = (): void => {
   // storageSession.setItem("info", {
@@ -28,6 +44,7 @@ const onLogin = (): void => {
     .then(() => {
       console.log("登录成功");
       initRouter(useUserStoreHook().id).then(() => {});
+      getCurRole(useUserStoreHook().id);
       router.push("/");
     })
     .catch(() => {

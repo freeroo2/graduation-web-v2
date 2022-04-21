@@ -19,13 +19,15 @@ const noticeRouter = {
       }
     },
     {
-      path: "/notice/detail/:id",
+      //path: "/notice/detail/:id",
+      path: "/notice/detail",
       name: "noticeDetail",
       component: () => import("/@/views/notice/detail.vue"),
       meta: {
         title: "通告详情",
         rank: 25,
-        showLink: false
+        showLink: false,
+        refreshRedirect: "/notice/page"
       }
     }
   ]

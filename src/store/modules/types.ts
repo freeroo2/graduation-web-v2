@@ -61,6 +61,7 @@ export type noticeDetailType = {
   content?: string;
   pubTime?: string;
   nickName?: string;
+  type: number;
 };
 export type userDetailType = {
   id: number;

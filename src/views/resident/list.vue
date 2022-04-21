@@ -618,7 +618,7 @@ export default defineComponent({
             }
           }"
         >
-          <div style="margin-top: 50px">
+          <div style="margin-top: 10px">
             <span>
               面对复杂的疫情形势，把病毒阻挡在社区门外，守护好居民健康安全，解决好居民生活需求，是我们社区的一线防疫人员坚守岗位的共同信念。
               <br /><br />
@@ -837,10 +837,10 @@ export default defineComponent({
   margin-top: 50px;
 }
 .IMG {
-  width: 80%;
+  width: 50%;
   height: auto;
   display: block;
-  margin: 0 10% 0 10;
-  margin-left: auto;
+  margin: 0 auto;
+  margin-left: 30%;
 }
 </style>

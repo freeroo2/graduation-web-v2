@@ -592,7 +592,7 @@ export default defineComponent({
             }
           }"
         >
-          <div style="margin-top: 50px">
+          <div style="margin-top: 0px">
             此模块面向超级管理员，<br />
             可以在此管理本社区下各个管理员的账号，以协助他们解决问题。
             <br />
@@ -618,8 +618,9 @@ export default defineComponent({
             }
           }"
         >
-          <img :src="managerImg" class="IMG2" /> </el-col
-      ></el-row>
+          <!-- <img :src="managerImg" class="IMG2" />-->
+        </el-col></el-row
+      >
       <el-row :gutter="24" style="margin: 20px">
         <el-col
           :xs="24"
@@ -640,7 +641,7 @@ export default defineComponent({
               delay: 200
             }
           }"
-          ><el-card style="height: auto; width: auto" shadow="hover">
+          ><el-card style="height: auto; width: auto" shadow="never">
             <template #header>
               <span style="font-size: 16px; font-weight: 500">居民列表</span>
             </template>

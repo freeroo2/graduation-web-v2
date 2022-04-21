@@ -44,6 +44,9 @@ import {
   ElDatePicker,
   ElSpace,
   ElCascader,
+  ElSkeleton,
+  ElDescriptions,
+  ElDescriptionsItem,
   // 指令
   ElLoading,
   ElInfiniteScroll,
@@ -102,7 +105,10 @@ const components = [
   ElSteps,
   ElStep,
   ElSpace,
-  ElCascader
+  ElCascader,
+  ElSkeleton,
+  ElDescriptions,
+  ElDescriptionsItem
 ];
 
 export function useElementPlus(app: App) {
