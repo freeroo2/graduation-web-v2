@@ -63,7 +63,7 @@ const openDepot = (): void => {
       >
         <el-card style="height: 360px">
           <template #header>
-            <span style="font-size: 16px; font-weight: 500">GitHub信息</span>
+            <span style="font-size: 16px; font-weight: 500">个人简介</span>
           </template>
           <el-skeleton animated :rows="7" :loading="loading">
             <template #default>

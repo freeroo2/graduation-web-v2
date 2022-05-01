@@ -204,7 +204,6 @@ export default defineComponent({
         {
           field: "mydescription",
           title: "备注",
-          width: 200,
           editRender: {},
           slots: { edit: "mydescription_edit" }
         },
@@ -413,8 +412,7 @@ export default defineComponent({
               </template>
               <template #type_default="{ row }">
                 {{
-                  vaccineStore.vaccines.find(item => item.id === row.vid)
-                    ?.name
+                  vaccineStore.vaccines.find(item => item.id === row.vid)?.name
                 }}
               </template>
               <template #gender_default="{ row }">

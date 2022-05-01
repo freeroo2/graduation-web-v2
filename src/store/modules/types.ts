@@ -39,12 +39,13 @@ export type userType = {
   id: number;
   token: string;
   name?: string;
+  username?: string;
   nickName?: string;
   cid?: number;
-  // age?: number;
-  // gender?: number;
-  // phone?: string;
-  // address?: string;
+  age?: number;
+  gender?: number;
+  phone?: string;
+  address?: string;
   status?: number;
   currentPage?: number;
   total?: number;
@@ -87,4 +88,9 @@ export type noticeStoreType = {
 
 export type vaccineStoreType = {
   vaccines: any[];
+};
+
+export type courtsType = {
+  id: number;
+  courtName: string;
 };

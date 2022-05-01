@@ -31,10 +31,6 @@ let name = "";
 let nickName = "";
 let cid = null;
 let id = null;
-// let age = null;
-// let phone = "";
-// let address = "";
-// let gender = null;
 let status = null;
 if (data) {
   const dataJson = JSON.parse(data);
@@ -61,11 +57,12 @@ export const useUserStore = defineStore({
     token,
     name,
     nickName,
+    username: null,
     cid,
-    // age,
-    // gender,
-    // phone,
-    // address,
+    age: null,
+    gender: null,
+    phone: null,
+    address: null,
     status,
     currentPage: 1,
     total: 10,
@@ -77,6 +74,9 @@ export const useUserStore = defineStore({
   actions: {
     SET_ID(id) {
       this.id = id;
+    },
+    SET_USERNAME(username) {
+      this.username = username;
     },
     SET_TOKEN(token) {
       this.token = token;
@@ -90,18 +90,18 @@ export const useUserStore = defineStore({
     SET_CID(cid) {
       this.cid = cid;
     },
-    // SET_AGE(age) {
-    //   this.age = age;
-    // },
-    // SET_GENDER(gender) {
-    //   this.gender = gender;
-    // },
-    // SET_PHONE(phone) {
-    //   this.phone = phone;
-    // },
-    // SET_ADDRESS(address) {
-    //   this.address = address;
-    // },
+    SET_AGE(age) {
+      this.age = age;
+    },
+    SET_GENDER(gender) {
+      this.gender = gender;
+    },
+    SET_PHONE(phone) {
+      this.phone = phone;
+    },
+    SET_ADDRESS(address) {
+      this.address = address;
+    },
     SET_STATUS(status) {
       this.status = status;
     },

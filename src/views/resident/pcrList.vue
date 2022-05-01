@@ -206,7 +206,6 @@ export default defineComponent({
         {
           field: "mydescription",
           title: "备注",
-          width: 200,
           editRender: {},
           slots: { edit: "mydescription_edit" }
         },

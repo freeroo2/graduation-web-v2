@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import { ref } from "vue";
+import { useUserStoreHook } from "/@/store/modules/user";
+import { storageSession } from "/@/utils/storage";
+const userStore = useUserStoreHook();
 const lists = ref([
   { type: "", label: "善良" },
   { type: "success", label: "好学" },
@@ -16,10 +19,30 @@ const lists = ref([
         <el-icon>
           <IconifyIconOffline icon="user" />
         </el-icon>
-        用户名
+        姓名
       </template>
-      xiaoxian
+      {{ storageSession.getItem("info").nickName }}
     </el-descriptions-item>
+    <el-descriptions-item>
+      <template #label>
+        <el-icon>
+          <IconifyIconOffline icon="notebook" />
+        </el-icon>
+        性别
+      </template>
+      {{ storageSession.getItem("info").gender }}
+    </el-descriptions-item>
+    <el-descriptions-item>
+      <template #label>
+        <el-icon>
+          <IconifyIconOffline icon="notebook" />
+        </el-icon>
+        年龄
+      </template>
+      {{ storageSession.getItem("info").age }}
+    </el-descriptions-item>
+  </el-descriptions>
+  <el-descriptions class="margin-top" direction="vertical" :column="3" border>
     <el-descriptions-item>
       <template #label>
         <el-icon>
@@ -27,7 +50,7 @@ const lists = ref([
         </el-icon>
         手机号
       </template>
-      123456789
+      {{ storageSession.getItem("info").phone }}
     </el-descriptions-item>
     <el-descriptions-item>
       <template #label>
@@ -36,35 +59,7 @@ const lists = ref([
         </el-icon>
         居住地
       </template>
-      上海
-    </el-descriptions-item>
-  </el-descriptions>
-  <el-descriptions class="margin-top" direction="vertical" :column="2" border>
-    <el-descriptions-item>
-      <template #label>
-        <el-icon>
-          <IconifyIconOffline icon="tickets" />
-        </el-icon>
-        标签
-      </template>
-      <el-tag
-        v-for="item in lists"
-        :key="item.label"
-        :type="item.type"
-        size="small"
-        effect="dark"
-      >
-        {{ item.label }}
-      </el-tag>
-    </el-descriptions-item>
-    <el-descriptions-item>
-      <template #label>
-        <el-icon>
-          <IconifyIconOffline icon="office-building" />
-        </el-icon>
-        联系地址
-      </template>
-      上海市徐汇区
+      {{ storageSession.getItem("info").address }}
     </el-descriptions-item>
   </el-descriptions>
   <el-descriptions class="margin-top" direction="vertical" :column="1" border>

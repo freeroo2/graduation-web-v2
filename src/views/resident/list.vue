@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, onBeforeMount, onMounted, reactive, ref } from "vue";
+import { defineComponent, onMounted, reactive, ref } from "vue";
 import {
   VxeGridProps,
   VxeGridListeners,
@@ -9,11 +9,11 @@ import {
   VxeGridInstance,
   VxePagerEvents
 } from "vxe-table";
-import { useNoticeStoreHook } from "/@/store/modules/notice";
 import { useRoleStoreHook } from "/@/store/modules/role";
 import { useUserStoreHook } from "/@/store/modules/user";
 import { storageSession } from "/@/utils/storage";
 import resident2 from "/@/assets/resident2.png";
+import { useCourtStoreHook } from "/@/store/modules/court";
 export default defineComponent({
   name: "residentList",
   setup() {
@@ -22,22 +22,15 @@ export default defineComponent({
     const xGrid = ref({} as VxeGridInstance);
     const ruleFormRef = ref(null);
     const selectCourtVisible = ref(false);
-    const selectCourtDisable = ref(false);
     onMounted(() => {
       // 当前用户为管理员
       if (Number(useRoleStoreHook().role) === 1) {
-        selectCourtDisable.value = true;
         selectCourtVisible.value = false;
       } else if (Number(useRoleStoreHook().role) === 2) {
-        selectCourtDisable.value = false;
         selectCourtVisible.value = true;
       }
+      useCourtStoreHook().getCourts();
     });
-    console.log(
-      "%c [ selectCourtVisible.value ]-32",
-      "font-size:13px; background:pink; color:#bf2c9f;",
-      selectCourtVisible.value
-    );
     const checkboxData = reactive({
       selectRecords: ref([] as any[]),
       isAllChecked: false,
@@ -48,7 +41,7 @@ export default defineComponent({
       { $value: 2, $label: "女" }
     ]);
 
-    const noticeStore = useNoticeStoreHook();
+    const courtStore = useCourtStoreHook();
     const userStore = useUserStoreHook();
     const tablePage = reactive({
       total: 0,
@@ -67,8 +60,7 @@ export default defineComponent({
         //width: 200
       },
       pagerConfig: {
-        perfect: true,
-        total: noticeStore.total
+        perfect: true
       },
       editConfig: {
         trigger: "click",
@@ -212,26 +204,26 @@ export default defineComponent({
       loading: false,
       createFlag: false,
       formData: {
-        // username: null,
-        // password: null,
-        // checkPassword: null,
-        // nickName: null,
-        // cid: null,
-        // court: null,
-        // age: null,
-        // gender: null,
-        // phone: null,
-        // address: null
-        username: "ttest",
-        password: "123456",
-        checkPassword: "123456",
-        nickName: "null1",
-        cid: 1,
-        court: "null111",
-        age: 10,
-        gender: 1,
-        phone: "12345678911",
-        address: "null111"
+        username: null,
+        password: null,
+        checkPassword: null,
+        nickName: null,
+        cid: storageSession.getItem("info").cid,
+        court: null,
+        age: null,
+        gender: null,
+        phone: null,
+        address: null
+        // username: "ttest",
+        // password: "123456",
+        // checkPassword: "123456",
+        // nickName: "null1",
+        // cid: storageSession.getItem("info").cid,
+        // court: "null111",
+        // age: 10,
+        // gender: 1,
+        // phone: "12345678911",
+        // address: "null111"
       },
       formItem: [
         {
@@ -272,21 +264,8 @@ export default defineComponent({
             {
               field: "cid",
               title: "小区",
-              visible: selectCourtVisible.value,
               span: 24,
-              itemRender: {
-                name: "$select",
-                optionProps: {
-                  options: [
-                    {
-                      label: "选择小区",
-                      value: 1
-                    }
-                  ]
-                },
-                defaultValue: storageSession.getItem("info").cid,
-                props: { placeholder: "请再次输入密码" }
-              }
+              slots: { default: "court_edit" }
             }
           ]
         },
@@ -469,6 +448,10 @@ export default defineComponent({
     const submitEvent = async () => {
       console.log("submit!");
       formDemo.loading = true;
+      const index = courtStore.courts.findIndex(
+        item => item.id === formDemo.formData.cid
+      );
+      formDemo.formData.court = courtStore.courts[index].courtName;
       await userStore.MANAGER_CREATE(formDemo.formData).then(() => {
         findList();
         formDemo.loading = false;
@@ -563,6 +546,15 @@ export default defineComponent({
         }
       }
     };
+    function formatCourt(value: any) {
+      if (value === 1) {
+        return "未分配";
+      }
+      if (value === 2) {
+        return "已分配";
+      }
+      return "未知";
+    }
     return {
       showDetails,
       formDemo,
@@ -583,7 +575,9 @@ export default defineComponent({
       removeRowEvent,
       ruleFormRef,
       resetKey,
-      residentImg
+      residentImg,
+      courtStore,
+      formatCourt
     };
   }
 });
@@ -776,8 +770,8 @@ export default defineComponent({
     <vxe-modal
       v-model="formDemo.createFlag"
       id="myModal"
-      width="800"
-      height="600"
+      width="auto"
+      height="auto"
       min-width="460"
       min-height="320"
       show-zoom
@@ -798,13 +792,16 @@ export default defineComponent({
         ref="ruleFormRef"
         align="center"
       >
-        <!-- <template #myregion="{ data }">
-          <vxe-select
-            v-model="data.cid"
-            visible="selectCourtVisible.value"
-            placeholder="请选择小区"
-          />
-        </template> -->
+        <template #court_edit="{ data }">
+          <vxe-select v-model="data.cid">
+            <vxe-option
+              v-for="item in courtStore.courts"
+              :key="item.id"
+              :value="item.id"
+              :label="`${item.courtName}`"
+            />
+          </vxe-select>
+        </template>
       </vxe-form>
     </vxe-modal>
   </div>
