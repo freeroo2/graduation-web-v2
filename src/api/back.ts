@@ -5,7 +5,7 @@ export const findBacks = (params: object): resultType => {
   return http.request("get", "/q-back/find", { params: params });
 };
 
-// 查找用户姓名对应所有返乡申请记录，不分页
+// 查找用户id对应所有返乡申请记录，不分页
 export const findBacksToList = (params: object): resultType => {
   return http.request("get", "/q-back/list", { params: params });
 };

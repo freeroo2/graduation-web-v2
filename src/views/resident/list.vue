@@ -452,7 +452,7 @@ export default defineComponent({
         item => item.id === formDemo.formData.cid
       );
       formDemo.formData.court = courtStore.courts[index].courtName;
-      await userStore.MANAGER_CREATE(formDemo.formData).then(() => {
+      await userStore.USER_CREATE(formDemo.formData).then(() => {
         findList();
         formDemo.loading = false;
         VXETable.modal.message({ content: "创建成功", status: "success" });
@@ -781,7 +781,7 @@ export default defineComponent({
       transfer
     >
       <template #title>
-        <span>新建公告</span>
+        <span>新增用户</span>
       </template>
 
       <vxe-form

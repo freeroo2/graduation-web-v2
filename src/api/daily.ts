@@ -29,7 +29,7 @@ export const findDailys = (params: object): resultType => {
   return http.request("get", "/q-daily/find", { params: params });
 };
 
-// 查找用户姓名对应所有pcr检测记录 withcid
+// 查找用户姓名对应所有隔离检查记录 withcid
 export const findDailysWithCid = (params: object): resultType => {
   return http.request("get", "/q-daily/findWithCid", { params: params });
 };

@@ -18,7 +18,8 @@ import {
   beginQuarantine,
   endQuarantine,
   beginContact,
-  endContact
+  endContact,
+  createUser
 } from "/@/api/user";
 import { storageLocal, storageSession } from "/@/utils/storage";
 import { getToken, setToken, removeToken } from "/@/utils/auth";
@@ -163,6 +164,17 @@ export const useUserStore = defineStore({
               this.total = res?.data?.total;
             }
             resolve(res);
+          })
+          .catch(error => {
+            reject(error);
+          });
+      });
+    },
+    async USER_CREATE(data: object) {
+      return new Promise<void>((resolve, reject) => {
+        createUser(data)
+          .then(() => {
+            resolve();
           })
           .catch(error => {
             reject(error);

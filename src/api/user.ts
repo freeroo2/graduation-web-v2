@@ -26,6 +26,11 @@ export const findManagers = (params: object): resultType => {
   return http.request("get", "/user/find", { params: params });
 };
 
+// 新建用户
+export const createUser = (data: object): resultType => {
+  return http.request("post", "/user/createUser", { data: data });
+};
+
 // 新建管理员
 export const createManager = (data: object): resultType => {
   return http.request("post", "/user/createManager", { data: data });
@@ -43,7 +48,7 @@ export const userDelete = (params: object): resultType => {
 
 // 取消管理员身份
 export const managerCancle = (params: object): resultType => {
-  return http.request("get", "/role/cancleManager", { params: params });
+  return http.request("get", "/role/cancelManager", { params: params });
 };
 
 // 获取当前管理员所在小区的所有用户
