@@ -1,5 +1,5 @@
 <script lang="ts">
-import { defineComponent, reactive, ref } from "vue";
+import { defineComponent, onMounted, reactive, ref } from "vue";
 import {
   VxeGridProps,
   VxeGridListeners,
@@ -13,6 +13,7 @@ import { useNoticeStoreHook } from "/@/store/modules/notice";
 import { useUserStoreHook } from "/@/store/modules/user";
 import editor from "/@/components/ReEditor/Editor.vue";
 import manager1 from "/@/assets/manager1.png";
+import { useCourtStoreHook } from "/@/store/modules/court";
 export default defineComponent({
   name: "managerList",
   setup() {
@@ -35,12 +36,15 @@ export default defineComponent({
       { value: "2", label: "超级管理员" }
     ]);
 
-    const noticeStore = useNoticeStoreHook();
+    const courtStore = useCourtStoreHook();
     const userStore = useUserStoreHook();
     const tablePage = reactive({
       total: 0,
       currentPage: 1,
       pageSize: 10
+    });
+    onMounted(() => {
+      useCourtStoreHook().getCourts();
     });
     const gridOptions = reactive<VxeGridProps>({
       border: true,
@@ -54,8 +58,7 @@ export default defineComponent({
         //width: 200
       },
       pagerConfig: {
-        perfect: true,
-        total: noticeStore.total
+        perfect: true
       },
       editConfig: {
         trigger: "click",
@@ -253,7 +256,7 @@ export default defineComponent({
               field: "cid",
               title: "小区",
               span: 24,
-              slots: { default: "myregion" }
+              slots: { default: "court_edit" }
             }
           ]
         },
@@ -557,7 +560,8 @@ export default defineComponent({
       roleList,
       ruleFormRef,
       cancleManager,
-      managerImg
+      managerImg,
+      courtStore
     };
   }
 });
@@ -747,7 +751,7 @@ export default defineComponent({
       transfer
     >
       <template #title>
-        <span>新建公告</span>
+        <span>新增管理员</span>
       </template>
 
       <vxe-form
@@ -758,8 +762,15 @@ export default defineComponent({
         ref="ruleFormRef"
         align="center"
       >
-        <template #myregion="{ data }">
-          <vxe-input v-model="data.cid" placeholder="自定义插槽模板" />
+        <template #court_edit="{ data }">
+          <vxe-select v-model="data.cid" placeholder="请选择小区">
+            <vxe-option
+              v-for="item in courtStore.courts"
+              :key="item.id"
+              :value="item.id"
+              :label="`${item.courtName}`"
+            />
+          </vxe-select>
         </template>
       </vxe-form>
     </vxe-modal>
