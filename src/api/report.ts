@@ -34,3 +34,8 @@ export const deleteReport = (params: object): resultType => {
 export const isChecked = (params: object): resultType => {
   return http.request("get", "/q-report/isChecked", { params: params });
 };
+
+// 统计今日健康情况
+export const queryToday = (): resultType => {
+  return http.request("get", "/q-report/queryToday");
+};

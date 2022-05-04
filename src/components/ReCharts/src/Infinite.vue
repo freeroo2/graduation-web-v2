@@ -1,10 +1,28 @@
 <script setup lang="ts">
-import { ref, reactive } from "vue";
+import { ref, reactive, onMounted } from "vue";
 import { templateRef } from "@vueuse/core";
 import SeamlessScroll from "/@/components/ReSeamlessScroll";
+import { useNoticeStoreHook } from "/@/store/modules/notice";
 
 const scroll = templateRef<ElRef | null>("scroll", null);
-
+const mylistData = ref([]);
+onMounted(() => {
+  useNoticeStoreHook()
+    .GET_NOTICES_LIST()
+    .then((res: any) => {
+      mylistData.value = res.data;
+    });
+});
+// 类型格式化显示，0为疫情通告，1为疫苗接种通告，2为疫苗存量通告
+const formatType = (value: any) => {
+  if (value === 0) {
+    return "疫情通告";
+  }
+  if (value === 1) {
+    return "疫苗接种通告";
+  }
+  if (value === 2) return "疫苗存量通告";
+};
 let listData = ref([
   {
     date: "2021-09-01",
@@ -66,9 +84,9 @@ let classOption = reactive({
 <template>
   <div class="infinite">
     <ul class="top">
-      <li>更新日期</li>
-      <li>项目名称</li>
-      <li>Star数量</li>
+      <li>发布日期</li>
+      <li>通告类型</li>
+      <li>标题</li>
     </ul>
     <SeamlessScroll
       ref="scroll"
@@ -77,10 +95,10 @@ let classOption = reactive({
       class="warp"
     >
       <ul class="item">
-        <li v-for="(item, index) in listData" :key="index">
-          <span v-text="item.date" />
-          <span v-text="item.name" />
-          <span v-text="item.star" />
+        <li v-for="(item, index) in mylistData" :key="index">
+          <span v-text="item.pubTime" />
+          <span v-text="formatType(item.type)" />
+          <span v-text="item.title" />
         </li>
       </ul>
     </SeamlessScroll>

@@ -9,6 +9,9 @@ import { ECharts } from "echarts";
 import echarts from "/@/plugins/echarts";
 import { onBeforeMount, onMounted, nextTick } from "vue";
 import { useEventListener, tryOnUnmounted, useTimeoutFn } from "@vueuse/core";
+import { useReportStoreHook } from "/@/store/modules/report";
+
+const reportStore = useReportStoreHook();
 
 let echartInstance: ECharts;
 
@@ -49,7 +52,7 @@ function initechartInstance() {
           // width: "70",
           // overflow: "truncate"
         },
-        data: ["open_issues", "forks", "watchers", "star"]
+        data: ["已打卡", "发烧", "咳嗽", "乏力"]
       }
     ],
     yAxis: [
@@ -59,17 +62,26 @@ function initechartInstance() {
     ],
     series: [
       {
-        name: "GitHub信息",
+        name: "今日健康统计",
         type: "bar",
-        data: [3, 204, 1079, 1079]
+        data: [
+          reportStore.checkNum,
+          reportStore.feverNum,
+          reportStore.coughNum,
+          reportStore.tiredNum
+        ]
       }
     ]
   });
 }
-
+async function initData() {
+  await useReportStoreHook().QUERY_TODAY();
+}
 onBeforeMount(() => {
   nextTick(() => {
-    initechartInstance();
+    initData().then(() => {
+      initechartInstance();
+    });
   });
 });
 

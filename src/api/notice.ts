@@ -24,3 +24,7 @@ export const NoticesDelete = (params: object): resultType => {
 export const findNotices = (params: object): resultType => {
   return http.request("get", "/notice/find", { params: params });
 };
+// 获取所有公告，返回为列表形式，不分页
+export const getNoticesList = (): resultType => {
+  return http.request("get", "/notice/list");
+};

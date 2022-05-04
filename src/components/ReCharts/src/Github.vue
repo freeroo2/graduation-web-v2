@@ -10,6 +10,14 @@ const lists = ref([
   { type: "danger", label: "旅游" },
   { type: "warning", label: "追剧" }
 ]);
+// 角色格式化显示
+const formatGender = (value: any) => {
+  if (value === 1) {
+    return "男";
+  } else if (value === 2) {
+    return "女";
+  } else return "未知";
+};
 </script>
 
 <template>
@@ -30,7 +38,7 @@ const lists = ref([
         </el-icon>
         性别
       </template>
-      {{ storageSession.getItem("info").gender }}
+      {{ formatGender(storageSession.getItem("info").gender) }}
     </el-descriptions-item>
     <el-descriptions-item>
       <template #label>
@@ -60,17 +68,6 @@ const lists = ref([
         居住地
       </template>
       {{ storageSession.getItem("info").address }}
-    </el-descriptions-item>
-  </el-descriptions>
-  <el-descriptions class="margin-top" direction="vertical" :column="1" border>
-    <el-descriptions-item>
-      <template #label>
-        <el-icon>
-          <IconifyIconOffline icon="notebook" />
-        </el-icon>
-        留言
-      </template>
-      好好学习，天天向上
     </el-descriptions-item>
   </el-descriptions>
 </template>

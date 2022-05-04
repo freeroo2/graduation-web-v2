@@ -6,7 +6,8 @@ import {
   NoticeEdit,
   NoticeCreate,
   NoticesDelete,
-  findNotices
+  findNotices,
+  getNoticesList
 } from "/@/api/notice";
 import { noticeStoreType } from "./types";
 export const useNoticeStore = defineStore({
@@ -126,6 +127,24 @@ export const useNoticeStore = defineStore({
             //   "font-size:13px; background:pink; color:#bf2c9f;",
             //   res
             // );
+            resolve(res);
+          })
+          .catch(error => {
+            reject(error);
+          });
+      });
+    },
+    GET_NOTICES_LIST() {
+      return new Promise<void>((resolve, reject) => {
+        getNoticesList()
+          .then((res: any) => {
+            if (res) {
+              console.log(
+                "%c [ res ]-44",
+                "font-size:13px; background:pink; color:#bf2c9f;",
+                res
+              );
+            }
             resolve(res);
           })
           .catch(error => {

@@ -9,6 +9,19 @@ import { ECharts } from "echarts";
 import echarts from "/@/plugins/echarts";
 import { onBeforeMount, onMounted, nextTick } from "vue";
 import { useEventListener, tryOnUnmounted, useTimeoutFn } from "@vueuse/core";
+import { useEchartStoreHook } from "/@/store/modules/echart";
+import { useBackStoreHook } from "/@/store/modules/back";
+
+const echartStore = useEchartStoreHook();
+onBeforeMount(() => {
+  echartStore.QUERY_QUARANTINE_AND_CONTACT().then(() => {
+    console.log(
+      "%c [ echartStore.quarantineNum ]-18",
+      "font-size:13px; background:pink; color:#bf2c9f;",
+      echartStore.quarantineNum
+    );
+  });
+});
 
 let echartInstance: ECharts;
 
@@ -18,6 +31,11 @@ const props = defineProps({
     default: 0
   }
 });
+
+async function initData() {
+  await echartStore.QUERY_QUARANTINE_AND_CONTACT();
+  await useBackStoreHook().QUERY_BACKNUM();
+}
 
 function initechartInstance() {
   const echartDom = document.querySelector(".pie" + props.index);
@@ -36,15 +54,14 @@ function initechartInstance() {
     },
     series: [
       {
-        name: "Github信息",
+        name: "今日统计",
         type: "pie",
         radius: "60%",
         center: ["40%", "50%"],
         data: [
-          { value: 1079, name: "watchers" },
-          { value: 1079, name: "star" },
-          { value: 204, name: "forks" },
-          { value: 3, name: "open_issues" }
+          { value: echartStore.quarantineNum, name: "隔离人数" },
+          { value: echartStore.contactNum, name: "密接人数" },
+          { value: useBackStoreHook().backNum, name: "今日返乡" }
         ],
         emphasis: {
           itemStyle: {
@@ -60,7 +77,9 @@ function initechartInstance() {
 
 onBeforeMount(() => {
   nextTick(() => {
-    initechartInstance();
+    initData().then(() => {
+      initechartInstance();
+    });
   });
 });
 

@@ -29,3 +29,8 @@ export const editBack = (data: object): resultType => {
 export const deleteBack = (params: object): resultType => {
   return http.request("get", "/q-back/delete", { params: params });
 };
+
+// 查询今日返乡人数
+export const queryBackToday = (): resultType => {
+  return http.request("get", "/q-back/queryBackToday");
+};

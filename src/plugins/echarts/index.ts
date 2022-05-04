@@ -1,7 +1,7 @@
 import * as echarts from "echarts/core";
 
-import { PieChart, BarChart, LineChart } from "echarts/charts";
-import { SVGRenderer } from "echarts/renderers";
+import { PieChart, BarChart, LineChart, MapChart } from "echarts/charts";
+import { SVGRenderer, CanvasRenderer } from "echarts/renderers";
 
 import {
   GridComponent,
@@ -10,7 +10,8 @@ import {
   ToolboxComponent,
   TooltipComponent,
   DataZoomComponent,
-  VisualMapComponent
+  VisualMapComponent,
+  GeoComponent
 } from "echarts/components";
 
 const { use, registerTheme } = echarts;
@@ -26,7 +27,10 @@ use([
   ToolboxComponent,
   TooltipComponent,
   DataZoomComponent,
-  VisualMapComponent
+  VisualMapComponent,
+  GeoComponent,
+  MapChart,
+  CanvasRenderer
 ]);
 
 // 自定义主题

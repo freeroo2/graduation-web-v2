@@ -6,7 +6,8 @@ import {
   editBack,
   deleteBack,
   findBacksWithCid,
-  findBacksToList
+  findBacksToList,
+  queryBackToday
 } from "/@/api/back";
 import { useRoleStoreHook } from "./role";
 import { storageSession } from "/@/utils/storage";
@@ -18,7 +19,8 @@ export const useBackStore = defineStore({
     pageSize: 10,
     detailData: null,
     pageData: [],
-    myChecks: []
+    myChecks: [],
+    backNum: null
   }),
   actions: {
     // 查找用户姓名对应所有健康上报记录
@@ -94,6 +96,24 @@ export const useBackStore = defineStore({
       return new Promise<void>((resolve, reject) => {
         deleteBack(param)
           .then(() => {
+            resolve();
+          })
+          .catch(error => {
+            reject(error);
+          });
+      });
+    },
+    // 查询今日返乡人数
+    async QUERY_BACKNUM() {
+      return new Promise<void>((resolve, reject) => {
+        queryBackToday()
+          .then((res: any) => {
+            this.backNum = res?.data?.backNum;
+            console.log(
+              "%c [ res?.data?.backNum ]-112",
+              "font-size:13px; background:pink; color:#bf2c9f;",
+              res
+            );
             resolve();
           })
           .catch(error => {

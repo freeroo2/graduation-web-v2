@@ -4,7 +4,8 @@ import {
   ReInfinite,
   RePie,
   ReLine,
-  ReBar
+  ReBar,
+  ReMap
 } from "/@/components/ReCharts/index";
 import { ref, computed } from "vue";
 import avatars2 from "/@/assets/avatars2.jpg";
@@ -95,9 +96,7 @@ const openDepot = (): void => {
       >
         <el-card style="height: 360px">
           <template #header>
-            <span style="font-size: 16px; font-weight: 500"
-              >GitHub滚动信息</span
-            >
+            <span style="font-size: 16px; font-weight: 500">通告信息</span>
           </template>
           <el-skeleton animated :rows="7" :loading="loading">
             <template #default>
@@ -106,7 +105,6 @@ const openDepot = (): void => {
           </el-skeleton>
         </el-card>
       </el-col>
-
       <el-col
         :xs="24"
         :sm="24"
@@ -129,9 +127,7 @@ const openDepot = (): void => {
       >
         <el-card>
           <template #header>
-            <span style="font-size: 16px; font-weight: 500"
-              >GitHub饼图信息</span
-            >
+            <span style="font-size: 16px; font-weight: 500">今日统计</span>
           </template>
           <el-skeleton animated :rows="7" :loading="loading">
             <template #default>
@@ -140,7 +136,6 @@ const openDepot = (): void => {
           </el-skeleton>
         </el-card>
       </el-col>
-
       <el-col
         :xs="24"
         :sm="24"
@@ -178,7 +173,7 @@ const openDepot = (): void => {
       <el-col
         :xs="24"
         :sm="24"
-        :md="24"
+        :md="12"
         :lg="8"
         :xl="8"
         style="margin-bottom: 20px"
@@ -197,9 +192,7 @@ const openDepot = (): void => {
       >
         <el-card>
           <template #header>
-            <span style="font-size: 16px; font-weight: 500"
-              >GitHub柱状图信息</span
-            >
+            <span style="font-size: 16px; font-weight: 500">今日健康</span>
           </template>
           <el-skeleton animated :rows="7" :loading="loading">
             <template #default>

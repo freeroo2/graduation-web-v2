@@ -7,7 +7,8 @@ import {
   deleteReport,
   findReportsWithCid,
   isChecked,
-  findReportsToList
+  findReportsToList,
+  queryToday
 } from "/@/api/report";
 import { useRoleStoreHook } from "./role";
 import { storageSession } from "/@/utils/storage";
@@ -19,7 +20,11 @@ export const useReportStore = defineStore({
     pageSize: 10,
     detailData: null,
     pageData: [],
-    myChecks: []
+    myChecks: [],
+    checkNum: null,
+    feverNum: null,
+    coughNum: null,
+    tiredNum: null
   }),
   actions: {
     // 查找用户姓名对应所有健康上报记录
@@ -108,6 +113,27 @@ export const useReportStore = defineStore({
         isChecked(param)
           .then(res => {
             resolve(res?.data);
+          })
+          .catch(error => {
+            reject(error);
+          });
+      });
+    },
+    // 统计今日健康情况
+    async QUERY_TODAY() {
+      return new Promise<void>((resolve, reject) => {
+        queryToday()
+          .then(res => {
+            console.log(
+              "%c [ res?.data ]-125",
+              "font-size:13px; background:pink; color:#bf2c9f;",
+              res?.data
+            );
+            this.checkNum = res?.data?.checkNum;
+            this.feverNum = res?.data?.feverNum;
+            this.coughNum = res?.data?.coughNum;
+            this.tiredNum = res?.data?.tiredNum;
+            resolve();
           })
           .catch(error => {
             reject(error);
