@@ -117,7 +117,6 @@ const submitForm = async (formEl: FormInstance | undefined) => {
       });
     } else {
       console.log("error submit!", fields);
-      errorMessage("提交失败");
     }
   });
 };
@@ -198,7 +197,7 @@ function onChange(e) {
                         <el-col :xs="24" :sm="24" :md="24" :lg="22" :xl="22">
                           <el-form-item
                             label="出发地"
-                            prop="tFrom"
+                            prop="tfrom"
                             class="form_item"
                             ><elui-china-area-dht
                               @change="onChange"

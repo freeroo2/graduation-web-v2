@@ -31,7 +31,7 @@ const { logout, onPanel, toggleSideBar, pureApp, usename } = useNav();
       <!-- 菜单搜索 -->
       <Search />
       <!-- 通知 -->
-      <Notice id="header-notice" />
+      <!-- <Notice id="header-notice" /> -->
       <!-- 全屏 -->
       <screenfull id="header-screenfull" v-show="!deviceDetection()" />
       <!-- 退出登陆 -->
