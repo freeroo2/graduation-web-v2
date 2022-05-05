@@ -5,6 +5,7 @@ import reInfinite from "./src/Infinite.vue";
 import reLine from "./src/Line.vue";
 import rePie from "./src/Pie.vue";
 import reMap from "./src/Map.vue";
+import reCount from "./src/Count.vue";
 
 export const ReBar = Object.assign(reBar, {
   install(app: App) {
@@ -39,5 +40,11 @@ export const RePie = Object.assign(rePie, {
 export const ReMap = Object.assign(reMap, {
   install(app: App) {
     app.component(reMap.name, reMap);
+  }
+});
+
+export const ReCount = Object.assign(reCount, {
+  install(app: App) {
+    app.component(reCount.name, reMap);
   }
 });

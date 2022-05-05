@@ -52,12 +52,13 @@ function initechartInstance() {
           // width: "70",
           // overflow: "truncate"
         },
-        data: ["已打卡", "发烧", "咳嗽", "乏力"]
+        data: ["发烧", "咳嗽", "乏力", "呼吸困难"]
       }
     ],
     yAxis: [
       {
-        type: "value"
+        type: "value",
+        minInterval: 1
       }
     ],
     series: [
@@ -65,10 +66,10 @@ function initechartInstance() {
         name: "今日健康统计",
         type: "bar",
         data: [
-          reportStore.checkNum,
           reportStore.feverNum,
           reportStore.coughNum,
-          reportStore.tiredNum
+          reportStore.tiredNum,
+          reportStore.hardBreathNum
         ]
       }
     ]

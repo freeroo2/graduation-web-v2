@@ -21,10 +21,11 @@ export const useReportStore = defineStore({
     detailData: null,
     pageData: [],
     myChecks: [],
-    checkNum: null,
-    feverNum: null,
-    coughNum: null,
-    tiredNum: null
+    checkNum: 0,
+    feverNum: 0,
+    coughNum: 0,
+    tiredNum: 0,
+    hardBreathNum: 0
   }),
   actions: {
     // 查找用户姓名对应所有健康上报记录
@@ -133,6 +134,7 @@ export const useReportStore = defineStore({
             this.feverNum = res?.data?.feverNum;
             this.coughNum = res?.data?.coughNum;
             this.tiredNum = res?.data?.tiredNum;
+            this.hardBreathNum = res?.data?.hardBreathNum;
             resolve();
           })
           .catch(error => {

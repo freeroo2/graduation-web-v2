@@ -5,7 +5,7 @@ import {
   RePie,
   ReLine,
   ReBar,
-  ReMap
+  ReCount
 } from "/@/components/ReCharts/index";
 import { ref, computed } from "vue";
 import avatars2 from "/@/assets/avatars2.jpg";
@@ -127,11 +127,11 @@ const openDepot = (): void => {
       >
         <el-card>
           <template #header>
-            <span style="font-size: 16px; font-weight: 500">今日统计</span>
+            <span style="font-size: 16px; font-weight: 500">今日已打卡</span>
           </template>
           <el-skeleton animated :rows="7" :loading="loading">
             <template #default>
-              <RePie />
+              <ReCount />
             </template>
           </el-skeleton>
         </el-card>
@@ -158,13 +158,11 @@ const openDepot = (): void => {
       >
         <el-card>
           <template #header>
-            <span style="font-size: 16px; font-weight: 500"
-              >GitHub折线图信息</span
-            >
+            <span style="font-size: 16px; font-weight: 500">今日统计</span>
           </template>
           <el-skeleton animated :rows="7" :loading="loading">
             <template #default>
-              <ReLine />
+              <RePie />
             </template>
           </el-skeleton>
         </el-card>
